@@ -1,0 +1,45 @@
+{"stage": "B", "run_id": "B_pca_B_n4000_a0.1_C0.1", "status": "done", "fit_time_s": 1.398525942, "utc": "2026-11-15T08:56:14+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a0.1_C1.0", "status": "done", "fit_time_s": 1.1851376850000008, "utc": "2026-11-15T08:56:19+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a0.1_C10.0", "status": "done", "fit_time_s": 0.7646407419999974, "utc": "2026-11-15T08:56:22+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a1.0_C0.1", "status": "done", "fit_time_s": 1.1774687660000005, "utc": "2026-11-15T08:56:27+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a1.0_C1.0", "status": "done", "fit_time_s": 0.8284098459999996, "utc": "2026-11-15T08:56:31+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a1.0_C10.0", "status": "done", "fit_time_s": 0.6480168189999986, "utc": "2026-11-15T08:56:34+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a10.0_C0.1", "status": "done", "fit_time_s": 1.5024331989999986, "utc": "2026-11-15T08:56:40+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a10.0_C1.0", "status": "done", "fit_time_s": 1.7231888009999992, "utc": "2026-11-15T08:56:46+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n4000_a10.0_C10.0", "status": "done", "fit_time_s": 1.9656414620000078, "utc": "2026-11-15T09:01:05+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a0.1_C0.1", "status": "done", "fit_time_s": 1.1475859229999514, "utc": "2026-11-15T09:01:10+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a0.1_C1.0", "status": "done", "fit_time_s": 0.9486039589999677, "utc": "2026-11-15T09:01:14+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a0.1_C10.0", "status": "done", "fit_time_s": 0.7560672120000049, "utc": "2026-11-15T09:01:18+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a1.0_C0.1", "status": "done", "fit_time_s": 1.0222765639999807, "utc": "2026-11-15T09:01:23+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a1.0_C1.0", "status": "done", "fit_time_s": 0.9829175489999784, "utc": "2026-11-15T09:01:27+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a1.0_C10.0", "status": "done", "fit_time_s": 0.7883983410000042, "utc": "2026-11-15T09:01:30+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a10.0_C0.1", "status": "done", "fit_time_s": 1.5261595130000387, "utc": "2026-11-15T09:01:36+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a10.0_C1.0", "status": "done", "fit_time_s": 1.6011164189999931, "utc": "2026-11-15T09:01:42+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n4000_a10.0_C10.0", "status": "done", "fit_time_s": 1.7059389420000457, "utc": "2026-11-15T09:01:48+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a0.1_C0.1", "status": "done", "fit_time_s": 5.104510635999986, "utc": "2026-11-15T09:02:02+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a0.1_C1.0", "status": "done", "fit_time_s": 3.602658037000026, "utc": "2026-11-15T09:02:11+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a0.1_C10.0", "status": "done", "fit_time_s": 2.2623172790000012, "utc": "2026-11-15T09:02:18+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a1.0_C0.1", "status": "done", "fit_time_s": 4.49738195599997, "utc": "2026-11-15T09:02:29+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a1.0_C1.0", "status": "done", "fit_time_s": 3.041690978999952, "utc": "2026-11-15T09:02:37+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a1.0_C10.0", "status": "done", "fit_time_s": 2.636223814999994, "utc": "2026-11-15T09:02:44+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a10.0_C0.1", "status": "done", "fit_time_s": 6.342826572999968, "utc": "2026-11-15T09:02:59+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a10.0_C1.0", "status": "done", "fit_time_s": 6.70677173200005, "utc": "2026-11-15T09:03:14+00:00"}
+{"stage": "B", "run_id": "B_pca_B_n8000_a10.0_C10.0", "status": "done", "fit_time_s": 7.559220127000003, "utc": "2026-11-15T09:03:30+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a0.1_C0.1", "status": "done", "fit_time_s": 5.20059091600001, "utc": "2026-11-15T09:03:43+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a0.1_C1.0", "status": "done", "fit_time_s": 3.522479964000013, "utc": "2026-11-15T09:03:53+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a0.1_C10.0", "status": "done", "fit_time_s": 2.610544926999978, "utc": "2026-11-15T09:04:00+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a1.0_C0.1", "status": "done", "fit_time_s": 4.21256728000003, "utc": "2026-11-15T09:04:10+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a1.0_C1.0", "status": "done", "fit_time_s": 3.9227209880000373, "utc": "2026-11-15T09:04:20+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a1.0_C10.0", "status": "done", "fit_time_s": 3.195186067999998, "utc": "2026-11-15T09:04:28+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a10.0_C0.1", "status": "done", "fit_time_s": 6.21669455, "utc": "2026-11-15T09:04:43+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a10.0_C1.0", "status": "done", "fit_time_s": 7.1537913490000165, "utc": "2026-11-15T09:04:59+00:00"}
+{"stage": "B", "run_id": "B_hosvd_B_n8000_a10.0_C10.0", "status": "done", "fit_time_s": 7.415929040000037, "utc": "2026-11-15T09:05:14+00:00"}
+{"stage": "B", "status": "stage_complete", "cells_done": 36, "cells_total": 36, "utc": "2026-11-15T09:06:48+00:00"}
+{"stage": "revision", "config": "pca_B", "status": "done", "D": 2048, "seed": 44, "utc": "2026-11-15T09:21:01+00:00"}
+{"stage": "revision", "config": "hosvd_B", "status": "done", "D": 2048, "seed": 44, "utc": "2026-11-15T09:26:08+00:00"}
+{"stage": "revision", "status": "stage_complete", "utc": "2026-11-15T14:16:50+00:00"}
+{"stage": "test", "status": "tests_FAILED", "seconds": 18.6, "utc": "2026-11-15T14:19:19+00:00"}
+{"stage": "test", "status": "tests_passed", "seconds": 11.6, "utc": "2026-11-15T14:19:40+00:00"}
+{"stage": "package", "status": "done", "seconds": 4.1, "utc": "2026-11-15T14:21:22+00:00"}
+{"stage": "test", "status": "tests_passed", "seconds": 11.3, "utc": "2026-11-15T14:21:34+00:00"}
+{"stage": "finalize", "status": "done", "seconds": 3.2, "utc": "2026-11-15T14:21:37+00:00"}

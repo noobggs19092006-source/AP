@@ -1,0 +1,165 @@
+======================================================================
+PHASE 6 INDEPENDENT VERIFICATION AUDIT
+======================================================================
+
+[1] Loading saved predictions...
+  Loaded 5720 rows from C:\Users\aryan\Desktop\MATLAB\PROJECT\AP\Phase6_Markov_SVM_Fusion_Results\predictions\test\test_predictions_merged.csv
+  Scope A rows: 5685 / 5720
+
+[2] Verifying probability simplex closure on Scope A...
+  Markov: sum=1+-2.22e-16, range=[1.79e-03, 9.31e-01]
+  SVM: sum=1+-2.22e-16, range=[1.00e-12, 1.00e+00]
+  F1: sum=1+-2.22e-16, range=[1.79e-04, 9.93e-01]
+  F2: sum=1+-2.22e-16, range=[2.00e-10, 1.00e+00]
+  F3: sum=1+-2.22e-16, range=[4.47e-04, 9.83e-01]
+  PASS: All probability vectors lie in simplex Delta^2
+
+[3] Verifying F1 Fixed Fusion mathematics (lambda=0.9)...
+  Max absolute difference from saved p_f1: 1.75e-12
+  PASS: F1 fusion matches saved values exactly; endpoints verified
+
+[4] Verifying F2 Adaptive Fusion mathematics...
+  Max absolute difference from saved p_f2: 1.46e-12
+  High-risk branch count: 552 (saved: 552)
+  PASS: F2 fusion matches saved values exactly
+
+[5] Verifying F3 Transition/Destination Fusion mathematics...
+  Max absolute difference from saved p_f3: 1.50e-12
+  q_t mean: nan, std: nan
+  PASS: F3 fusion matches saved values exactly
+
+[6] Recomputing all Scope A metrics independently...
+  M0_Markov_Baseline: Acc=0.901923, MacroF1=0.665030, ChangeF1=0.000000
+  M1_Standalone_Linear_Best: Acc=0.837413, MacroF1=0.803124, ChangeF1=0.351838
+  F1_Fixed_lam0.9_linear_hosvd_B: Acc=0.857517, MacroF1=0.827300, ChangeF1=0.378069
+  F2_Adaptive_tau0.65_linear_pca_B: Acc=0.864685, MacroF1=0.835978, ChangeF1=0.327808
+  F3_Transition_rho0.75_eta0.0_linear_best_overall: Acc=0.881469, MacroF1=0.862900, ChangeF1=0.316990
+
+[7] Comparing with Phase 6 reported values...
+    OK accuracy: 0.90192308 (diff=0.00e+00)
+    OK macro_f1: 0.66503004 (diff=0.00e+00)
+    OK change_F1: 0.00000000 (diff=0.00e+00)
+    OK A_change: 0.00000000 (diff=0.00e+00)
+    OK A_stable: 1.00000000 (diff=0.00e+00)
+    OK high_F1: 0.00000000 (diff=0.00e+00)
+    OK brier: 0.166598 (diff=1.89e-06)
+    OK log_loss: 0.339164 (diff=3.56e-05)
+    OK accuracy: 0.83741259 (diff=1.89e-05)
+    OK macro_f1: 0.80312400 (diff=7.09e-05)
+    OK change_F1: 0.35183850 (diff=8.70e-07)
+    OK A_change: 0.41064639 (diff=3.80e-07)
+    OK A_stable: 0.88040318 (diff=2.50e-06)
+    OK high_F1: 0.30493274 (diff=5.21e-06)
+    OK brier: 0.219647 (diff=4.66e-05)
+    OK log_loss: 0.372641 (diff=4.06e-05)
+  M1b_ExactRBF_stageB_full_pca_B: SKIP (no probs in merged CSV)
+  M1b_ExactRBF_stageB_full_hosvd_B: SKIP (no probs in merged CSV)
+    OK accuracy: 0.85751748 (diff=0.00e+00)
+    OK macro_f1: 0.82729964 (diff=1.89e-05)
+    OK change_F1: 0.37806874 (diff=0.00e+00)
+    OK A_change: 0.37642586 (diff=0.00e+00)
+    OK A_stable: 0.90986625 (diff=8.26e-05)
+    OK high_F1: 0.37433155 (diff=5.37e-05)
+    OK brier: 0.201312 (diff=1.22e-05)
+    OK log_loss: 0.353946 (diff=4.59e-05)
+    OK accuracy: 0.86468531 (diff=0.00e+00)
+    OK macro_f1: 0.83597848 (diff=1.16e-05)
+    OK change_F1: 0.32780847 (diff=0.00e+00)
+    OK A_change: 0.29657795 (diff=8.00e-08)
+    OK A_stable: 0.92595464 (diff=6.53e-06)
+    OK high_F1: 0.28813559 (diff=5.57e-05)
+    OK brier: 0.208105 (diff=4.93e-06)
+    OK log_loss: 0.369933 (diff=3.30e-05)
+    OK accuracy: 0.88146853 (diff=0.00e+00)
+    OK macro_f1: 0.86289983 (diff=1.77e-05)
+    OK change_F1: 0.31698974 (diff=0.00e+00)
+    OK A_change: 0.15589354 (diff=0.00e+00)
+    OK A_stable: 0.95890676 (diff=4.86e-06)
+    OK high_F1: 0.03436426 (diff=7.74e-06)
+    OK brier: 0.181359 (diff=4.08e-05)
+    OK log_loss: 0.332895 (diff=5.40e-06)
+
+  Metric comparison saved to audit_tables/metric_comparison.csv
+  Overall: ALL PASS
+
+[8] Recomputing probability quality metrics (Brier, LogLoss, ECE)...
+  M0_Markov_Baseline: Brier=0.166598, LogLoss=0.339164, ECE=0.017511
+  M1_Standalone_Linear_Best: Brier=0.219647, LogLoss=0.372641, ECE=0.015104
+  F1_Fixed_lam0.9_linear_hosvd_B: Brier=0.201312, LogLoss=0.353946, ECE=0.035144
+  F2_Adaptive_tau0.65_linear_pca_B: Brier=0.208105, LogLoss=0.369933, ECE=0.032016
+  F3_Transition_rho0.75_eta0.0_linear_best_overall: Brier=0.181359, LogLoss=0.332895, ECE=0.066921
+  Probability quality recalculations saved
+
+[9] Verifying paired time-block bootstrap CIs...
+  F1 vs M0: point=-0.046966, CI=[-0.062866, -0.032416]
+  F1 vs M1: point=0.023571, CI=[0.007735, 0.038883]
+  Bootstrap verification: PASS
+
+[10] Verifying validation-only model selection integrity...
+  F1 Grid Best: source=linear_hosvd_B, lambda=0.9, J=0.589438
+  F2 Grid Best: source=linear_pca_B, tau=0.65, ll=0.75, lh=1.0, J=0.587580
+  F3 Grid Best: source=linear_best_overall, rho=0.75, eta=0.0, J=0.594150
+  PASS: Validation-only selection confirmed; no test leakage
+
+[11] Verifying figure checksums...
+  fig01_accuracy_macro_f1.png: 412b59e10c272d10...
+  fig02_transition_detection.png: 394193a76e5d865f...
+  fig03_fixed_lambda_sensitivity.png: c031db4a4f75522d...
+  fig04_adaptive_thresholds.png: 1a70098700f89ab4...
+  fig05_confusion_matrices.png: 31a9c6f44a16574d...
+  fig06_transition_risk.png: 2c40bcb32a6f6839...
+  fig07_accuracy_change_tradeoff.png: d25ea8968cee3e2d...
+  fig08_probability_calibration.png: f05664ea599398a7...
+  fig09_computational_cost.png: 7b6b62b61637ee8d...
+
+[12] Running all Phase 6 tests independently...
+============================= test session starts =============================
+platform win32 -- Python 3.11.0, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\aryan\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\aryan\Desktop\MATLAB\PROJECT\AP\Phase6_Markov_SVM_Fusion_Results
+plugins: anyio-4.15.1, locust-2.46.3, asyncio-0.21.1, cov-5.0.0, mock-3.12.0
+asyncio: mode=Mode.STRICT
+collecting ... collected 19 items
+
+tests/test_integrity.py::test_split_counts PASSED                        [  5%]
+tests/test_integrity.py::test_scope_a_alignment PASSED                   [ 10%]
+tests/test_probability_fusion.py::test_fixed_fusion_endpoints PASSED     [ 15%]
+tests/test_probability_fusion.py::test_adaptive_fusion_bounds PASSED     [ 21%]
+tests/test_probability_fusion.py::test_transition_fusion_zero_denom PASSED [ 26%]
+tests/test_probability_fusion.py::test_logloss_eps PASSED                [ 31%]
+tests/test_reproducibility.py::test_deterministic_final_evaluation PASSED [ 36%]
+tests/test_reproducibility.py::test_deterministic_grid_tables PASSED     [ 42%]
+tests/test_reproducibility.py::test_deterministic_figures PASSED         [ 47%]
+tests/test_reproducibility.py::test_manifest_integrity PASSED            [ 52%]
+tests/test_reproducibility.py::test_selection_manifest PASSED            [ 57%]
+tests/test_reproducibility.py::test_bootstrap_ci_deterministic PASSED    [ 63%]
+tests/test_reproducibility.py::test_predictions_csv_structure PASSED     [ 68%]
+tests/test_transition_metrics.py::test_change_recall_vs_A_change PASSED  [ 73%]
+tests/test_transition_metrics.py::test_stable_correct PASSED             [ 78%]
+tests/test_transition_metrics.py::test_change_false_alarm PASSED         [ 84%]
+tests/test_transition_metrics.py::test_high_entry_correct PASSED         [ 89%]
+tests/test_transition_metrics.py::test_high_entry_miss PASSED            [ 94%]
+tests/test_transition_metrics.py::test_zero_denominator PASSED           [100%]
+
+============================= 19 passed in 0.94s ==============================
+
+  Test suite: PASS
+
+[13] Verifying artifact inventory...
+  Inventory lists 53 files
+  Hash mismatches (excl. meta): 0
+
+======================================================================
+AUDIT SUMMARY
+======================================================================
+  fusion_mathematics: {'F1_fixed': 'PASS', 'F2_adaptive': 'PASS', 'F3_transition': 'PASS'}
+  simplex_closure: PASS
+  metric_recalculation: PASS
+  probability_quality: PASS
+  bootstrap_ci: PASS
+  selection_integrity: PASS
+  figure_checksums: PASS
+  test_suite: PASS
+  artifact_inventory: PASS
+
+  OVERALL: ALL CHECKS PASSED

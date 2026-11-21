@@ -1,0 +1,660 @@
+{
+  "phase": 4,
+  "created_utc": "2026-11-14T20:14:57.788119+00:00",
+  "command_line": "phase4_output/phase4_pca_hosvd.py --phase2-zip /mnt/user-data/uploads/Air_Pollution_Phase2_Processed_Data_12_39_46_AM.zip --output phase4_output --seed 42 --configs A,B,C,B_alt1,B_alt2",
+  "args": {
+    "phase2_zip": "/mnt/user-data/uploads/Air_Pollution_Phase2_Processed_Data_12_39_46_AM.zip",
+    "phase2_dir": null,
+    "output": "phase4_output",
+    "seed": 42,
+    "configs": "A,B,C,B_alt1,B_alt2",
+    "batch_size": 1024,
+    "pca_solver": "auto",
+    "max_memory_gb": null,
+    "fallback_max_k": 192,
+    "timing_repeats": 3,
+    "fallback_crosscheck": true,
+    "skip_count_check": false,
+    "finalize": false
+  },
+  "environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "processor": "x86_64",
+    "cpu_count_logical": 1,
+    "cpu_model": "Intel(R) Xeon(R) Processor @ 2.30GHz",
+    "psutil": "7.2.2",
+    "ram_total_gb": 3.899,
+    "ram_available_gb_at_start": 3.535,
+    "matplotlib": "3.11.2",
+    "pytest": "9.2.0",
+    "numpy_blas": {
+      "name": "scipy-openblas",
+      "found": true,
+      "version": "0.3.34.106.0",
+      "detection method": "pkgconfig",
+      "include directory": "/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/include",
+      "lib directory": "/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/lib",
+      "openblas configuration": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64",
+      "pc file directory": "/project/.openblas"
+    },
+    "OMP_NUM_THREADS": "unset",
+    "OPENBLAS_NUM_THREADS": "unset",
+    "MKL_NUM_THREADS": "unset"
+  },
+  "seed": 42,
+  "code_sha256": "0037fac558ec277aa503947beca55c5837a71d993ee2594d83806031101f5dbd",
+  "status": "COMPLETED",
+  "tolerances": {
+    "orthonormality_atol": 1e-08,
+    "energy_rel_tol_vs_train_total_energy": 1e-09,
+    "sse_identity_rel_tol": 1e-10,
+    "close_eigengap_rel": 1e-06,
+    "gram_symmetry_rel_tol": 1e-10,
+    "negative_eigenvalue_tol": "n * eps64 * lambda_max (see eig_desc)"
+  },
+  "inputs": {
+    "source": "zip:Air_Pollution_Phase2_Processed_Data_12_39_46_AM.zip",
+    "sha256": {
+      "train_windows.npz": "411e8bd22720ccb5948e5b8dee3719f24238623a4e0dbfbaff3bc17a0cd8bd0a",
+      "validation_windows.npz": "f39b67a5fe098abda2635282ca8b975b5e7e5cf82c149d7fe125f4c0145d0f8e",
+      "test_windows.npz": "dd62d084edb1d1ba20b12dc1b81c74b0bcf3a986d5d34fa8f5f8d290fa2b7705",
+      "training_preprocessing_parameters.npz": "6d6c5cfd40f1a49dd37cf74a5dbec2cc4ca1996051d7266b5507cd004d17ac02",
+      "phase2_summary.json": "aaf4c3096867bfc788ca9791e36c6176e4d5276dc5b5a95fae864cd7d21030ff",
+      "PHASE2_README.txt": "468302e0bb544a967800f919340da285372913fb8cd0c464146e39af81da0369"
+    },
+    "missing": [],
+    "zip_sha256": "11442e551cf97cd3c9ab2e34f962f1665154f3879fb4f0576be4fde4423a6335",
+    "zip_members": [
+      "PHASE2_README.txt",
+      "phase2_build.py",
+      "phase2_summary.json",
+      "test_windows.npz",
+      "train_windows.npz",
+      "training_preprocessing_parameters.npz",
+      "validation_windows.npz",
+      "window_labels_and_timestamps.csv"
+    ],
+    "informational_files_present": [
+      "training_preprocessing_parameters.npz",
+      "phase2_summary.json",
+      "PHASE2_README.txt"
+    ]
+  },
+  "cross_split": {
+    "cross_split_chronological": true,
+    "cross_split_overlap": false
+  },
+  "input_validation": {
+    "train": {
+      "split": "train",
+      "N": 24108,
+      "X_shape": [
+        24108,
+        24,
+        12,
+        11
+      ],
+      "n_current_state_unknown": 132,
+      "n_current_pm25_nan": 132,
+      "nan_iff_unknown_state": true,
+      "class_counts": {
+        "0": 7872,
+        "1": 5832,
+        "2": 10404
+      },
+      "t_first": "2013-03-02T00:00:00.000000000",
+      "t_last": "2015-12-31T23:00:00.000000000",
+      "logical_float32_bytes": 305496576,
+      "X_min": -3.3984482288360596,
+      "X_max": 79.65413665771484
+    },
+    "validation": {
+      "split": "validation",
+      "N": 4239,
+      "X_shape": [
+        4239,
+        24,
+        12,
+        11
+      ],
+      "n_current_state_unknown": 42,
+      "n_current_pm25_nan": 42,
+      "nan_iff_unknown_state": true,
+      "class_counts": {
+        "0": 1848,
+        "1": 1114,
+        "2": 1277
+      },
+      "t_first": "2016-01-02T00:00:00.000000000",
+      "t_last": "2016-06-30T23:00:00.000000000",
+      "logical_float32_bytes": 53716608,
+      "X_min": -3.0083305835723877,
+      "X_max": 42.07789993286133
+    },
+    "test": {
+      "split": "test",
+      "N": 5720,
+      "X_shape": [
+        5720,
+        24,
+        12,
+        11
+      ],
+      "n_current_state_unknown": 35,
+      "n_current_pm25_nan": 35,
+      "nan_iff_unknown_state": true,
+      "class_counts": {
+        "0": 2142,
+        "1": 1202,
+        "2": 2376
+      },
+      "t_first": "2016-07-02T00:00:00.000000000",
+      "t_last": "2017-02-28T23:00:00.000000000",
+      "logical_float32_bytes": 72483840,
+      "X_min": -2.704753875732422,
+      "X_max": 63.5914306640625
+    }
+  },
+  "identical_channel_groups_train_bitwise": {
+    "TEMP": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ],
+    "PRES": [
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Tiantan"
+      ]
+    ],
+    "DEWP": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ],
+    "RAIN": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ],
+    "WSPM": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ]
+  },
+  "identical_channel_groups_train_within_1e-6": {
+    "TEMP": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ],
+    "PRES": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ],
+    "DEWP": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ],
+    "RAIN": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ],
+    "WSPM": [
+      [
+        "Aotizhongxin",
+        "Guanyuan"
+      ],
+      [
+        "Changping",
+        "Dingling"
+      ],
+      [
+        "Dongsi",
+        "Nongzhanguan",
+        "Tiantan"
+      ]
+    ]
+  },
+  "n_redundant_channels_bitwise": 18,
+  "n_redundant_station_feature_channels": 20,
+  "implied_exact_null_directions_of_flat_gram": 480,
+  "flatten_order": "C (time, station, feature) -> index = a*(12*11) + b*11 + c",
+  "station_order": [
+    "Aotizhongxin",
+    "Changping",
+    "Dingling",
+    "Dongsi",
+    "Guanyuan",
+    "Gucheng",
+    "Huairou",
+    "Nongzhanguan",
+    "Shunyi",
+    "Tiantan",
+    "Wanliu",
+    "Wanshouxigong"
+  ],
+  "measurement_order": [
+    "PM2.5",
+    "PM10",
+    "SO2",
+    "NO2",
+    "CO",
+    "O3",
+    "TEMP",
+    "PRES",
+    "DEWP",
+    "RAIN",
+    "WSPM"
+  ],
+  "pca_solver": {
+    "requested": "auto",
+    "used": "exact-gram",
+    "reason": "auto: estimated peak 0.90 GB <= budget 2.8280000000000003 GB"
+  },
+  "mode_eig_diag": {
+    "time": {
+      "neg_tol": 2.597482484493028e-07,
+      "min_raw_eigenvalue": 255966.53633490345,
+      "n_negative_clipped": 0,
+      "clipped_abs_sum": 0.0,
+      "n_below_tol": 0,
+      "asymmetry_rel": 0.0,
+      "eigh_seconds": 0.00039374699997551943,
+      "solver": "scipy.linalg.eigh",
+      "trace_rel_diff_vs_train_energy": 5.891387054195354e-15,
+      "flat_gram_partial_trace_rel_diff": 8.82564276378844e-16
+    },
+    "station": {
+      "neg_tol": 1.6846343494513636e-07,
+      "min_raw_eigenvalue": 235029.766099169,
+      "n_negative_clipped": 0,
+      "clipped_abs_sum": 0.0,
+      "n_below_tol": 0,
+      "asymmetry_rel": 0.0,
+      "eigh_seconds": 9.201500000699525e-05,
+      "solver": "scipy.linalg.eigh",
+      "trace_rel_diff_vs_train_energy": 5.891387054195354e-15,
+      "flat_gram_partial_trace_rel_diff": 1.0200405478804576e-15
+    },
+    "feature": {
+      "neg_tol": 6.887579464908907e-08,
+      "min_raw_eigenvalue": 537317.6033121769,
+      "n_negative_clipped": 0,
+      "clipped_abs_sum": 0.0,
+      "n_below_tol": 0,
+      "asymmetry_rel": 0.0,
+      "eigh_seconds": 6.199000000606247e-05,
+      "solver": "scipy.linalg.eigh",
+      "trace_rel_diff_vs_train_energy": 6.087766622668533e-15,
+      "flat_gram_partial_trace_rel_diff": 1.3200600363689375e-15
+    }
+  },
+  "fit_seconds": {
+    "pca": 9.937435143000073,
+    "hosvd": 1.5410765890000562,
+    "components": {
+      "mean_pass": 0.10620371900000691,
+      "shared_center": 0.2755209250000519,
+      "flat_gram": 4.477191218999991,
+      "mode_gram": 1.1588041930000088,
+      "pca_eig": 5.078519280000023,
+      "mode_eig_total": 0.0005477519999885772
+    },
+    "note": "fit_seconds are one-time, shared by all configurations of that method; includes mean pass, batch cast+centering, the method's own Gram accumulation and its eigensolve(s). Single-core wall clock; the two methods were accumulated in the same data pass, with per-operation timers."
+  },
+  "fallback_crosscheck": {
+    "object": "pca_fallback_vs_exact",
+    "config_id": "A",
+    "dimension": 48,
+    "comparison": "randomized_vs_exact_gram",
+    "projector_frobenius_distance": 0.8620008837113717,
+    "max_principal_angle_deg": 36.47320508582854,
+    "max_rel_eigenvalue_error": 0.003671574302145607,
+    "max_rel_ritz_residual": 0.029003795847785886,
+    "train_sse_fallback": 12931054.63240104,
+    "train_sse_exact_tail_sum": 12929756.50518062,
+    "train_sse_rel_excess": 0.00010039842744912023,
+    "seed": 42,
+    "n_iter": 6,
+    "oversample": 20,
+    "seconds": 5.814773889000037
+  },
+  "configs": [
+    {
+      "config_id": "A",
+      "k": 48,
+      "status": "COMPLETED",
+      "reason": ""
+    },
+    {
+      "config_id": "B",
+      "k": 192,
+      "status": "COMPLETED",
+      "reason": ""
+    },
+    {
+      "config_id": "C",
+      "k": 576,
+      "status": "COMPLETED",
+      "reason": ""
+    },
+    {
+      "config_id": "B_alt1",
+      "k": 192,
+      "status": "COMPLETED",
+      "reason": ""
+    },
+    {
+      "config_id": "B_alt2",
+      "k": 192,
+      "status": "COMPLETED",
+      "reason": ""
+    }
+  ],
+  "completed_configs": [
+    "A",
+    "B",
+    "C",
+    "B_alt1",
+    "B_alt2"
+  ],
+  "pca_info": {
+    "solver": "exact-gram",
+    "exact": true,
+    "neg_tol": 1.5996588608565396e-05,
+    "min_raw_eigenvalue": -6.79959458575143e-10,
+    "n_negative_clipped": 267,
+    "clipped_abs_sum": 2.9670698841298035e-09,
+    "n_below_tol": 480,
+    "asymmetry_rel": 0.0,
+    "eigh_seconds": 5.078519280000023,
+    "trace_rel_diff_vs_train_energy": 6.284146191141711e-15,
+    "eigenvalue_sum_over_trace_gram_rel_diff": 3.9275913694635464e-16,
+    "numerical_rank_above_tol": 2688
+  },
+  "train_total_energy": 75879386.58640477,
+  "raw_dim": 3168,
+  "freeze_reload_max_abs_diff": {
+    "hosvd_A": 0.0,
+    "pca_A": 0.0,
+    "hosvd_B": 0.0,
+    "pca_B": 0.0,
+    "hosvd_C": 0.0,
+    "pca_C": 0.0,
+    "hosvd_B_alt1": 0.0,
+    "hosvd_B_alt2": 0.0
+  },
+  "direct_path_checks": {
+    "hosvd_A_train": {
+      "max_abs_recon_diff": 7.549516567451064e-15,
+      "max_abs_code_diff": 4.8405723873656825e-14,
+      "sse_direct": 101426.89926869707,
+      "sse_shortcut": 101426.89926869713,
+      "shortcut_rel_gap": 2.2680646426942505e-16
+    },
+    "hosvd_A_validation": {
+      "max_abs_recon_diff": 4.440892098500626e-15,
+      "max_abs_code_diff": 2.6201263381153694e-14,
+      "sse_direct": 45031.0140529062,
+      "sse_shortcut": 45031.01405290622,
+      "shortcut_rel_gap": 1.2021253570813958e-16
+    },
+    "hosvd_A_test": {
+      "max_abs_recon_diff": 1.0658141036401503e-14,
+      "max_abs_code_diff": 4.263256414560601e-14,
+      "sse_direct": 67974.38046613913,
+      "sse_shortcut": 67974.38046613912,
+      "shortcut_rel_gap": 6.853888390495108e-17
+    },
+    "pca_A_train": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 54625.80648055863,
+      "sse_shortcut": 54625.80648055865,
+      "shortcut_rel_gap": 5.670161606735626e-17
+    },
+    "pca_A_validation": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 26061.899217832408,
+      "sse_shortcut": 26061.899217832397,
+      "shortcut_rel_gap": 6.010626785406979e-17
+    },
+    "pca_A_test": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 40359.89832667589,
+      "sse_shortcut": 40359.898326675844,
+      "shortcut_rel_gap": 2.0561665171485324e-16
+    },
+    "hosvd_B_train": {
+      "max_abs_recon_diff": 1.9539925233402755e-14,
+      "max_abs_code_diff": 4.8405723873656825e-14,
+      "sse_direct": 62894.588533445865,
+      "sse_shortcut": 62894.58853344593,
+      "shortcut_rel_gap": 2.5515727230310316e-16
+    },
+    "hosvd_B_validation": {
+      "max_abs_recon_diff": 9.769962616701378e-15,
+      "max_abs_code_diff": 2.930988785010413e-14,
+      "sse_direct": 27412.50033782092,
+      "sse_shortcut": 27412.500337820908,
+      "shortcut_rel_gap": 6.010626785406979e-17
+    },
+    "hosvd_B_test": {
+      "max_abs_recon_diff": 3.197442310920451e-14,
+      "max_abs_code_diff": 4.263256414560601e-14,
+      "sse_direct": 44654.51854906259,
+      "sse_shortcut": 44654.51854906257,
+      "shortcut_rel_gap": 6.853888390495108e-17
+    },
+    "pca_B_train": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 20256.751396482116,
+      "sse_shortcut": 20256.75139648214,
+      "shortcut_rel_gap": 9.922782811787345e-17
+    },
+    "pca_B_validation": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 15708.50878168293,
+      "sse_shortcut": 15708.508781682904,
+      "shortcut_rel_gap": 1.4024795832616284e-16
+    },
+    "pca_B_test": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 17506.171417483274,
+      "sse_shortcut": 17506.171417483187,
+      "shortcut_rel_gap": 4.1123330342970647e-16
+    },
+    "hosvd_C_train": {
+      "max_abs_recon_diff": 3.1530333899354446e-14,
+      "max_abs_code_diff": 4.8405723873656825e-14,
+      "sse_direct": 42736.884138983936,
+      "sse_shortcut": 42736.88413898402,
+      "shortcut_rel_gap": 3.4020969640413757e-16
+    },
+    "hosvd_C_validation": {
+      "max_abs_recon_diff": 1.2878587085651816e-14,
+      "max_abs_code_diff": 2.930988785010413e-14,
+      "sse_direct": 21090.909590236595,
+      "sse_shortcut": 21090.90959023661,
+      "shortcut_rel_gap": 8.014169047209305e-17
+    },
+    "hosvd_C_test": {
+      "max_abs_recon_diff": 3.197442310920451e-14,
+      "max_abs_code_diff": 4.263256414560601e-14,
+      "sse_direct": 33267.92227617341,
+      "sse_shortcut": 33267.92227617337,
+      "shortcut_rel_gap": 2.0561665171485324e-16
+    },
+    "pca_C_train": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 5957.94285261131,
+      "sse_shortcut": 5957.942852611333,
+      "shortcut_rel_gap": 9.214012610945392e-17
+    },
+    "pca_C_validation": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 5569.129920621952,
+      "sse_shortcut": 5569.129920621926,
+      "shortcut_rel_gap": 1.4024795832616284e-16
+    },
+    "pca_C_test": {
+      "max_abs_recon_diff": 0.0,
+      "max_abs_code_diff": 0.0,
+      "sse_direct": 6209.453928585028,
+      "sse_shortcut": 6209.453928584931,
+      "shortcut_rel_gap": 4.540701058703009e-16
+    },
+    "hosvd_B_alt1_train": {
+      "max_abs_recon_diff": 1.9539925233402755e-14,
+      "max_abs_code_diff": 4.8405723873656825e-14,
+      "sse_direct": 64187.9740736675,
+      "sse_shortcut": 64187.974073667545,
+      "shortcut_rel_gap": 1.7010484820206878e-16
+    },
+    "hosvd_B_alt1_validation": {
+      "max_abs_recon_diff": 9.769962616701378e-15,
+      "max_abs_code_diff": 2.930988785010413e-14,
+      "sse_direct": 21345.56288147977,
+      "sse_shortcut": 21345.562881479796,
+      "shortcut_rel_gap": 1.4024795832616284e-16
+    },
+    "hosvd_B_alt1_test": {
+      "max_abs_recon_diff": 3.907985046680551e-14,
+      "max_abs_code_diff": 4.263256414560601e-14,
+      "sse_direct": 42122.04786766648,
+      "sse_shortcut": 42122.047867666464,
+      "shortcut_rel_gap": 6.853888390495108e-17
+    },
+    "hosvd_B_alt2_train": {
+      "max_abs_recon_diff": 1.8207657603852567e-14,
+      "max_abs_code_diff": 4.8405723873656825e-14,
+      "sse_direct": 75201.5349433367,
+      "sse_shortcut": 75201.53494333674,
+      "shortcut_rel_gap": 1.7010484820206878e-16
+    },
+    "hosvd_B_alt2_validation": {
+      "max_abs_recon_diff": 1.0658141036401503e-14,
+      "max_abs_code_diff": 2.930988785010413e-14,
+      "sse_direct": 36766.56134555457,
+      "sse_shortcut": 36766.5613455546,
+      "shortcut_rel_gap": 1.602833809441861e-16
+    },
+    "hosvd_B_alt2_test": {
+      "max_abs_recon_diff": 2.842170943040401e-14,
+      "max_abs_code_diff": 4.263256414560601e-14,
+      "sse_direct": 54598.2728437319,
+      "sse_shortcut": 54598.27284373186,
+      "shortcut_rel_gap": 2.0561665171485324e-16
+    }
+  },
+  "peak_rss_mb_after_gram": 881.35546875,
+  "peak_rss_mb_after_fit": 1540.39453125,
+  "peak_rss_mb_final": 1540.39453125,
+  "wall_seconds_total": 136.44026983900002,
+  "train_only_artifacts_not_counted_in_deployment_storage": {
+    "flat_gram_float64_bytes": 80289792,
+    "full_pca_eigenbasis_float64_bytes": 80289792,
+    "mode_grams_and_full_mode_bases_bytes": 13456
+  },
+  "metric_definition": "Primary metrics use explicit reconstruction from full-precision (float64) internal codes; float32-exported-code metrics are given in *_float32_codes columns."
+}

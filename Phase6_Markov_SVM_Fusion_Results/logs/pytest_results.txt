@@ -1,0 +1,29 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.0, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\aryan\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\aryan\Desktop\MATLAB\PROJECT\AP\Phase6_Markov_SVM_Fusion_Results
+plugins: anyio-4.15.1, locust-2.46.3, asyncio-0.21.1, cov-5.0.0, mock-3.12.0
+asyncio: mode=Mode.STRICT
+collecting ... collected 19 items
+
+tests/test_integrity.py::test_split_counts PASSED                        [  5%]
+tests/test_integrity.py::test_scope_a_alignment PASSED                   [ 10%]
+tests/test_probability_fusion.py::test_fixed_fusion_endpoints PASSED     [ 15%]
+tests/test_probability_fusion.py::test_adaptive_fusion_bounds PASSED     [ 21%]
+tests/test_probability_fusion.py::test_transition_fusion_zero_denom PASSED [ 26%]
+tests/test_probability_fusion.py::test_logloss_eps PASSED                [ 31%]
+tests/test_reproducibility.py::test_deterministic_final_evaluation PASSED [ 36%]
+tests/test_reproducibility.py::test_deterministic_grid_tables PASSED     [ 42%]
+tests/test_reproducibility.py::test_deterministic_figures PASSED         [ 47%]
+tests/test_reproducibility.py::test_manifest_integrity PASSED            [ 52%]
+tests/test_reproducibility.py::test_selection_manifest PASSED            [ 57%]
+tests/test_reproducibility.py::test_bootstrap_ci_deterministic PASSED    [ 63%]
+tests/test_reproducibility.py::test_predictions_csv_structure PASSED     [ 68%]
+tests/test_transition_metrics.py::test_change_recall_vs_A_change PASSED  [ 73%]
+tests/test_transition_metrics.py::test_stable_correct PASSED             [ 78%]
+tests/test_transition_metrics.py::test_change_false_alarm PASSED         [ 84%]
+tests/test_transition_metrics.py::test_high_entry_correct PASSED         [ 89%]
+tests/test_transition_metrics.py::test_high_entry_miss PASSED            [ 94%]
+tests/test_transition_metrics.py::test_zero_denominator PASSED           [100%]
+
+============================= 19 passed in 1.03s ==============================

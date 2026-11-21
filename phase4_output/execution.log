@@ -1,0 +1,86 @@
+2026-11-14 20:14:57 | ====================================================================================================
+2026-11-14 20:14:57 | PHASE 4: PCA/SVD vs shared-basis truncated HoSVD  (unsupervised reconstruction analysis)
+2026-11-14 20:14:57 | command: phase4_output/phase4_pca_hosvd.py --phase2-zip /mnt/user-data/uploads/Air_Pollution_Phase2_Processed_Data_12_39_46_AM.zip --output phase4_output --seed 42 --configs A,B,C,B_alt1,B_alt2
+2026-11-14 20:14:57 | environment: {"python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]", "numpy": "2.5.4", "scipy": "1.18.1", "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39", "cpu_model": "Intel(R) Xeon(R) Processor @ 2.30GHz", "cpu_count_logical": 1, "ram_total_gb": 3.899}
+2026-11-14 20:14:57 | script sha256: 0037fac558ec277aa503947beca55c5837a71d993ee2594d83806031101f5dbd
+2026-11-14 20:14:57 | inputs from zip:Air_Pollution_Phase2_Processed_Data_12_39_46_AM.zip; sha256:
+2026-11-14 20:14:57 |    train_windows.npz: 411e8bd22720ccb5948e5b8dee3719f24238623a4e0dbfbaff3bc17a0cd8bd0a
+2026-11-14 20:14:57 |    validation_windows.npz: f39b67a5fe098abda2635282ca8b975b5e7e5cf82c149d7fe125f4c0145d0f8e
+2026-11-14 20:14:57 |    test_windows.npz: dd62d084edb1d1ba20b12dc1b81c74b0bcf3a986d5d34fa8f5f8d290fa2b7705
+2026-11-14 20:14:57 |    training_preprocessing_parameters.npz: 6d6c5cfd40f1a49dd37cf74a5dbec2cc4ca1996051d7266b5507cd004d17ac02
+2026-11-14 20:14:57 |    phase2_summary.json: aaf4c3096867bfc788ca9791e36c6176e4d5276dc5b5a95fae864cd7d21030ff
+2026-11-14 20:14:57 |    PHASE2_README.txt: 468302e0bb544a967800f919340da285372913fb8cd0c464146e39af81da0369
+2026-11-14 20:14:58 | [contract] train: N=24108 X(24108, 24, 12, 11) float32 finite OK; current_state==-1: 132; NaN current_pm25: 132 (NaN iff state==-1: True); classes {0: 7872, 1: 5832, 2: 10404}; 2013-03-02T00:00:00.000000000 .. 2015-12-31T23:00:00.000000000; raw logical bytes 305496576
+2026-11-14 20:14:58 | [contract] validation: N=4239 X(4239, 24, 12, 11) float32 finite OK; current_state==-1: 42; NaN current_pm25: 42 (NaN iff state==-1: True); classes {0: 1848, 1: 1114, 2: 1277}; 2016-01-02T00:00:00.000000000 .. 2016-06-30T23:00:00.000000000; raw logical bytes 53716608
+2026-11-14 20:14:58 | [contract] test: N=5720 X(5720, 24, 12, 11) float32 finite OK; current_state==-1: 35; NaN current_pm25: 35 (NaN iff state==-1: True); classes {0: 2142, 1: 1202, 2: 2376}; 2016-07-02T00:00:00.000000000 .. 2017-02-28T23:00:00.000000000; raw logical bytes 72483840
+2026-11-14 20:14:58 | [contract] cross-split: {'cross_split_chronological': True, 'cross_split_overlap': False}
+2026-11-14 20:15:11 | [data-diagnostic] TRAIN station-feature series identical to within 1e-6 (float32 round-off): 20 redundant channels (18 bitwise identical) -> 480 (null) directions expected in the flat Gram; groups(<=1e-6): {'TEMP': [['Aotizhongxin', 'Guanyuan'], ['Changping', 'Dingling'], ['Dongsi', 'Nongzhanguan', 'Tiantan']], 'PRES': [['Aotizhongxin', 'Guanyuan'], ['Changping', 'Dingling'], ['Dongsi', 'Nongzhanguan', 'Tiantan']], 'DEWP': [['Aotizhongxin', 'Guanyuan'], ['Changping', 'Dingling'], ['Dongsi', 'Nongzhanguan', 'Tiantan']], 'RAIN': [['Aotizhongxin', 'Guanyuan'], ['Changping', 'Dingling'], ['Dongsi', 'Nongzhanguan', 'Tiantan']], 'WSPM': [['Aotizhongxin', 'Guanyuan'], ['Changping', 'Dingling'], ['Dongsi', 'Nongzhanguan', 'Tiantan']]}
+2026-11-14 20:15:11 | [solver] PCA solver = exact-gram (auto: estimated peak 0.90 GB <= budget 2.8280000000000003 GB). Dense symmetric eigensolve is O(d^3) (d=3168); stored Gram = 80289792 bytes (80.29 MB); workspace is solver dependent.
+2026-11-14 20:15:11 | [fit] centering tensor M from TRAIN only (float64)
+2026-11-14 20:15:11 |   M: shape (24, 12, 11), mean fit 0.11s, |M|max=0.0254
+2026-11-14 20:15:11 | [fit] streaming Gram accumulation (batch=1024, flat Gram=yes)
+2026-11-14 20:15:17 |   timers: shared_center=0.28s flat_gram=4.48s mode_gram=1.16s; ||Z_train||_F^2=7.5879386586e+07
+2026-11-14 20:15:17 |   eig[mode-time] n=24 solver=scipy.linalg.eigh time=0.00s lam_max=4.874175e+07 min_raw=2.560e+05 tol=2.597e-07 clipped=0 (sum |clipped|=0.000e+00) n<=tol=0 asym=0.00e+00
+2026-11-14 20:15:17 |   mode-time: trace(G)=7.5879386586e+07 vs ||Z||^2 rel diff 5.89e-15; orthonormality err 2.55e-15
+2026-11-14 20:15:17 |   eig[mode-station] n=12 solver=scipy.linalg.eigh time=0.00s lam_max=6.322432e+07 min_raw=2.350e+05 tol=1.685e-07 clipped=0 (sum |clipped|=0.000e+00) n<=tol=0 asym=0.00e+00
+2026-11-14 20:15:17 |   mode-station: trace(G)=7.5879386586e+07 vs ||Z||^2 rel diff 5.89e-15; orthonormality err 1.30e-15
+2026-11-14 20:15:17 |   eig[mode-feature] n=11 solver=scipy.linalg.eigh time=0.00s lam_max=2.819900e+07 min_raw=5.373e+05 tol=6.888e-08 clipped=0 (sum |clipped|=0.000e+00) n<=tol=0 asym=0.00e+00
+2026-11-14 20:15:17 |   mode-feature: trace(G)=7.5879386586e+07 vs ||Z||^2 rel diff 6.09e-15; orthonormality err 9.50e-16
+2026-11-14 20:15:18 | [fit] exact flat Gram: shape (3168, 3168), asymmetry rel 0.00e+00, trace 7.5879386586e+07
+2026-11-14 20:15:18 |   mode-time Gram vs partial trace of flat Gram: max rel diff 8.83e-16
+2026-11-14 20:15:18 |   mode-station Gram vs partial trace of flat Gram: max rel diff 1.02e-15
+2026-11-14 20:15:18 |   mode-feature Gram vs partial trace of flat Gram: max rel diff 1.32e-15
+2026-11-14 20:15:23 |   eig[pca-flat-gram (scipy)] n=3168 solver=scipy.linalg.eigh time=5.08s lam_max=2.274060e+07 min_raw=-6.800e-10 tol=1.600e-05 clipped=267 (sum |clipped|=2.967e-09) n<=tol=480 asym=0.00e+00
+2026-11-14 20:15:23 |   sum eig vs ||Z||^2 rel diff 6.28e-15; numerical rank (> tol) 2688 of 3168
+2026-11-14 20:15:27 |   eig[pca-flat-gram (numpy alt)] n=3168 solver=numpy.linalg.eigh time=3.89s lam_max=2.274060e+07 min_raw=-6.333e-10 tol=1.600e-05 clipped=247 (sum |clipped|=9.355e-09) n<=tol=480 asym=0.00e+00
+2026-11-14 20:15:36 |   split-half: first 12 of 24 train batches vs remainder
+2026-11-14 20:15:36 | [fit] fit_seconds PCA=9.94  HoSVD=1.54
+2026-11-14 20:15:36 | [config A] ranks=(4, 3, 4) k=48 d/k=66.00
+2026-11-14 20:15:36 |   PCA V_k orthonormality err 6.03e-15; HoSVD factor errs 8.81e-16, 4.44e-16, 9.50e-16
+2026-11-14 20:15:39 |   hosvd A      train      RRE=0.555046 MSE=0.306080 ret=0.691924 (1-RRE^2-ret=-5.8e-15) fp32-code dRRE=2.2e-16 transform=0.384s inverse=0.354s peakRSS=1540MB
+2026-11-14 20:15:40 |   hosvd A      validation RRE=0.495312 MSE=0.229834 ret=0.754666 (1-RRE^2-ret=-5.6e-15) fp32-code dRRE=5.6e-16 transform=0.073s inverse=0.069s peakRSS=1540MB
+2026-11-14 20:15:41 |   hosvd A      test       RRE=0.514507 MSE=0.308425 ret=0.735283 (1-RRE^2-ret=-4.7e-15) fp32-code dRRE=4.4e-16 transform=0.096s inverse=0.091s peakRSS=1540MB
+2026-11-14 20:15:46 |   pca   A      train      RRE=0.412794 MSE=0.169295 ret=0.829601 (1-RRE^2-ret=-6.2e-15) fp32-code dRRE=6.7e-16 transform=0.570s inverse=0.538s peakRSS=1540MB
+2026-11-14 20:15:47 |   pca   A      validation RRE=0.376650 MSE=0.132902 ret=0.858135 (1-RRE^2-ret=-5.3e-15) fp32-code dRRE=8.9e-16 transform=0.116s inverse=0.101s peakRSS=1540MB
+2026-11-14 20:15:48 |   pca   A      test       RRE=0.382186 MSE=0.170183 ret=0.853934 (1-RRE^2-ret=-5.1e-15) fp32-code dRRE=4.4e-16 transform=0.142s inverse=0.142s peakRSS=1540MB
+2026-11-14 20:15:48 |   HoSVD train bound: SSE=2.337662e+07 <= 3.056270e+07  (slack 23.513%)  passed=True
+2026-11-14 20:15:48 |   PCA optimality (TRAIN): PCA SSE=1.292976e+07 <= HoSVD SSE=2.337662e+07 -> True; PCA SSE vs sum of discarded eigenvalues 1.292976e+07 (abs diff 3.73e-09, rel to ||Z||^2 4.91e-17)
+2026-11-14 20:15:48 | [config B] ranks=(8, 4, 6) k=192 d/k=16.50
+2026-11-14 20:15:48 |   PCA V_k orthonormality err 2.02e-13; HoSVD factor errs 8.81e-16, 4.44e-16, 9.50e-16
+2026-11-14 20:15:55 |   hosvd B      train      RRE=0.434305 MSE=0.187399 ret=0.811379 (1-RRE^2-ret=-5.6e-15) fp32-code dRRE=5.0e-16 transform=0.779s inverse=0.607s peakRSS=1540MB
+2026-11-14 20:15:57 |   hosvd B      validation RRE=0.387971 MSE=0.141012 ret=0.849479 (1-RRE^2-ret=-4.7e-15) fp32-code dRRE=7.2e-16 transform=0.118s inverse=0.113s peakRSS=1540MB
+2026-11-14 20:15:59 |   hosvd B      test       RRE=0.399749 MSE=0.186183 ret=0.840201 (1-RRE^2-ret=-4.7e-15) fp32-code dRRE=6.7e-16 transform=0.211s inverse=0.166s peakRSS=1540MB
+2026-11-14 20:16:07 |   pca   B      train      RRE=0.288392 MSE=0.082631 ret=0.916830 (1-RRE^2-ret=-5.8e-15) fp32-code dRRE=1.0e-15 transform=0.974s inverse=0.714s peakRSS=1540MB
+2026-11-14 20:16:08 |   pca   B      validation RRE=0.288484 MSE=0.077965 ret=0.916777 (1-RRE^2-ret=-5.8e-15) fp32-code dRRE=9.4e-16 transform=0.142s inverse=0.118s peakRSS=1540MB
+2026-11-14 20:16:10 |   pca   B      test       RRE=0.274866 MSE=0.088026 ret=0.924449 (1-RRE^2-ret=-4.2e-15) fp32-code dRRE=1.1e-15 transform=0.197s inverse=0.186s peakRSS=1540MB
+2026-11-14 20:16:10 |   HoSVD train bound: SSE=1.431244e+07 <= 1.706780e+07  (slack 16.144%)  passed=True
+2026-11-14 20:16:10 |   PCA optimality (TRAIN): PCA SSE=6.310863e+06 <= HoSVD SSE=1.431244e+07 -> True; PCA SSE vs sum of discarded eigenvalues 6.310863e+06 (abs diff 2.79e-09, rel to ||Z||^2 3.68e-17)
+2026-11-14 20:16:10 | [config C] ranks=(12, 8, 6) k=576 d/k=5.50
+2026-11-14 20:16:10 |   PCA V_k orthonormality err 3.87e-13; HoSVD factor errs 2.53e-15, 1.30e-15, 9.50e-16
+2026-11-14 20:16:19 |   hosvd C      train      RRE=0.375704 MSE=0.140239 ret=0.858846 (1-RRE^2-ret=-6.0e-15) fp32-code dRRE=6.7e-16 transform=0.728s inverse=0.515s peakRSS=1540MB
+2026-11-14 20:16:21 |   hosvd C      validation RRE=0.337895 MSE=0.106960 ret=0.885827 (1-RRE^2-ret=-4.4e-15) fp32-code dRRE=7.8e-16 transform=0.171s inverse=0.146s peakRSS=1540MB
+2026-11-14 20:16:23 |   hosvd C      test       RRE=0.346450 MSE=0.139845 ret=0.879972 (1-RRE^2-ret=-3.3e-15) fp32-code dRRE=8.3e-16 transform=0.199s inverse=0.158s peakRSS=1540MB
+2026-11-14 20:16:40 |   pca   C      train      RRE=0.162512 MSE=0.026239 ret=0.973590 (1-RRE^2-ret=-6.0e-15) fp32-code dRRE=2.0e-15 transform=1.745s inverse=1.673s peakRSS=1540MB
+2026-11-14 20:16:44 |   pca   C      validation RRE=0.167944 MSE=0.026423 ret=0.971795 (1-RRE^2-ret=-6.2e-15) fp32-code dRRE=1.8e-15 transform=0.314s inverse=0.269s peakRSS=1540MB
+2026-11-14 20:16:48 |   pca   C      test       RRE=0.166524 MSE=0.032309 ret=0.972270 (1-RRE^2-ret=-3.8e-15) fp32-code dRRE=2.1e-15 transform=0.376s inverse=0.370s peakRSS=1540MB
+2026-11-14 20:16:48 |   HoSVD train bound: SSE=1.071065e+07 <= 1.157457e+07  (slack 7.464%)  passed=True
+2026-11-14 20:16:48 |   PCA optimality (TRAIN): PCA SSE=2.003981e+06 <= HoSVD SSE=1.071065e+07 -> True; PCA SSE vs sum of discarded eigenvalues 2.003981e+06 (abs diff 4.66e-09, rel to ||Z||^2 6.14e-17)
+2026-11-14 20:16:48 | [config B_alt1] ranks=(6, 4, 8) k=192 d/k=16.50  (EXPLORATORY additional experiment)
+2026-11-14 20:16:53 |   hosvd B_alt1 train      RRE=0.408502 MSE=0.165793 ret=0.833126 (1-RRE^2-ret=-5.3e-15) fp32-code dRRE=7.2e-16 transform=0.579s inverse=0.381s peakRSS=1540MB
+2026-11-14 20:16:54 |   hosvd B_alt1 validation RRE=0.353845 MSE=0.117296 ret=0.874793 (1-RRE^2-ret=-5.1e-15) fp32-code dRRE=6.1e-16 transform=0.080s inverse=0.071s peakRSS=1540MB
+2026-11-14 20:16:55 |   hosvd B_alt1 test       RRE=0.370607 MSE=0.160027 ret=0.862651 (1-RRE^2-ret=-4.9e-15) fp32-code dRRE=5.6e-16 transform=0.093s inverse=0.089s peakRSS=1540MB
+2026-11-14 20:16:55 |   HoSVD train bound: SSE=1.266230e+07 <= 1.485798e+07  (slack 14.778%)  passed=True
+2026-11-14 20:16:55 | [config B_alt2] ranks=(8, 6, 4) k=192 d/k=16.50  (EXPLORATORY additional experiment)
+2026-11-14 20:17:01 |   hosvd B_alt2 train      RRE=0.504777 MSE=0.253149 ret=0.745200 (1-RRE^2-ret=-6.2e-15) fp32-code dRRE=5.6e-16 transform=0.696s inverse=0.523s peakRSS=1540MB
+2026-11-14 20:17:02 |   hosvd B_alt2 validation RRE=0.449601 MSE=0.189370 ret=0.797859 (1-RRE^2-ret=-6.7e-15) fp32-code dRRE=1.1e-16 transform=0.110s inverse=0.091s peakRSS=1540MB
+2026-11-14 20:17:04 |   hosvd B_alt2 test       RRE=0.464596 MSE=0.251488 ret=0.784151 (1-RRE^2-ret=-4.7e-15) fp32-code dRRE=2.8e-16 transform=0.152s inverse=0.125s peakRSS=1540MB
+2026-11-14 20:17:04 |   HoSVD train bound: SSE=1.933407e+07 <= 2.222261e+07  (slack 12.998%)  passed=True
+2026-11-14 20:17:04 | [freeze/reload] max |F_reload - F_exported| on 512 validation rows: {'hosvd_A': 0.0, 'pca_A': 0.0, 'hosvd_B': 0.0, 'pca_B': 0.0, 'hosvd_C': 0.0, 'pca_C': 0.0, 'hosvd_B_alt1': 0.0, 'hosvd_B_alt2': 0.0}
+2026-11-14 20:17:04 | [crosscheck] approximate randomized fallback vs exact PCA at k=48 (additional diagnostic; NOT used for any result)
+2026-11-14 20:17:12 |   {'object': 'pca_fallback_vs_exact', 'config_id': 'A', 'dimension': 48, 'comparison': 'randomized_vs_exact_gram', 'projector_frobenius_distance': 0.8620008837113717, 'max_principal_angle_deg': 36.47320508582854, 'max_rel_eigenvalue_error': 0.003671574302145607, 'max_rel_ritz_residual': 0.029003795847785886, 'train_sse_fallback': 12931054.63240104, 'train_sse_exact_tail_sum': 12929756.50518062, 'train_sse_rel_excess': 0.00010039842744912023, 'seed': 42, 'n_iter': 6, 'oversample': 20, 'seconds': 5.814773889000037}
+2026-11-14 20:17:14 | [done] completed configs ['A', 'B', 'C', 'B_alt1', 'B_alt2']; wall 136.4s; peak RSS 1540 MB
+2026-11-14 20:18:33 | [finalize] writing PHASE4_RESULTS_AND_MATH.txt and README.md, then packaging ZIP
+2026-11-14 20:18:39 | [package] /home/claude/phase4_output/Air_Pollution_Phase4_Results.zip (280627323 bytes, 51 files)
+2026-11-15 03:57:58 | [finalize] writing PHASE4_RESULTS_AND_MATH.txt and README.md, then packaging ZIP
+2026-11-15 03:58:09 | [package] /home/claude/phase4_output/Air_Pollution_Phase4_Results.zip (280627426 bytes, 51 files)
+2026-11-15 03:58:41 | [finalize] writing PHASE4_RESULTS_AND_MATH.txt and README.md, then packaging ZIP

@@ -1,0 +1,24 @@
+[2026-11-15 14:18:03,507] INFO: loaded 22 prediction files: ['linear_best_overall', 'linear_hosvd_B', 'linear_pca_B', 'revised_rff_hosvd_B', 'revised_rff_pca_B', 'rff_hosvd_B', 'rff_pca_B', 'stageB_full_hosvd_B', 'stageB_full_pca_B', 'stageB_hosvd_B', 'stageB_pca_B']
+[2026-11-15 14:18:03,514] INFO: alignment with Phase 3 Markov CSVs verified row-for-row (timestamp, y, current_state, eligibility)
+[2026-11-15 14:18:03,575] INFO: wrote final_metrics_from_predictions.csv (28 rows)
+[2026-11-15 14:18:03,598] INFO: Phase 3 reference recomputed: {'validation': {'scopeA_n': 4197, 'scopeB_n': 4239, 'actual_transitions': 488, 'entries_into_high': 122}, 'test': {'scopeA_n': 5685, 'scopeB_n': 5720, 'actual_transitions': 526, 'entries_into_high': 154}, 'markov_test_scopeA_accuracy': 0.9074758135444151, 'markov_test_scopeB_accuracy': 0.9041958041958041, 'markov_test_hard_detected_changes': 0, 'markov_test_scopeA_brier': 0.16659810637163056, 'markov_test_scopeA_log_loss': 0.33916441917521006}
+[2026-11-15 14:18:03,610] INFO: reconciliation vs original final_evaluation_scopeAB.csv: max abs diff = 3.886e-16
+[2026-11-15 14:18:03,795] INFO: [24h] Linear SVM: PCA-B minus HoSVD-B (original lock)                macro_f1  diff=+0.0287 CI95=[+0.0045, +0.0513] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] Linear SVM: PCA-B minus HoSVD-B (original lock)                trans_f1  diff=+0.0076 CI95=[-0.0172, +0.0337] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] RFF SVM: PCA-B minus HoSVD-B (revised common seed)             macro_f1  diff=+0.0010 CI95=[-0.0201, +0.0192] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] RFF SVM: PCA-B minus HoSVD-B (revised common seed)             trans_f1  diff=+0.0037 CI95=[-0.0196, +0.0263] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: linear minus RFF                                        macro_f1  diff=+0.0209 CI95=[+0.0037, +0.0399] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: linear minus RFF                                        trans_f1  diff=+0.0245 CI95=[+0.0032, +0.0470] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] HoSVD-B: linear minus RFF                                      macro_f1  diff=-0.0068 CI95=[-0.0247, +0.0101] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] HoSVD-B: linear minus RFF                                      trans_f1  diff=+0.0206 CI95=[+0.0000, +0.0420] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] Exact RBF SVC (fit_n subset): PCA-B minus HoSVD-B              macro_f1  diff=-0.0221 CI95=[-0.0445, -0.0029] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] Exact RBF SVC (fit_n subset): PCA-B minus HoSVD-B              trans_f1  diff=-0.0053 CI95=[-0.0298, +0.0171] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: RFF (full train) minus exact RBF (subset)               macro_f1  diff=+0.0032 CI95=[-0.0142, +0.0205] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: RFF (full train) minus exact RBF (subset)               trans_f1  diff=+0.0017 CI95=[-0.0221, +0.0238] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] Exact RBF SVC (FULL train): PCA-B minus HoSVD-B                macro_f1  diff=-0.0011 CI95=[-0.0173, +0.0142] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] Exact RBF SVC (FULL train): PCA-B minus HoSVD-B                trans_f1  diff=-0.0010 CI95=[-0.0286, +0.0288] includes0=True
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: exact RBF (full train) minus RFF (full train)           macro_f1  diff=+0.0696 CI95=[+0.0525, +0.0898] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: exact RBF (full train) minus RFF (full train)           trans_f1  diff=+0.0336 CI95=[+0.0073, +0.0640] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: exact RBF (full train) minus linear                     macro_f1  diff=+0.0487 CI95=[+0.0272, +0.0705] includes0=False
+[2026-11-15 14:18:03,795] INFO: [24h] PCA-B: exact RBF (full train) minus linear                     trans_f1  diff=+0.0091 CI95=[-0.0234, +0.0417] includes0=True
+[2026-11-15 14:18:03,795] INFO: s10 complete

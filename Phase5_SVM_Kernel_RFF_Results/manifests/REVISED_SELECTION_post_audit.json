@@ -1,0 +1,102 @@
+{
+  "status": "POST_AUDIT_REVISION",
+  "utc": "2026-11-15T14:14:05+00:00",
+  "original_lock_preserved_at": "manifests/LOCKED_SELECTION.json",
+  "test_metrics_used_for_selection": false,
+  "provenance_caveat": "The ORIGINAL models' test metrics had already been computed and seen before this revised rule was written. This revision therefore is NOT a pre-test lock; it is a validation-only rule applied after the audit, and its test numbers are reported as a separately-labelled analysis.",
+  "rule": "median-seed common pair (see select_rff_policy docstring)",
+  "predeclared_seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "D_star": 2048,
+  "seed_star": 44,
+  "details": {
+    "rule": "median-seed common pair (see select_rff_policy docstring)",
+    "D_star": 2048,
+    "seed_star": 44,
+    "mean_val_macro_f1_by_D": {
+      "256": 0.6248285562802678,
+      "1024": 0.7221284876227784,
+      "2048": 0.7379112355657221
+    },
+    "pair_mean_val_macro_f1_by_seed_at_Dstar": {
+      "42": 0.736396497141621,
+      "43": 0.7430613275414337,
+      "44": 0.7403105952034246,
+      "45": 0.741215656742856,
+      "46": 0.7285721011992752
+    },
+    "seed_rank_best_to_worst": [
+      43,
+      45,
+      44,
+      42,
+      46
+    ],
+    "chosen": {
+      "pca_B": {
+        "config": "pca_B",
+        "D": 2048,
+        "seed": 44,
+        "gamma": 0.0005208333333333,
+        "C": 10.0,
+        "val_scopeB_macro_f1": 0.7385458749591982,
+        "val_scopeA_trans_f1": 0.3633699633699633
+      },
+      "hosvd_B": {
+        "config": "hosvd_B",
+        "D": 2048,
+        "seed": 44,
+        "gamma": 0.0005208333333333,
+        "C": 10.0,
+        "val_scopeB_macro_f1": 0.7420753154476509,
+        "val_scopeA_trans_f1": 0.3401759530791788
+      }
+    }
+  },
+  "original_lock_rff_choices": {
+    "rff_pca_B": {
+      "D": 2048,
+      "seed": 43,
+      "val_macro_f1": 0.7464796357084641,
+      "rank_among_5_seeds_best_is_1": 1,
+      "is_best_validation_seed": true
+    },
+    "rff_hosvd_B": {
+      "D": 2048,
+      "seed": 44,
+      "val_macro_f1": 0.7420753154476509,
+      "rank_among_5_seeds_best_is_1": 1,
+      "is_best_validation_seed": true
+    }
+  },
+  "finding": "original lock selected idxmax over single-seed validation rows (best-seed selection): {\"rff_pca_B\": true, \"rff_hosvd_B\": true}",
+  "selected_models": {
+    "revised_rff_pca_B": {
+      "config": "pca_B",
+      "D": 2048,
+      "seed": 44,
+      "gamma": 0.0005208333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.7385458749591982,
+      "val_scopeA_trans_f1": 0.3633699633699633,
+      "model_type": "RFF_LinearSVC_OvR",
+      "shared_frequencies_across_pair": true
+    },
+    "revised_rff_hosvd_B": {
+      "config": "hosvd_B",
+      "D": 2048,
+      "seed": 44,
+      "gamma": 0.0005208333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.7420753154476509,
+      "val_scopeA_trans_f1": 0.3401759530791788,
+      "model_type": "RFF_LinearSVC_OvR",
+      "shared_frequencies_across_pair": true
+    }
+  }
+}

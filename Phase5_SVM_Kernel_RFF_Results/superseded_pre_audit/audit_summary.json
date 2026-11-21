@@ -1,0 +1,77 @@
+{
+  "phase": 5,
+  "project": "Spatiotemporal Air Pollution State Prediction Using Higher-Order Singular Value Decomposition and Kernel Support Vector Machines",
+  "generated_utc": "2026-11-15T08:05:40.954969+00:00",
+  "integrity_gate": "PASSED",
+  "integrity_checks_passed": 210,
+  "integrity_checks_failed": 0,
+  "fits_completed": {
+    "stage_a_linear_svm": "40/40",
+    "stage_c_rff_svm": "30/30",
+    "stage_b_exact_rbf": "Executed on bounded 4k/8k subsets; full-sample 24108 exact RBF omitted due to memory budget (>3.0 GB) and O(N^2) scaling."
+  },
+  "best_validation": {
+    "primary_criterion": "validation Scope B Macro-F1",
+    "pca_B_winner": "LinearSVC (C=0.1, Macro-F1=0.7628)",
+    "hosvd_B_winner": "LinearSVC (C=0.01, Macro-F1=0.7108)",
+    "best_overall_linear": "pca_C LinearSVC (C=1.0, Macro-F1=0.7734)",
+    "best_rff": "pca_B RFF LinearSVC (D=2048, seed=43, Macro-F1=0.7465)",
+    "locked_selection_manifest": "manifests/LOCKED_SELECTION.json"
+  },
+  "test_results_summary": {
+    "evaluation_scope": "Evaluated strictly AFTER freezing LOCKED_SELECTION.json. No test-driven hyperparameter tuning.",
+    "test_scopeB_macro_f1": {
+      "linear_pca_B": 0.7656,
+      "linear_hosvd_B": 0.7226,
+      "linear_pca_C": 0.777,
+      "rff_pca_B": 0.7485,
+      "markov_baseline": 0.8122
+    },
+    "test_scopeA_transition_f1": {
+      "linear_pca_B": 0.3864,
+      "linear_hosvd_B": 0.3502,
+      "linear_pca_C": 0.3887,
+      "rff_pca_B": 0.353,
+      "markov_baseline": 0.0
+    },
+    "test_scopeA_transition_recall": {
+      "linear_pca_B": 0.4981,
+      "linear_hosvd_B": 0.5057,
+      "linear_pca_C": 0.4905,
+      "rff_pca_B": 0.4525,
+      "markov_baseline": 0.0
+    },
+    "test_scopeA_high_entry_recall": {
+      "linear_pca_B": 0.5844,
+      "linear_hosvd_B": 0.6558,
+      "linear_pca_C": 0.461,
+      "rff_pca_B": 0.5065,
+      "markov_baseline": 0.0
+    }
+  },
+  "block_bootstrap_95ci": {
+    "macro_f1_diff_pca_vs_hosvd": [
+      0.0264,
+      0.0601
+    ],
+    "trans_f1_diff_pca_vs_hosvd": [
+      0.0068,
+      0.0664
+    ]
+  },
+  "tests": {
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0
+  },
+  "planned_not_executed": [
+    "Full-sample 24108 exact RBF SVC skipped due to compute budget (>3.0 GB resident memory) and O(N^2) scaling; bounded exact subsets (4000 and 8000) and RFF full-sample experiments executed."
+  ],
+  "limitations": [
+    "Phase 4 basis transforms were pre-fitted on entire training set; internal calibration folds are not strictly end-to-end forward chaining at the feature extraction level.",
+    "PM2.5 class boundary of 75 ug/m3 is a research-defined operational boundary, not an official public health category.",
+    "RFF finite-dimensional cosine approximation error exhibits variance across random frequency draws; classification accuracy is not strictly monotonic in D.",
+    "Exact RBF SVC at N=8000 vs full-sample N=24108 linear/RFF is not an apples-to-apples sample budget comparison."
+  ],
+  "honest_conclusions": "Unsupervised PCA representations consistently outperform tensor HoSVD representations in linear classification across all dimensions k in {48, 192, 576}. While the Phase 3 Markov baseline achieves 90.75% accuracy by predicting persistence, it detects 0 out of 526 true state transitions. Discriminative SVM and RFF models achieve active transition responsiveness (F1 ~ 0.38, recall ~ 0.50), demonstrating operational utility for dynamic pollution alert systems."
+}

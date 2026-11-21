@@ -1,0 +1,410 @@
+PHASE 4 -- RESULTS AND MATHEMATICS
+Matched-dimensional matrix PCA/SVD versus shared-basis truncated HoSVD (unsupervised reconstruction analysis)
+==============================================================================================================
+
+LEGEND.  [MEASURED] = produced by executing phase4_pca_hosvd.py on the supplied Phase 2 arrays in this run.
+          [DERIVED]  = follows analytically from the definitions (proof sketch given) or from arithmetic on measured numbers.
+          [TOY]      = hand-worked illustrative example, NOT a Beijing finding.
+Scope: no SVM / RFF / Markov / classification metric was computed; no configuration was selected using validation or test data.
+All reconstruction errors are in Phase-2 STANDARDIZED feature units, not ug/m^3.
+
+0. EXECUTION STATUS  [MEASURED]
+--------------------------------------------------------------------------------------------------------------
+Run status: COMPLETED.  Completed configurations: A, B, C, B_alt1, B_alt2.
+Mandatory A and B: completed.  C: completed.  Exploratory (additional, lower-priority) allocations run: B_alt1, B_alt2.
+PCA solver used: exact-gram (auto: estimated peak 0.90 GB <= budget 2.8280000000000003 GB). Requested: auto.
+Environment: Linux-6.18.44-fc-v470-x86_64-with-glibc2.39; CPU Intel(R) Xeon(R) Processor @ 2.30GHz x1 logical; RAM 3.899 GB; Python 3.12.3, NumPy 2.5.4, SciPy 1.18.1.
+Seed 42 (the exact-Gram path is deterministic; the seed only drives the randomized fallback cross-check and the audit-subset selection).
+Script sha256 0037fac558ec277aa503947beca55c5837a71d993ee2594d83806031101f5dbd
+Hashes are stable within a fixed software environment; cross-platform byte-for-byte identity is NOT claimed.
+
+1. INPUT CONTRACT  [MEASURED]
+--------------------------------------------------------------------------------------------------------------
+train      N=24108  X(24108, 24, 12, 11) float32 finite; class counts {'0': 7872, '1': 5832, '2': 10404}; current_state==-1: 132 (current_pm25 NaN iff state==-1: True); targets 2013-03-02T00:00:00 .. 2015-12-31T23:00:00; raw logical bytes 305496576
+validation N=4239  X(4239, 24, 12, 11) float32 finite; class counts {'0': 1848, '1': 1114, '2': 1277}; current_state==-1: 42 (current_pm25 NaN iff state==-1: True); targets 2016-01-02T00:00:00 .. 2016-06-30T23:00:00; raw logical bytes 53716608
+test       N=5720  X(5720, 24, 12, 11) float32 finite; class counts {'0': 2142, '1': 1202, '2': 2376}; current_state==-1: 35 (current_pm25 NaN iff state==-1: True); targets 2016-07-02T00:00:00 .. 2017-02-28T23:00:00; raw logical bytes 72483840
+Cross-split: strictly chronological, no timestamp overlap, no duplicates inside splits: {'cross_split_chronological': True, 'cross_split_overlap': False}.
+Unknown-current-state rows (-1) were KEPT (treated as metadata). y was never used by any decomposition.
+Input SHA-256:
+   train_windows.npz  411e8bd22720ccb5948e5b8dee3719f24238623a4e0dbfbaff3bc17a0cd8bd0a
+   validation_windows.npz  f39b67a5fe098abda2635282ca8b975b5e7e5cf82c149d7fe125f4c0145d0f8e
+   test_windows.npz  dd62d084edb1d1ba20b12dc1b81c74b0bcf3a986d5d34fa8f5f8d290fa2b7705
+   training_preprocessing_parameters.npz  6d6c5cfd40f1a49dd37cf74a5dbec2cc4ca1996051d7266b5507cd004d17ac02
+   phase2_summary.json  aaf4c3096867bfc788ca9791e36c6176e4d5276dc5b5a95fae864cd7d21030ff
+   PHASE2_README.txt  468302e0bb544a967800f919340da285372913fb8cd0c464146e39af81da0369
+   [input ZIP] zip:Air_Pollution_Phase2_Processed_Data_12_39_46_AM.zip  11442e551cf97cd3c9ab2e34f962f1665154f3879fb4f0576be4fde4423a6335
+   (training_preprocessing_parameters.npz, phase2_summary.json, PHASE2_README.txt are informational only: hashed, never refit.)
+
+2. DATA DIAGNOSTIC: DUPLICATED METEOROLOGICAL CHANNELS (identical to float32 round-off)  [MEASURED]
+--------------------------------------------------------------------------------------------------------------
+In the TRAIN tensor several (station, measurement) series are copies of each other (max |difference| <= 1e-6, i.e. float32 round-off level):
+   TEMP  : {Aotizhongxin, Guanyuan} | {Changping, Dingling} | {Dongsi, Nongzhanguan, Tiantan}
+   PRES  : {Aotizhongxin, Guanyuan} | {Changping, Dingling} | {Dongsi, Nongzhanguan, Tiantan}
+   DEWP  : {Aotizhongxin, Guanyuan} | {Changping, Dingling} | {Dongsi, Nongzhanguan, Tiantan}
+   RAIN  : {Aotizhongxin, Guanyuan} | {Changping, Dingling} | {Dongsi, Nongzhanguan, Tiantan}
+   WSPM  : {Aotizhongxin, Guanyuan} | {Changping, Dingling} | {Dongsi, Nongzhanguan, Tiantan}
+Redundant station-feature channels: 20 (18 of them bitwise identical; the others, PRES pairs, differ from their twin by one float32 ulp, ~3e-8, at a single hour).
+Expected (near-)null directions of the flat Gram = redundant channels x 24 hours = 480.
+Observed flat-Gram eigenvalues <= tolerance: 480; numerical rank (eigenvalue > tolerance): 2688 of 3168.
+Consequences (stated, not tuned away): (i) the flat Gram is rank deficient, so tiny/negative eigenvalues are expected rather than a solver error; (ii) duplicated channels receive multiplicity weight in every
+Frobenius-norm quantity (PCA, HoSVD and the error metrics alike); (iii) nothing was removed or re-weighted, because Phase 2 is frozen.  This is a property of the supplied Phase 2 arrays, not of PCA/HoSVD.
+
+3. SETUP AND DEFINITIONS  [DERIVED]
+--------------------------------------------------------------------------------------------------------------
+Raw dimension d = 24 x 12 x 11 = 3168 per sample.  Training mean tensor M[a,b,c] = (1/N_train) sum_i X[i,a,b,c]  (float64; stored).  Z_i = X_i - M for every split.
+Matrix PCA/SVD: A = flatten_C(Z_train) in R^{24108 x 3168} (C order: index = a*132 + b*11 + c).  G = A^T A (float64, streamed in batches).  Eigen-decompose G = V diag(lambda) V^T,
+  lambda_1 >= ... ; singular values sigma_j ~ sqrt(max(lambda_j,0)).  Feature f_PCA = vec(Z_i) V_k;  reconstruction X_hat = M + reshape(f V_k^T).
+Shared HoSVD (sample mode uncompressed): mode Grams G_time (24x24), G_station (12x12), G_feature (11x11) accumulated over all training samples; leading eigenvectors give Q_time, Q_station, Q_feature.
+  Core C_i = Z_i x_time Q_time^T x_station Q_station^T x_feature Q_feature^T  (shape r_t x r_s x r_f);  F_i = vec_C(C_i) with index p*(r_s*r_f) + q*r_f + r.
+  Inverse Zhat_i = C_i x_time Q_time x_station Q_station x_feature Q_feature;  X_hat_i = M + Zhat_i.  Einsum index order: 'iabc,ap->ipbc', 'ipbc,bq->ipqc', 'ipqc,cr->ipqr'.
+  Equivalent flat form: vec(C_i) = vec(Z_i) K with K = Q_time (x) Q_station (x) Q_feature (Kronecker, d x k, orthonormal columns); this was used as the independent direct path in tests/audit subsets.
+Sign convention: each factor column is flipped so its largest-|.| entry is non-negative, BEFORE any feature export.
+Metrics: SSE = ||Z-Zhat||_F^2, RRE = sqrt(SSE/||Z||_F^2), MSE = SSE/(N*3168), retained_energy = ||Zhat||_F^2/||Z||_F^2, all accumulated in float64 per split.
+  PRIMARY metrics use explicit reconstruction from FULL-PRECISION (float64) internal codes.  The *_float32_codes columns repeat the metric decoding the float32-EXPORTED codes.
+  The float32 and float64 RREs differ by at most 2.08e-15 (absolute)  [MEASURED], i.e. immaterial for every reported digit.
+
+4. THEOREMS USED  [DERIVED]
+--------------------------------------------------------------------------------------------------------------
+T1 (projection identity).  P = K K^T with K orthonormal (PCA: K=V_k; HoSVD: K=Kronecker factor).  Then Z - PZ is orthogonal to PZ, so SSE = ||Z||^2 - ||PZ||^2 = ||Z||^2 - ||codes||^2, hence RRE^2 + retained_energy = 1.
+   Float32 storage of F breaks this only at ~1e-7 relative level in the stored codes; the code verifies the identity in float64 against explicit reconstruction.
+T2 (mode eigenvalues).  The mode-t Gram G_t = Z_(t) Z_(t)^T where Z_(t) is the mode-t unfolding of the whole training collection (sample mode appended to the columns).  Its eigenvalues are the squared
+   singular values of Z_(t); trace(G_t) = ||Z_train||_F^2 for all three modes and for the flat Gram (all verified numerically).
+T3 (HoSVD training truncation bound).  Let P_t, P_s, P_f be the orthogonal projectors Q Q^T acting on the time, station and feature modes.  They act on different tensor modes, so they commute, are
+   self-adjoint and idempotent in the Frobenius inner product, and Zhat = P_t P_s P_f Z.  Telescoping,
+       Z - Zhat = (I-P_t)Z  +  P_t (I-P_s) Z  +  P_t P_s (I-P_f) Z.
+   The three terms are mutually orthogonal (e.g. <(I-P_t)Z, P_t W> = <Z,(I-P_t)P_t W> = 0, and similarly using (I-P_s)P_s = 0 and commutation), hence
+       ||Z-Zhat||^2 = ||(I-P_t)Z||^2 + ||P_t (I-P_s)Z||^2 + ||P_t P_s (I-P_f)Z||^2  <=  ||(I-P_t)Z||^2 + ||(I-P_s)Z||^2 + ||(I-P_f)Z||^2,
+   because projectors are contractions.  Finally ||(I-P_t)Z||^2 = ||Z_(t)||^2 - ||Q_t^T Z_(t)||^2 = sum_{j>r_t} lambda_j(G_t) = tail_time (Q_t spans the top-r_t eigenspace of G_t); same for the other modes.
+       ||Z_train - Zhat_train||_F^2  <=  tail_time(r_t) + tail_station(r_s) + tail_feature(r_f).   (classical truncated-HOSVD argument; sample mode uncompressed)
+   The first term equals tail_time EXACTLY; the other two are bounded by their tails.  The bound depends on TRAIN spectra and is NOT claimed for validation/test.
+T4 (PCA optimality on TRAIN).  By Eckart-Young-Mirsky / Ky Fan, among all rank-k orthogonal projectors P on R^d, ||A - A P||_F^2 is minimized by the span of the top-k right singular vectors,
+   with minimum sum_{j>k} lambda_j.  HoSVD reconstructs flat(Z) K K^T, a projection onto a particular k-dimensional (Kronecker-structured) subspace; therefore
+   SSE_PCA,train(k) <= SSE_HoSVD,train(k) for exact PCA at equal k.  This is a statement about TRAIN reconstruction of the flattened training matrix only; it implies nothing about validation/test reconstruction or classification.
+T5 (numerics of the Gram route).  Eigenvalues of the float64 Gram are exact for the COMPUTED Gram, not an infinite-precision SVD of A; forming A^T A squares the condition number, so eigenvalues
+   below roughly n*eps*lambda_max are not resolved.  Declared policy: tol = n*eps64*lambda_max; eigenvalues < -tol raise an error; eigenvalues in [-tol,0) are clipped to 0 and counted/logged.
+
+5. TOY EXAMPLES  [TOY -- illustrative, NOT Beijing findings]
+--------------------------------------------------------------------------------------------------------------
+2x2 matrix, rank-1 PCA: A = [[2,1],[1,2]].  Gram A^T A = [[5,4],[4,5]], eigenvalues 9 and 1 (singular values 3 and 1), v1 = (1,1)/sqrt(2).
+   computed: eigenvalues [9.0, 1.0], v1=[0.707106781187, 0.707106781187], rank-1 reconstruction [[1.4999999999999998, 1.4999999999999998], [1.4999999999999998, 1.4999999999999998]], SSE=1.000000000000, retained fraction=0.900000000000
+   hand: reconstruction rows both (1.5,1.5); residual rows (0.5,-0.5),(-0.5,0.5); SSE = 1 = discarded eigenvalue; retained 9/10.
+2x2x2 tensor T with T[0,0,0]=2, T[1,1,1]=1 (all other entries 0), rank-(1,1,1) HOSVD (all three modes compressed in this toy):
+   every mode unfolding is a 2x4 matrix with Gram diag(4,1) (singular values 2,1); leading eigenvectors e_0; core = 2; approximation 2*e0(x)e0(x)e0.
+   computed: SSE=1.000000000000, tails=[1.0, 1.0, 1.0], bound=3.000000000000.  Hand: error = |T[1,1,1]|^2 = 1 <= 1+1+1 = 3 (the bound holds and is not tight).
+
+6. RECONSTRUCTION RESULTS  [MEASURED]   (bases fitted on TRAIN only; validation/test are held-out diagnostics)
+--------------------------------------------------------------------------------------------------------------
+config          ranks     k    d/k    method  RRE_train  RRE_val   RRE_test  retE_train  retE_val  retE_test
+--------------  --------  ---  -----  ------  ---------  --------  --------  ----------  --------  ---------
+A               -         48   66.00  PCA     0.412794   0.376650  0.382186  0.829601    0.858135  0.853934 
+A               (4,3,4)   48   66.00  HoSVD   0.555046   0.495312  0.514507  0.691924    0.754666  0.735283 
+B               -         192  16.50  PCA     0.288392   0.288484  0.274866  0.916830    0.916777  0.924449 
+B               (8,4,6)   192  16.50  HoSVD   0.434305   0.387971  0.399749  0.811379    0.849479  0.840201 
+C               -         576  5.50   PCA     0.162512   0.167944  0.166524  0.973590    0.971795  0.972270 
+C               (12,8,6)  576  5.50   HoSVD   0.375704   0.337895  0.346450  0.858846    0.885827  0.879972 
+B_alt1 (expl.)  (6,4,8)   192  16.50  HoSVD   0.408502   0.353845  0.370607  0.833126    0.874793  0.862651 
+B_alt2 (expl.)  (8,6,4)   192  16.50  HoSVD   0.504777   0.449601  0.464596  0.745200    0.797859  0.784151 
+
+config  method  MSE_train  MSE_val   MSE_test  SSE_train    ||Z||^2/(N*d) train  val      test   
+------  ------  ---------  --------  --------  -----------  -------------------  -------  -------
+A       pca     0.169295   0.132902  0.170183  1.29298e+07  0.99352              0.93682  1.16511
+A       hosvd   0.306080   0.229834  0.308425  2.33766e+07  0.99352              0.93682  1.16511
+B       pca     0.082631   0.077965  0.088026  6.31086e+06  0.99352              0.93682  1.16511
+B       hosvd   0.187399   0.141012  0.186183  1.43124e+07  0.99352              0.93682  1.16511
+C       pca     0.026239   0.026423  0.032309  2.00398e+06  0.99352              0.93682  1.16511
+C       hosvd   0.140239   0.106960  0.139845  1.07106e+07  0.99352              0.93682  1.16511
+B_alt1  hosvd   0.165793   0.117296  0.160027  1.26623e+07  0.99352              0.93682  1.16511
+B_alt2  hosvd   0.253149   0.189370  0.251488  1.93341e+07  0.99352              0.93682  1.16511
+   (MSE is per feature entry in standardized units^2.  The last three columns show the per-entry centered energy of each split: it differs between splits, which is why a relative error
+    (RRE) of a held-out split can be lower than the training RRE without any 'better generalization'.)
+
+PCA versus HoSVD at equal k, [MEASURED] differences in RRE (HoSVD - PCA; positive = PCA reconstructs better):
+config  k    train     validation  test      RRE_ratio HoSVD/PCA (train / val / test)
+------  ---  --------  ----------  --------  ----------------------------------------
+A       48   0.142252  0.118662    0.132321  1.345 / 1.315 / 1.346                   
+B       192  0.145914  0.099487    0.124882  1.506 / 1.345 / 1.454                   
+C       576  0.213192  0.169951    0.179926  2.312 / 2.012 / 2.080                   
+   PCA had the lower RRE in 9 of 9 (config x split) comparisons among the declared configurations A/B/C.  This is a descriptive observation about reconstruction only; 
+   it is NOT a statement about next-state classification (Phase 5), and HoSVD is not claimed to be 'better' or 'worse' overall (storage and cost differ, see Sections 8-9).
+
+Retained energy as fractions of the TRAIN total energy [MEASURED]: PCA k-energy summary
+   PCA k=  48 (A): retained 0.829601, tail 0.170399 (= 1 - retained; train SSE/||Z||^2)
+   PCA k= 192 (B): retained 0.916830, tail 0.083170 (= 1 - retained; train SSE/||Z||^2)
+   PCA k= 576 (C): retained 0.973590, tail 0.026410 (= 1 - retained; train SSE/||Z||^2)
+
+Mode energy retained by the shared-factor ranks (TRAIN mode spectra; fraction of ||Z||_F^2 captured by the leading r eigenvectors of each mode Gram) [MEASURED]:
+config          ranks       time    station  feature
+--------------  ----------  ------  -------  -------
+A               (4, 3, 4)   0.8671  0.9134   0.8167 
+B               (8, 4, 6)   0.9246  0.9369   0.9136 
+C               (12, 8, 6)  0.9518  0.9820   0.9136 
+B_alt1 (expl.)  (6, 4, 8)   0.9040  0.9369   0.9633 
+B_alt2 (expl.)  (8, 6, 4)   0.9246  0.9658   0.8167 
+   Reading: the three single-mode retained fractions are DIFFERENT quantities from the joint reconstruction retained_energy above (the joint retention of a Kronecker projector is not the product of mode fractions).
+   Roles: the time mode summarises temporal smoothness/trend over the 24-h window (its spectrum decays smoothly, Fig 4), the station mode summarises spatial co-variation across the 12 sites (a dominant first component,
+   i.e. a city-wide common level), and the feature mode summarises the correlations among the 11 pollutants/meteorological variables.  Extra rank in a mode only buys the energy of that mode's next eigenvalues.
+
+Exploratory k=192 alternate rank allocations (ADDITIONAL experiments; reported, never used to pick a configuration) [MEASURED]:
+alloc   ranks      RRE_train  RRE_val   RRE_test  train bound slack
+------  ---------  ---------  --------  --------  -----------------
+B       (8, 4, 6)  0.434305   0.387971  0.399749  16.144%          
+B_alt1  (6, 4, 8)  0.408502   0.353845  0.370607  14.778%          
+B_alt2  (8, 6, 4)  0.504777   0.449601  0.464596  12.998%          
+   Allocation changes the retained information at fixed k, so rank allocation matters; since these were not pre-registered as selection candidates and no selection rule was applied, none is declared 'chosen'.
+   Any later adoption of an allocation should be decided on TRAIN/validation criteria in Phase 5 design, not on these test numbers.
+
+7. TRAIN CHECKS  [MEASURED]: HoSVD truncation bound (T3) and exact-PCA optimality (T4)
+--------------------------------------------------------------------------------------------------------------
+config  ranks     k    HoSVD SSE    bound=sum tails  slack    passed  PCA SSE      PCA sum discarded eig  |diff|    PCA<=HoSVD  PCA/HoSVD SSE
+------  --------  ---  -----------  ---------------  -------  ------  -----------  ---------------------  --------  ----------  -------------
+A       (4,3,4)   48   2.33766e+07  3.05627e+07      23.513%  True    1.29298e+07  1.29298e+07            3.73e-09  True        0.5531       
+B       (8,4,6)   192  1.43124e+07  1.70678e+07      16.144%  True    6.31086e+06  6.31086e+06            2.79e-09  True        0.4409       
+C       (12,8,6)  576  1.07106e+07  1.15746e+07      7.464%   True    2.00398e+06  2.00398e+06            4.66e-09  True        0.1871       
+B_alt1  (6,4,8)   192  1.26623e+07  1.48580e+07      14.778%  True    n/a          n/a                    n/a       n/a         n/a          
+B_alt2  (8,6,4)   192  1.93341e+07  2.22226e+07      12.998%  True    n/a          n/a                    n/a       n/a         n/a          
+   Declared tolerance: 7.588e-02 = 1e-09 x ||Z_train||_F^2 = 1e-09 x 7.587939e+07 (squared standardized units).
+   'slack' = (bound - empirical)/bound.  Both quantities are on the SAME squared-error scale (Fig 2).  The bound is TRAIN-specific.
+   PCA SSE vs the sum of discarded eigenvalues is the independent check that the explicit float64 residual matches the spectrum (T4/T5).
+   Projection identity (T1): max over ALL method/config/split rows of |SSE_explicit - (||Z||^2 - ||codes||^2)| / ||Z||^2 = 6.17e-15 (tolerance 1e-10).
+   RRE^2 + retained_energy - 1: max |.| = 6.66e-15.
+   Independent direct path (explicit projector/Kronecker basis, 64-sample subsets per split): max |reconstruction difference| = 3.91e-14; max SSE-shortcut relative gap = 4.54e-16.
+   Freeze/reload (fitted npz -> re-encode 512 validation rows vs exported F): max |diff| = 0.00e+00.
+
+8. STORAGE ACCOUNTING  [DERIVED arithmetic on declared dtypes; on-disk sizes MEASURED]
+--------------------------------------------------------------------------------------------------------------
+Definitions: feature_bytes = N*k*4 (float32 codes); model_bytes = mean (3168*8) + basis, basis float64 (8 bytes): PCA 3168*k*8; HoSVD (24 r_t + 12 r_s + 11 r_f)*8;
+total_estimated_bytes = feature_bytes + model_bytes; raw_logical_bytes = N*3168*4; effective_storage_ratio = raw/total; dimension_ratio = d/k.  Equal k is NOT equal storage.
+split       config  method  k    dim ratio d/k  model_bytes  feature_bytes  total_bytes  effective ratio
+----------  ------  ------  ---  -------------  -----------  -------------  -----------  ---------------
+train       A       hosvd   48   66.00          26752        4628736        4655488      65.621         
+validation  A       hosvd   48   66.00          26752        813888         840640       63.900         
+test        A       hosvd   48   66.00          26752        1098240        1124992      64.431         
+train       A       pca     48   66.00          1241856      4628736        5870592      52.038         
+validation  A       pca     48   66.00          1241856      813888         2055744      26.130         
+test        A       pca     48   66.00          1241856      1098240        2340096      30.975         
+train       B       hosvd   192  16.50          27792        18514944       18542736     16.475         
+validation  B       hosvd   192  16.50          27792        3255552        3283344      16.360         
+test        B       hosvd   192  16.50          27792        4392960        4420752      16.396         
+train       B       pca     192  16.50          4891392      18514944       23406336     13.052         
+validation  B       pca     192  16.50          4891392      3255552        8146944      6.593          
+test        B       pca     192  16.50          4891392      4392960        9284352      7.807          
+train       C       hosvd   576  5.50           28944        55544832       55573776     5.497          
+validation  C       hosvd   576  5.50           28944        9766656        9795600      5.484          
+test        C       hosvd   576  5.50           28944        13178880       13207824     5.488          
+train       C       pca     576  5.50           14623488     55544832       70168320     4.354          
+validation  C       pca     576  5.50           14623488     9766656        24390144     2.202          
+test        C       pca     576  5.50           14623488     13178880       27802368     2.607          
+   Note: per-split effective ratios include the one-time model bytes, so PCA's larger basis weighs more on the small validation/test splits; dimension_ratio d/k ignores model bytes entirely.
+   Excluded from this deployment-style accounting (training-only artifacts): flat Gram (80,289,792 B), full 3168x3168 PCA eigenbasis (80,289,792 B), mode Grams/full mode bases (small).
+   On-disk npz/ZIP sizes (see compression_storage.csv: actual_feature_file_bytes) reflect deflate on float data and are NOT the mathematical compression ratio.
+
+9. TIMING AND RESOURCES  [MEASURED; single run, single core -- timings vary between runs]
+--------------------------------------------------------------------------------------------------------------
+One-time fit (wall, shared by all configs of that method): PCA 9.94 s (mean pass + centering + flat Gram 4.48 s + eigh 5.08 s); HoSVD 1.54 s (mean pass + centering + mode Grams 1.16 s + three small eigh 0.0005 s).
+   Both Gram accumulations were done in the same streaming pass using separate per-operation timers; the shared mean pass and batch cast/centering are charged to both methods.
+   Note PCA's eigensolve is O(d^3) with d=3168 (dense), HoSVD's three eigensolves are on 24x24, 12x12, 11x11 matrices.
+config  method  split       transform s (median of 3)  inverse s (median of 3)  per-sample multiply-adds (derived, encode)
+------  ------  ----------  -------------------------  -----------------------  ------------------------------------------
+A       pca     train       0.5699                     0.5380                   152064                                    
+A       pca     validation  0.1163                     0.1014                   152064                                    
+A       pca     test        0.1416                     0.1415                   152064                                    
+A       hosvd   train       0.3843                     0.3539                   14784                                     
+A       hosvd   validation  0.0733                     0.0694                   14784                                     
+A       hosvd   test        0.0956                     0.0909                   14784                                     
+B       pca     train       0.9736                     0.7144                   608256                                    
+B       pca     validation  0.1417                     0.1180                   608256                                    
+B       pca     test        0.1968                     0.1860                   608256                                    
+B       hosvd   train       0.7786                     0.6069                   31680                                     
+B       hosvd   validation  0.1181                     0.1126                   31680                                     
+B       hosvd   test        0.2105                     0.1661                   31680                                     
+C       pca     train       1.7447                     1.6732                   1824768                                   
+C       pca     validation  0.3138                     0.2693                   1824768                                   
+C       pca     test        0.3763                     0.3701                   1824768                                   
+C       hosvd   train       0.7283                     0.5148                   57024                                     
+C       hosvd   validation  0.1710                     0.1457                   57024                                     
+C       hosvd   test        0.1986                     0.1581                   57024                                     
+   transform = cast + center + project + float32 cast for the whole split in batches; inverse = float32 codes -> float64 -> X_hat (adds M) -> float32.  Python/einsum overhead means measured ratios
+   are far smaller than the multiply-add ratios (derived column); neither is a claim about optimized production code.
+Peak resident memory (process high-water mark via resource.getrusage; cumulative, so later rows repeat it): 1540 MB (after Gram stage 881 MB; after fit 1540 MB).
+Total wall time 136.4 s.
+
+10. NUMERICAL DIAGNOSTICS AND REPRODUCIBILITY  [MEASURED]
+--------------------------------------------------------------------------------------------------------------
+Flat Gram eigensolve (scipy.linalg.eigh, full 3168 spectrum computed; spectrum CSV is COMPLETE): lambda min raw -6.800e-10, tolerance 1.600e-05, clipped 267 tiny negatives (sum |clipped| = 2.967e-09); no significantly negative eigenvalue (none < -tol).
+   sum(eigenvalues)/||Z||^2 relative difference 6.28e-15; Gram symmetry error 0.00e+00.
+Mode time: min eigenvalue 2.560e+05 (> 0, no clipping needed), trace vs ||Z||^2 rel diff 5.89e-15, Gram vs partial trace of flat Gram rel diff 8.83e-16
+Mode station: min eigenvalue 2.350e+05 (> 0, no clipping needed), trace vs ||Z||^2 rel diff 5.89e-15, Gram vs partial trace of flat Gram rel diff 1.02e-15
+Mode feature: min eigenvalue 5.373e+05 (> 0, no clipping needed), trace vs ||Z||^2 rel diff 6.09e-15, Gram vs partial trace of flat Gram rel diff 1.32e-15
+Subspace stability diagnostics ([MEASURED]; stability_diagnostics.csv, Fig 6).  'projector distance' = ||QQ^T - Q_altQ_alt^T||_F (maximum possible sqrt(2k)); boundary gap = (lambda_k - lambda_{k+1})/lambda_k.
+   Close-pair criterion: relative eigengap < 1e-06.  Pairs found inside any retained set or at any truncation boundary: 0; boundary-close flags: 0.
+object         config  dim  comparison           proj. distance  max angle (deg)  boundary rel. gap
+-------------  ------  ---  -------------------  --------------  ---------------  -----------------
+pca            A       48   scipy_vs_numpy_eigh  1.69e-07        4.00e-06         0.0041           
+pca            A       48   split_half           4.63e+00        8.99e+01         0.0041           
+hosvd_time     A       4    scipy_vs_numpy_eigh  5.96e-08        2.09e-06         0.3210           
+hosvd_time     A       4    split_half           1.68e-02        6.43e-01         0.3210           
+hosvd_station  A       3    scipy_vs_numpy_eigh  0.00e+00        1.48e-06         0.1611           
+hosvd_station  A       3    split_half           1.27e+00        6.19e+01         0.1611           
+hosvd_feature  A       4    scipy_vs_numpy_eigh  0.00e+00        8.54e-07         0.4242           
+hosvd_feature  A       4    split_half           5.58e-01        2.25e+01         0.4242           
+pca            B       192  scipy_vs_numpy_eigh  2.38e-07        2.59e-05         0.0055           
+pca            B       192  split_half           1.11e+01        9.00e+01         0.0055           
+hosvd_time     B       8    scipy_vs_numpy_eigh  1.03e-07        1.91e-06         0.1506           
+hosvd_time     B       8    split_half           5.68e-02        1.88e+00         0.1506           
+hosvd_station  B       4    scipy_vs_numpy_eigh  4.21e-08        1.48e-06         0.3730           
+hosvd_station  B       4    split_half           9.34e-01        3.95e+01         0.3730           
+hosvd_feature  B       6    scipy_vs_numpy_eigh  0.00e+00        1.48e-06         0.3718           
+hosvd_feature  B       6    split_half           5.70e-01        2.02e+01         0.3718           
+pca            C       576  scipy_vs_numpy_eigh  0.00e+00        3.80e-05         0.0018           
+pca            C       576  split_half           1.58e+01        8.99e+01         0.0018           
+hosvd_time     C       12   scipy_vs_numpy_eigh  1.19e-07        2.26e-06         0.0907           
+hosvd_time     C       12   split_half           1.13e-01        4.02e+00         0.0907           
+hosvd_station  C       8    scipy_vs_numpy_eigh  0.00e+00        1.48e-06         0.1253           
+hosvd_station  C       8    split_half           1.16e+00        4.85e+01         0.1253           
+hosvd_feature  C       6    scipy_vs_numpy_eigh  0.00e+00        1.48e-06         0.3718           
+hosvd_feature  C       6    split_half           5.70e-01        2.02e+01         0.3718           
+   scipy-vs-numpy rows: same Gram, two LAPACK paths -> solver-level numerical stability (distances ~1e-7 or below).
+   split-half rows: Gram from the first vs. second chronological half of TRAIN -> DATA sensitivity of the fitted subspace (a diagnostic, not a test).
+   For PCA the boundary relative eigengaps are only 0.18%-0.55% and the largest principal angle between the half-fitted subspaces is 89.9-90.0 deg:
+   some boundary directions are poorly determined by the data (the subspace is not stable under data perturbation) even though adjacent boundary directions carry almost equal energy (small eigengap), so swapping them changes train reconstruction error very little.
+Approximate-fallback cross-check at k=48 (randomized subspace iteration, seed 42, 6 iterations, oversample 20; additional diagnostic, NOT used for any result):
+   projector distance to exact 8.620e-01, max principal angle 36.47 deg, max relative eigenvalue error 3.672e-03,
+   max relative Ritz residual 2.900e-02, train SSE excess over the exact optimum 1.004e-04 (relative).
+   => the fallback reaches near-optimal reconstruction error with a visibly different (not converged) basis; this is why the fallback is labeled approximate and its optimality inequality is not enforced.
+Eigenvector sign normalization does not guarantee identical coordinates under (near-)repeated eigenvalues; no such pair was found at the evaluated truncation points under the declared criterion, but the split-half diagnostics above show the boundary subspaces can still be data-sensitive.  SHA-256 hashes of feature files are recorded for audit within this software environment only.
+
+11. INTERPRETATION AND CAVEATS
+--------------------------------------------------------------------------------------------------------------
+(a) Overlapping windows.  Consecutive 24-hour windows share 23 of 24 hours, so samples are strongly dependent: the effective sample size is much smaller than N, errors/metrics are weighted by repeated hours, and
+    no standard errors or confidence intervals are reported (they would need a block bootstrap, not done here).  Differences of a few thousandths in RRE should not be over-interpreted.
+(b) Units.  Reconstruction errors are in Phase-2 standardized units (per station-feature train z-scores); they are not ug/m^3 and not directly comparable across channels' physical importance.  Channels with
+    duplicated meteorology (Section 2) carry multiplicity weight in every Frobenius quantity.
+(c) Scope of optimality.  Exact PCA's optimality (T4) holds only for TRAIN reconstruction of the flattened centered training matrix.  On held-out splits PCA had the lower RRE in 6 of 6 (validation/test x config) comparisons [MEASURED]; that is an empirical observation, and the held-out PCA-minus-HoSVD gap is not guaranteed by T4.  The HoSVD bound (T3) uses TRAIN spectra and is not a held-out guarantee.
+(d) Train-fitted 4-way HoSVD with an uncompressed sample mode is equivalent to a Tucker-type model with identity sample factor; shared factors are fixed after training, so it is a frozen linear map for new windows.
+(e) HoSVD is a NON-optimal truncation (T3 only bounds it): successive/simultaneous mode projection is not the best multilinear rank-(r_t,r_s,r_f) approximation; no HOOI/ALS refinement was run (out of scope).
+(f) Lower reconstruction error is NOT evidence of better next-state classification.  Phase 5 owns accuracy, macro-F1, state-change recall, entry-into-high-state recall, calibrated probabilities, and paired comparison
+    against the Phase 3 Markov persistence baseline (~90.75% Scope-A test accuracy, 0 recall on true regime changes -- a figure quoted from the brief, not recomputed here).
+(g) Not done: any supervised model, kernel/RFF, Markov fusion, threshold tuning, or selection on test; no literature novelty claim is made.
+
+12. TESTS  [MEASURED]
+--------------------------------------------------------------------------------------------------------------
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /usr/bin/python3
+rootdir: /home/claude
+plugins: platformdirs-4.13.0
+collecting ... collected 52 items
+
+phase4_output/tests/test_phase4_transforms.py::test_A_contract_accepts_valid_and_reports_unknown_states PASSED [  1%]
+phase4_output/tests/test_phase4_transforms.py::test_A_contract_rejects_violations[<lambda>-dtype] PASSED [  3%]
+phase4_output/tests/test_phase4_transforms.py::test_A_contract_rejects_violations[<lambda>-non-finite] PASSED [  5%]
+phase4_output/tests/test_phase4_transforms.py::test_A_contract_rejects_violations[<lambda>-y outside] PASSED [  7%]
+phase4_output/tests/test_phase4_transforms.py::test_A_contract_rejects_violations[<lambda>-monotone] PASSED [  9%]
+phase4_output/tests/test_phase4_transforms.py::test_A_contract_rejects_violations[<lambda>-shape] PASSED [ 11%]
+phase4_output/tests/test_phase4_transforms.py::test_A_contract_rejects_violations[<lambda>-keys] PASSED [ 13%]
+phase4_output/tests/test_phase4_transforms.py::test_A_cross_split_overlap_and_order PASSED [ 15%]
+phase4_output/tests/test_phase4_transforms.py::test_A_real_inputs_counts_and_no_filtering PASSED [ 17%]
+phase4_output/tests/test_phase4_transforms.py::test_B_center_is_train_only_and_independent_of_other_splits PASSED [ 19%]
+phase4_output/tests/test_phase4_transforms.py::test_B_freeze_and_reload_reproduces_codes PASSED [ 21%]
+phase4_output/tests/test_phase4_transforms.py::test_B_real_center_matches_train_mean PASSED [ 23%]
+phase4_output/tests/test_phase4_transforms.py::test_C_orthonormality_shapes_finite PASSED [ 25%]
+phase4_output/tests/test_phase4_transforms.py::test_C_real_output_bases_orthonormal PASSED [ 26%]
+phase4_output/tests/test_phase4_transforms.py::test_D_sign_canonicalization_and_invariance PASSED [ 28%]
+phase4_output/tests/test_phase4_transforms.py::test_D_eigenvector_sign_invariance_of_coordinates_projection PASSED [ 30%]
+phase4_output/tests/test_phase4_transforms.py::test_D_close_eigenvalue_diagnostic_and_projector_stability PASSED [ 32%]
+phase4_output/tests/test_phase4_transforms.py::test_E_full_rank_roundtrip_is_exact PASSED [ 34%]
+phase4_output/tests/test_phase4_transforms.py::test_E_einsum_vs_direct_kronecker_and_core_order PASSED [ 36%]
+phase4_output/tests/test_phase4_transforms.py::test_E_subset_direct_checks PASSED [ 38%]
+phase4_output/tests/test_phase4_transforms.py::test_E_real_minibatch_forward_inverse PASSED [ 40%]
+phase4_output/tests/test_phase4_transforms.py::test_F_pca_train_sse_le_hosvd[ranks0] PASSED [ 42%]
+phase4_output/tests/test_phase4_transforms.py::test_F_pca_train_sse_le_hosvd[ranks1] PASSED [ 44%]
+phase4_output/tests/test_phase4_transforms.py::test_F_pca_train_sse_le_hosvd[ranks2] PASSED [ 46%]
+phase4_output/tests/test_phase4_transforms.py::test_F_pca_train_sse_le_hosvd[ranks3] PASSED [ 48%]
+phase4_output/tests/test_phase4_transforms.py::test_F_pca_train_sse_le_hosvd[ranks4] PASSED [ 50%]
+phase4_output/tests/test_phase4_transforms.py::test_F_real_output_optimality_flags PASSED [ 51%]
+phase4_output/tests/test_phase4_transforms.py::test_G_hosvd_train_bound_identity_and_three_term_decomposition[ranks0] PASSED [ 53%]
+phase4_output/tests/test_phase4_transforms.py::test_G_hosvd_train_bound_identity_and_three_term_decomposition[ranks1] PASSED [ 55%]
+phase4_output/tests/test_phase4_transforms.py::test_G_hosvd_train_bound_identity_and_three_term_decomposition[ranks2] PASSED [ 57%]
+phase4_output/tests/test_phase4_transforms.py::test_G_hosvd_train_bound_identity_and_three_term_decomposition[ranks3] PASSED [ 59%]
+phase4_output/tests/test_phase4_transforms.py::test_G_hosvd_train_bound_identity_and_three_term_decomposition[ranks4] PASSED [ 61%]
+phase4_output/tests/test_phase4_transforms.py::test_G_trace_identities PASSED [ 63%]
+phase4_output/tests/test_phase4_transforms.py::test_G_negative_eigenvalue_policy PASSED [ 65%]
+phase4_output/tests/test_phase4_transforms.py::test_G_real_bound_csv PASSED [ 67%]
+phase4_output/tests/test_phase4_transforms.py::test_H_metric_definitions PASSED [ 69%]
+phase4_output/tests/test_phase4_transforms.py::test_H_real_csv_identities PASSED [ 71%]
+phase4_output/tests/test_phase4_transforms.py::test_I_feature_file_contract_synthetic PASSED [ 73%]
+phase4_output/tests/test_phase4_transforms.py::test_I_real_feature_files_match_phase2_metadata PASSED [ 75%]
+phase4_output/tests/test_phase4_transforms.py::test_I_manifest_covers_every_completed_config_split_method PASSED [ 76%]
+phase4_output/tests/test_phase4_transforms.py::test_J_storage_arithmetic PASSED [ 78%]
+phase4_output/tests/test_phase4_transforms.py::test_J_real_storage_csv_matches_dtypes_on_disk PASSED [ 80%]
+phase4_output/tests/test_phase4_transforms.py::test_K_fit_primitives_take_only_train_and_ranks_are_declared PASSED [ 82%]
+phase4_output/tests/test_phase4_transforms.py::test_K_labels_never_used_in_fit PASSED [ 84%]
+phase4_output/tests/test_phase4_transforms.py::test_K_real_run_used_only_declared_configs PASSED [ 86%]
+phase4_output/tests/test_phase4_transforms.py::test_L_not_run_is_explicit_and_never_fabricated PASSED [ 88%]
+phase4_output/tests/test_phase4_transforms.py::test_L_solver_choice_never_silent PASSED [ 90%]
+phase4_output/tests/test_phase4_transforms.py::test_L_real_status_and_no_placeholder_rows PASSED [ 92%]
+phase4_output/tests/test_phase4_transforms.py::test_L_randomized_fallback_recovers_top_subspace_and_is_labeled PASSED [ 94%]
+phase4_output/tests/test_phase4_transforms.py::test_M_toy_pca_2x2 PASSED [ 96%]
+phase4_output/tests/test_phase4_transforms.py::test_M_toy_hosvd_2x2x2 PASSED [ 98%]
+phase4_output/tests/test_phase4_transforms.py::test_end_to_end_smoke_on_synthetic_phase2_dir PASSED [100%]
+
+============================= 52 passed in 26.88s ==============================
+   (A test suite is evidence, not a formal proof.  Skipped tests, if any, are listed with reasons above.)
+
+13. FILE LIST AND REGENERATION
+--------------------------------------------------------------------------------------------------------------
+   PHASE4_RESULTS_AND_MATH.txt                               43929 B
+   README.md                                                  2087 B
+   compression_storage.csv                                    3383 B
+   execution.log                                             13705 B
+   features_test_hosvd_A.npz                               1080301 B
+   features_test_hosvd_B.npz                               4182306 B
+   features_test_hosvd_B_alt1.npz                          4175903 B
+   features_test_hosvd_B_alt2.npz                          4188340 B
+   features_test_hosvd_C.npz                              12454802 B
+   features_test_pca_A.npz                                 1073072 B
+   features_test_pca_B.npz                                 4156837 B
+   features_test_pca_C.npz                                12347140 B
+   features_train_hosvd_A.npz                              4549080 B
+   features_train_hosvd_B.npz                             17621559 B
+   features_train_hosvd_B_alt1.npz                        17597982 B
+   features_train_hosvd_B_alt2.npz                        17650608 B
+   features_train_hosvd_C.npz                             52469652 B
+   features_train_pca_A.npz                                4515099 B
+   features_train_pca_B.npz                               17517030 B
+   features_train_pca_C.npz                               52051813 B
+   features_validation_hosvd_A.npz                          800664 B
+   features_validation_hosvd_B.npz                         3099031 B
+   features_validation_hosvd_B_alt1.npz                    3094611 B
+   features_validation_hosvd_B_alt2.npz                    3104060 B
+   features_validation_hosvd_C.npz                         9228604 B
+   features_validation_pca_A.npz                            794986 B
+   features_validation_pca_B.npz                           3079780 B
+   features_validation_pca_C.npz                           9150920 B
+   fitted_center_and_factors.npz                             52808 B
+   fitted_pca_basis_192.npz                                4895048 B
+   fitted_pca_basis_48.npz                                 1244360 B
+   fitted_pca_basis_576.npz                               14630216 B
+   hosvd_mode_spectra.csv                                     5883 B
+   hosvd_truncation_bound.csv                                 1718 B
+   pca_components_spectrum.csv                              536980 B
+   pca_hosvd_comparison.csv                                  16040 B
+   pca_k_energy_summary.csv                                   1004 B
+   phase4_feature_manifest.csv                                5497 B
+   phase4_metadata.json                                      18667 B
+   phase4_pca_hosvd.py                                      114646 B
+   phase4_run_status.csv                                       126 B
+   pytest_results.txt                                         5829 B
+   requirements.txt                                            171 B
+   stability_diagnostics.csv                                  5728 B
+   figures/: fig1_error_vs_dimension.png, fig2_train_hosvd_error_bound.png, fig3_storage_vs_dimension.png, fig4_mode_singular_spectra.png, fig5_pca_spectrum.png, fig6_subspace_stability.png
+   (feature NPZ hashes: phase4_feature_manifest.csv; every row metadata_alignment_passed=True)
+Regenerate everything from the Phase 2 ZIP (run from the folder that contains phase4_output/):
+   pip install -r phase4_output/requirements.txt
+   python phase4_output/phase4_pca_hosvd.py --phase2-zip Air_Pollution_Phase2_Processed_Data.zip --output phase4_output --seed 42 --configs A,B,C,B_alt1,B_alt2
+   PHASE2_DIR=<extracted phase2_output> python -m pytest -rs -v phase4_output/tests | tee phase4_output/pytest_results.txt
+   python phase4_output/phase4_pca_hosvd.py --output phase4_output --finalize     # rewrites this report, README and the results ZIP
+
+14. IMPLEMENTATION-STATUS SUMMARY
+--------------------------------------------------------------------------------------------------------------
+Completed: A, B, C, B_alt1, B_alt2.  Not run: none.  PCA solver: exact-gram.
+Blockers: none for Phase 4 execution.  This report and all artifacts await independent audit before Phase 5.

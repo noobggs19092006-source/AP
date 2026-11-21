@@ -1,0 +1,23 @@
+{
+  "purpose": "remediation re-check that the supplied inputs are byte-identical to those used in the original gate run",
+  "original_gate": {
+    "files_hashed": 39
+  },
+  "rerun_gate": {
+    "files_hashed": 43,
+    "gate_passed": true,
+    "checks_passed": 210,
+    "checks_failed": 0,
+    "timestamp_utc": "2026-11-15T14:20:23Z"
+  },
+  "common_files": 39,
+  "sha256_mismatches": [],
+  "only_in_original": [],
+  "only_in_rerun_not_phase2_4_inputs": [
+    ".DS_Store",
+    "README.md",
+    "phase5_run.py",
+    "requirements.txt"
+  ],
+  "note": "original provenance 'path' fields hold the author's absolute local paths (recorded data, not used by code)"
+}

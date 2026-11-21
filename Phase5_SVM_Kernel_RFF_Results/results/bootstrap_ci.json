@@ -1,0 +1,662 @@
+{
+  "utc": "2026-11-15T14:18:03+00:00",
+  "note": "Test-set sampling uncertainty only (blocks of real time, resampled with replacement, same blocks for both models). Does NOT include training-set variability or RFF seed variability. Intervals are percentile 95%; 'includes zero' is reported literally and no significance test is implied.",
+  "superseded_original_artifact": {
+    "file": "superseded_pre_audit/results/bootstrap_ci.json",
+    "block_definition": "24 consecutive ROW-INDEX blocks (239 blocks)",
+    "transition_f1_diff_ci95": [
+      -0.016990757526236775,
+      0.03157133184105412
+    ]
+  },
+  "runs": {
+    "block_24h": {
+      "block_hours": 24,
+      "n_blocks": 242,
+      "n_boot": 1000,
+      "seed": 42,
+      "n_rows": 5720,
+      "pairs": {
+        "linear_pca_B - linear_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7613962694006734,
+            "observed_b": 0.7326948959799789,
+            "observed_diff_a_minus_b": 0.028701373420694454,
+            "ci95": [
+              0.004515266972549981,
+              0.05125148682694349
+            ],
+            "se": 0.012248690309801826,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.36314363143631434,
+            "observed_b": 0.3555003107520199,
+            "observed_diff_a_minus_b": 0.007643320684294463,
+            "ci95": [
+              -0.017180451551031622,
+              0.03372990153856763
+            ],
+            "se": 0.01306788310227323,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3737957610789981,
+            "observed_b": 0.3218045112781954,
+            "observed_diff_a_minus_b": 0.051991249800802664,
+            "ci95": [
+              0.010809541214435062,
+              0.09477867785500198
+            ],
+            "se": 0.021318015646619608,
+            "ci_includes_zero": false
+          }
+        },
+        "revised_rff_pca_B - revised_rff_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7404839832069977,
+            "observed_b": 0.7394841082142043,
+            "observed_diff_a_minus_b": 0.0009998749927934147,
+            "ci95": [
+              -0.020143821495868013,
+              0.01916186507404914
+            ],
+            "se": 0.009852301299965009,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.3386114494518879,
+            "observed_b": 0.33493975903614454,
+            "observed_diff_a_minus_b": 0.0036716904157433894,
+            "ci95": [
+              -0.019552766655733043,
+              0.026320648961666034
+            ],
+            "se": 0.011529721040486454,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3444639718804921,
+            "observed_b": 0.293015332197615,
+            "observed_diff_a_minus_b": 0.051448639682877106,
+            "ci95": [
+              0.007383486192649714,
+              0.09444981736229621
+            ],
+            "se": 0.02190969213469329,
+            "ci_includes_zero": false
+          }
+        },
+        "linear_pca_B - revised_rff_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.7613962694006734,
+            "observed_b": 0.7404839832069977,
+            "observed_diff_a_minus_b": 0.02091228619367569,
+            "ci95": [
+              0.003717930593918131,
+              0.03993124402494541
+            ],
+            "se": 0.009039266019905396,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.36314363143631434,
+            "observed_b": 0.3386114494518879,
+            "observed_diff_a_minus_b": 0.024532181984426416,
+            "ci95": [
+              0.003192240845911827,
+              0.04704577066691114
+            ],
+            "se": 0.011427990757358168,
+            "ci_includes_zero": false
+          },
+          "high_f1": {
+            "observed_a": 0.3737957610789981,
+            "observed_b": 0.3444639718804921,
+            "observed_diff_a_minus_b": 0.029331789198505986,
+            "ci95": [
+              -0.006773596964334559,
+              0.06465186252153501
+            ],
+            "se": 0.0175700610763909,
+            "ci_includes_zero": true
+          }
+        },
+        "linear_hosvd_B - revised_rff_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7326948959799789,
+            "observed_b": 0.7394841082142043,
+            "observed_diff_a_minus_b": -0.00678921223422535,
+            "ci95": [
+              -0.024711940132483536,
+              0.010149422130792127
+            ],
+            "se": 0.008877943553949195,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.3555003107520199,
+            "observed_b": 0.33493975903614454,
+            "observed_diff_a_minus_b": 0.02056055171587534,
+            "ci95": [
+              3.4740049220717924e-05,
+              0.04196898574641678
+            ],
+            "se": 0.010567857245129177,
+            "ci_includes_zero": false
+          },
+          "high_f1": {
+            "observed_a": 0.3218045112781954,
+            "observed_b": 0.293015332197615,
+            "observed_diff_a_minus_b": 0.02878917908058043,
+            "ci95": [
+              -0.001745305961939589,
+              0.060871831327773886
+            ],
+            "se": 0.015594211714181131,
+            "ci_includes_zero": true
+          }
+        },
+        "stageB_pca_B - stageB_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7373189743984291,
+            "observed_b": 0.7594555549384735,
+            "observed_diff_a_minus_b": -0.022136580540044415,
+            "ci95": [
+              -0.044472620559902226,
+              -0.0029467543426309807
+            ],
+            "se": 0.010475798250613148,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.336866902237927,
+            "observed_b": 0.34218653489808526,
+            "observed_diff_a_minus_b": -0.00531963266015828,
+            "ci95": [
+              -0.029792623013354377,
+              0.017096171665492876
+            ],
+            "se": 0.012996126962076048,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3910386965376782,
+            "observed_b": 0.3449612403100775,
+            "observed_diff_a_minus_b": 0.04607745622760068,
+            "ci95": [
+              -0.00047164170201171896,
+              0.0923017162795491
+            ],
+            "se": 0.02378912309612757,
+            "ci_includes_zero": true
+          }
+        },
+        "revised_rff_pca_B - stageB_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.7404839832069977,
+            "observed_b": 0.7373189743984291,
+            "observed_diff_a_minus_b": 0.0031650088085686257,
+            "ci95": [
+              -0.014205663109481199,
+              0.020489081179664095
+            ],
+            "se": 0.00879601689127637,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.3386114494518879,
+            "observed_b": 0.336866902237927,
+            "observed_diff_a_minus_b": 0.0017445472139609453,
+            "ci95": [
+              -0.022125290374086098,
+              0.0238042245431665
+            ],
+            "se": 0.011685815906937628,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3444639718804921,
+            "observed_b": 0.3910386965376782,
+            "observed_diff_a_minus_b": -0.046574724657186095,
+            "ci95": [
+              -0.08863156791051886,
+              -0.003380038653557635
+            ],
+            "se": 0.02169827461849952,
+            "ci_includes_zero": false
+          }
+        },
+        "stageB_full_pca_B - stageB_full_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.8100996434425306,
+            "observed_b": 0.8112249350972561,
+            "observed_diff_a_minus_b": -0.0011252916547255243,
+            "ci95": [
+              -0.01725214329346646,
+              0.014196135678520528
+            ],
+            "se": 0.007995800664824894,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.37219406227371477,
+            "observed_b": 0.37323943661971837,
+            "observed_diff_a_minus_b": -0.0010453743460036025,
+            "ci95": [
+              -0.028632733350158514,
+              0.02883876491509335
+            ],
+            "se": 0.014848458861822495,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.38274932614555257,
+            "observed_b": 0.3591022443890274,
+            "observed_diff_a_minus_b": 0.02364708175652519,
+            "ci95": [
+              -0.0341167397692183,
+              0.08126337571742646
+            ],
+            "se": 0.028334850798152504,
+            "ci_includes_zero": true
+          }
+        },
+        "stageB_full_pca_B - revised_rff_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.8100996434425306,
+            "observed_b": 0.7404839832069977,
+            "observed_diff_a_minus_b": 0.0696156602355329,
+            "ci95": [
+              0.05250243032961408,
+              0.08984449281024591
+            ],
+            "se": 0.009734348304926515,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.37219406227371477,
+            "observed_b": 0.3386114494518879,
+            "observed_diff_a_minus_b": 0.03358261282182684,
+            "ci95": [
+              0.007260145712574951,
+              0.06400979995477928
+            ],
+            "se": 0.014412555807512684,
+            "ci_includes_zero": false
+          },
+          "high_f1": {
+            "observed_a": 0.38274932614555257,
+            "observed_b": 0.3444639718804921,
+            "observed_diff_a_minus_b": 0.03828535426506047,
+            "ci95": [
+              -0.008896232647841304,
+              0.08678638465609333
+            ],
+            "se": 0.024254944261792054,
+            "ci_includes_zero": true
+          }
+        },
+        "stageB_full_pca_B - linear_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.8100996434425306,
+            "observed_b": 0.7613962694006734,
+            "observed_diff_a_minus_b": 0.048703374041857206,
+            "ci95": [
+              0.02719566573413913,
+              0.0705358910921371
+            ],
+            "se": 0.011044319967511094,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.37219406227371477,
+            "observed_b": 0.36314363143631434,
+            "observed_diff_a_minus_b": 0.009050430837400425,
+            "ci95": [
+              -0.023405685562943923,
+              0.041733649363392064
+            ],
+            "se": 0.01660825145505968,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.38274932614555257,
+            "observed_b": 0.3737957610789981,
+            "observed_diff_a_minus_b": 0.00895356506655448,
+            "ci95": [
+              -0.029737477496558338,
+              0.0469711835536048
+            ],
+            "se": 0.02010042386447944,
+            "ci_includes_zero": true
+          }
+        }
+      }
+    },
+    "block_168h": {
+      "block_hours": 168,
+      "n_blocks": 35,
+      "n_boot": 1000,
+      "seed": 42,
+      "n_rows": 5720,
+      "pairs": {
+        "linear_pca_B - linear_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7613962694006734,
+            "observed_b": 0.7326948959799789,
+            "observed_diff_a_minus_b": 0.028701373420694454,
+            "ci95": [
+              0.0038770664674880107,
+              0.05162446889759465
+            ],
+            "se": 0.012447584741613386,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.36314363143631434,
+            "observed_b": 0.3555003107520199,
+            "observed_diff_a_minus_b": 0.007643320684294463,
+            "ci95": [
+              -0.017172039899855683,
+              0.031547436587613914
+            ],
+            "se": 0.012280843335613564,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3737957610789981,
+            "observed_b": 0.3218045112781954,
+            "observed_diff_a_minus_b": 0.051991249800802664,
+            "ci95": [
+              0.011183704991321505,
+              0.09637740410534387
+            ],
+            "se": 0.02148122278332364,
+            "ci_includes_zero": false
+          }
+        },
+        "revised_rff_pca_B - revised_rff_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7404839832069977,
+            "observed_b": 0.7394841082142043,
+            "observed_diff_a_minus_b": 0.0009998749927934147,
+            "ci95": [
+              -0.01976412059087957,
+              0.02050238030655704
+            ],
+            "se": 0.010457227351069815,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.3386114494518879,
+            "observed_b": 0.33493975903614454,
+            "observed_diff_a_minus_b": 0.0036716904157433894,
+            "ci95": [
+              -0.02182249541142644,
+              0.027945847156698574
+            ],
+            "se": 0.012746548388276135,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3444639718804921,
+            "observed_b": 0.293015332197615,
+            "observed_diff_a_minus_b": 0.051448639682877106,
+            "ci95": [
+              0.01769106725578843,
+              0.08285113395928881
+            ],
+            "se": 0.016821678752466346,
+            "ci_includes_zero": false
+          }
+        },
+        "linear_pca_B - revised_rff_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.7613962694006734,
+            "observed_b": 0.7404839832069977,
+            "observed_diff_a_minus_b": 0.02091228619367569,
+            "ci95": [
+              -0.0009221417720027766,
+              0.043719611175929
+            ],
+            "se": 0.011256924478195483,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.36314363143631434,
+            "observed_b": 0.3386114494518879,
+            "observed_diff_a_minus_b": 0.024532181984426416,
+            "ci95": [
+              0.000268334001232053,
+              0.052065148058904935
+            ],
+            "se": 0.01314655100127763,
+            "ci_includes_zero": false
+          },
+          "high_f1": {
+            "observed_a": 0.3737957610789981,
+            "observed_b": 0.3444639718804921,
+            "observed_diff_a_minus_b": 0.029331789198505986,
+            "ci95": [
+              -0.0029348634970952315,
+              0.06183496715290395
+            ],
+            "se": 0.01660432147185159,
+            "ci_includes_zero": true
+          }
+        },
+        "linear_hosvd_B - revised_rff_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7326948959799789,
+            "observed_b": 0.7394841082142043,
+            "observed_diff_a_minus_b": -0.00678921223422535,
+            "ci95": [
+              -0.02829803948750072,
+              0.012831066212644028
+            ],
+            "se": 0.010311372380627048,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.3555003107520199,
+            "observed_b": 0.33493975903614454,
+            "observed_diff_a_minus_b": 0.02056055171587534,
+            "ci95": [
+              -0.0010693758582951496,
+              0.04433818759351974
+            ],
+            "se": 0.011544065162262708,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3218045112781954,
+            "observed_b": 0.293015332197615,
+            "observed_diff_a_minus_b": 0.02878917908058043,
+            "ci95": [
+              -0.009182213648495238,
+              0.06300977524054326
+            ],
+            "se": 0.018195960534070493,
+            "ci_includes_zero": true
+          }
+        },
+        "stageB_pca_B - stageB_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.7373189743984291,
+            "observed_b": 0.7594555549384735,
+            "observed_diff_a_minus_b": -0.022136580540044415,
+            "ci95": [
+              -0.04616657127020436,
+              -0.0006497238382378297
+            ],
+            "se": 0.011667618501790914,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.336866902237927,
+            "observed_b": 0.34218653489808526,
+            "observed_diff_a_minus_b": -0.00531963266015828,
+            "ci95": [
+              -0.037485853587416997,
+              0.02046311038832433
+            ],
+            "se": 0.014943179586966287,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3910386965376782,
+            "observed_b": 0.3449612403100775,
+            "observed_diff_a_minus_b": 0.04607745622760068,
+            "ci95": [
+              0.00556991843212684,
+              0.08189190265318524
+            ],
+            "se": 0.01940071740081743,
+            "ci_includes_zero": false
+          }
+        },
+        "revised_rff_pca_B - stageB_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.7404839832069977,
+            "observed_b": 0.7373189743984291,
+            "observed_diff_a_minus_b": 0.0031650088085686257,
+            "ci95": [
+              -0.018530196711214662,
+              0.026571901180500564
+            ],
+            "se": 0.011750033587647295,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.3386114494518879,
+            "observed_b": 0.336866902237927,
+            "observed_diff_a_minus_b": 0.0017445472139609453,
+            "ci95": [
+              -0.020034542279442718,
+              0.02443522088689983
+            ],
+            "se": 0.011625014752146168,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.3444639718804921,
+            "observed_b": 0.3910386965376782,
+            "observed_diff_a_minus_b": -0.046574724657186095,
+            "ci95": [
+              -0.08615980841815626,
+              -0.007939574722125826
+            ],
+            "se": 0.019917013731182504,
+            "ci_includes_zero": false
+          }
+        },
+        "stageB_full_pca_B - stageB_full_hosvd_B": {
+          "macro_f1": {
+            "observed_a": 0.8100996434425306,
+            "observed_b": 0.8112249350972561,
+            "observed_diff_a_minus_b": -0.0011252916547255243,
+            "ci95": [
+              -0.01836815943873732,
+              0.014905837037304623
+            ],
+            "se": 0.008559225101428137,
+            "ci_includes_zero": true
+          },
+          "trans_f1": {
+            "observed_a": 0.37219406227371477,
+            "observed_b": 0.37323943661971837,
+            "observed_diff_a_minus_b": -0.0010453743460036025,
+            "ci95": [
+              -0.03157676590910149,
+              0.03179836691322564
+            ],
+            "se": 0.01624771457301423,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.38274932614555257,
+            "observed_b": 0.3591022443890274,
+            "observed_diff_a_minus_b": 0.02364708175652519,
+            "ci95": [
+              -0.019403342965408972,
+              0.0680022009402925
+            ],
+            "se": 0.021742480828365565,
+            "ci_includes_zero": true
+          }
+        },
+        "stageB_full_pca_B - revised_rff_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.8100996434425306,
+            "observed_b": 0.7404839832069977,
+            "observed_diff_a_minus_b": 0.0696156602355329,
+            "ci95": [
+              0.04746998697957171,
+              0.09206671836952388
+            ],
+            "se": 0.011815653198807499,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.37219406227371477,
+            "observed_b": 0.3386114494518879,
+            "observed_diff_a_minus_b": 0.03358261282182684,
+            "ci95": [
+              0.005460090609854206,
+              0.06330042081012464
+            ],
+            "se": 0.01490969630531799,
+            "ci_includes_zero": false
+          },
+          "high_f1": {
+            "observed_a": 0.38274932614555257,
+            "observed_b": 0.3444639718804921,
+            "observed_diff_a_minus_b": 0.03828535426506047,
+            "ci95": [
+              -0.018425886041712528,
+              0.08996664676042858
+            ],
+            "se": 0.027789264928476744,
+            "ci_includes_zero": true
+          }
+        },
+        "stageB_full_pca_B - linear_pca_B": {
+          "macro_f1": {
+            "observed_a": 0.8100996434425306,
+            "observed_b": 0.7613962694006734,
+            "observed_diff_a_minus_b": 0.048703374041857206,
+            "ci95": [
+              0.02326892551357726,
+              0.07477811550175756
+            ],
+            "se": 0.013567431960921918,
+            "ci_includes_zero": false
+          },
+          "trans_f1": {
+            "observed_a": 0.37219406227371477,
+            "observed_b": 0.36314363143631434,
+            "observed_diff_a_minus_b": 0.009050430837400425,
+            "ci95": [
+              -0.02168363080213915,
+              0.04201568143928411
+            ],
+            "se": 0.015915649821849197,
+            "ci_includes_zero": true
+          },
+          "high_f1": {
+            "observed_a": 0.38274932614555257,
+            "observed_b": 0.3737957610789981,
+            "observed_diff_a_minus_b": 0.00895356506655448,
+            "ci95": [
+              -0.03537669283178202,
+              0.05132370974787173
+            ],
+            "se": 0.022913071471141338,
+            "ci_includes_zero": true
+          }
+        }
+      }
+    }
+  }
+}

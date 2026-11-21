@@ -1,0 +1,126 @@
+{
+  "inputs": {
+    "train_windows.npz": {
+      "sha256": "411e8bd22720ccb5948e5b8dee3719f24238623a4e0dbfbaff3bc17a0cd8bd0a",
+      "X_shape": [
+        24108,
+        24,
+        12,
+        11
+      ]
+    },
+    "validation_windows.npz": {
+      "sha256": "f39b67a5fe098abda2635282ca8b975b5e7e5cf82c149d7fe125f4c0145d0f8e",
+      "X_shape": [
+        4239,
+        24,
+        12,
+        11
+      ]
+    },
+    "test_windows.npz": {
+      "sha256": "dd62d084edb1d1ba20b12dc1b81c74b0bcf3a986d5d34fa8f5f8d290fa2b7705",
+      "X_shape": [
+        5720,
+        24,
+        12,
+        11
+      ]
+    }
+  },
+  "phase2_summary_sha256": "aaf4c3096867bfc788ca9791e36c6176e4d5276dc5b5a95fae864cd7d21030ff",
+  "split_checks": {
+    "train": {
+      "n_total": 24108,
+      "n_observed_current": 23976,
+      "n_missing_current": 132,
+      "observation_coverage_pct": 99.45246391239422,
+      "label_counts": [
+        7872,
+        5832,
+        10404
+      ]
+    },
+    "validation": {
+      "n_total": 4239,
+      "n_observed_current": 4197,
+      "n_missing_current": 42,
+      "observation_coverage_pct": 99.00920028308563,
+      "label_counts": [
+        1848,
+        1114,
+        1277
+      ]
+    },
+    "test": {
+      "n_total": 5720,
+      "n_observed_current": 5685,
+      "n_missing_current": 35,
+      "observation_coverage_pct": 99.3881118881119,
+      "label_counts": [
+        2142,
+        1202,
+        2376
+      ]
+    },
+    "split_isolation": {
+      "train": {
+        "first_target": "2013-03-02T00:00:00.000000000",
+        "last_target": "2015-12-31T23:00:00.000000000"
+      },
+      "validation": {
+        "first_target": "2016-01-02T00:00:00.000000000",
+        "last_target": "2016-06-30T23:00:00.000000000"
+      },
+      "test": {
+        "first_target": "2016-07-02T00:00:00.000000000",
+        "last_target": "2017-02-28T23:00:00.000000000"
+      }
+    }
+  },
+  "seed": 42,
+  "rng_used": false,
+  "rules": {
+    "state_thresholds_ug_m3": {
+      "low": "<35",
+      "moderate": "[35,75)",
+      "high": ">=75"
+    },
+    "markov_tie_break": "i in argmax set -> i else min(argmax set); exact integer-count equality",
+    "missing_current_fallback": "train majority label / train label prior",
+    "train_prior_source": "all 24,108 train y labels",
+    "transition_counts_source": "23,976 train pairs with observed current_state",
+    "log_loss_eps": 1e-12,
+    "laplace_alpha_adequacy": 1.0,
+    "brier": "unnormalised sum over 3 classes, mean over rows",
+    "balanced_accuracy": "mean recall over classes with support>0; n classes reported"
+  },
+  "P_sha256": {
+    "after_fit": "30c8455c11cf68bf1e133f1830f9753fa193d7ac1578f390472d00ab03c4b395",
+    "after_evaluation_all_splits": "30c8455c11cf68bf1e133f1830f9753fa193d7ac1578f390472d00ab03c4b395",
+    "after_diagnostics": "30c8455c11cf68bf1e133f1830f9753fa193d7ac1578f390472d00ab03c4b395"
+  },
+  "P_unchanged_across_stages": true,
+  "timing": {
+    "fit_seconds": {
+      "majority": 5.037000001095748e-05,
+      "persistence": 0.0,
+      "markov": 0.0001762210000038067
+    },
+    "timing_repeats": 25,
+    "warmup": 2,
+    "statistic": "median of batched calls (hard labels + probability rows)",
+    "total_run_seconds": 3.4486374239999975
+  },
+  "environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "platform": "Linux-6.18.44-fc-v470-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "machine": "x86_64",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "scipy": "1.18.1",
+    "sklearn": "1.9.1",
+    "matplotlib": "3.11.2"
+  }
+}

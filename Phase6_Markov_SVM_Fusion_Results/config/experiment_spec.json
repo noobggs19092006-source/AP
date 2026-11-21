@@ -1,0 +1,119 @@
+{
+  "dataset": "UCI Beijing Multi-Site Air Quality (PRSA)",
+  "stations": 12,
+  "channels": 11,
+  "window_hours": 24,
+  "target": "Next-hour PM2.5 state at Aotizhongxin (0: Low <35, 1: Moderate 35-74, 2: High >=75)",
+  "splits": {
+    "train": 24108,
+    "validation": 4239,
+    "test": 5720
+  },
+  "scope_a_counts": {
+    "train": 23976,
+    "validation": 4197,
+    "test": 5685
+  },
+  "primary_selection_objective": "J = 0.5 * MacroF1_ScopeA + 0.5 * ChangeF1_ScopeA",
+  "logloss_eps": 1e-12,
+  "random_seed": 42,
+  "bootstrap": {
+    "block_length_hours": 24,
+    "n_resamples": 1000,
+    "confidence_level": 0.95
+  },
+  "candidate_models": [
+    {
+      "model_id": "linear_pca_B",
+      "config_id": "pca_B",
+      "model_type": "linear",
+      "calibrated": true,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_linear_pca_B.pkl",
+      "source_calibrator": "Phase5_SVM_Kernel_RFF_Results/models/calibrator_linear_pca_B.pkl",
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_pca_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "linear_hosvd_B",
+      "config_id": "hosvd_B",
+      "model_type": "linear",
+      "calibrated": true,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_linear_hosvd_B.pkl",
+      "source_calibrator": "Phase5_SVM_Kernel_RFF_Results/models/calibrator_linear_hosvd_B.pkl",
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_hosvd_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "linear_best_overall",
+      "config_id": "pca_C",
+      "model_type": "linear",
+      "calibrated": true,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_linear_best_overall.pkl",
+      "source_calibrator": "Phase5_SVM_Kernel_RFF_Results/models/calibrator_linear_best_overall.pkl",
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_pca_C.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "revised_rff_pca_B",
+      "config_id": "pca_B",
+      "model_type": "rff",
+      "calibrated": true,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_revised_rff_pca_B.pkl",
+      "source_calibrator": "Phase5_SVM_Kernel_RFF_Results/models/calibrator_revised_rff_pca_B.pkl",
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_pca_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "revised_rff_hosvd_B",
+      "config_id": "hosvd_B",
+      "model_type": "rff",
+      "calibrated": true,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_revised_rff_hosvd_B.pkl",
+      "source_calibrator": "Phase5_SVM_Kernel_RFF_Results/models/calibrator_revised_rff_hosvd_B.pkl",
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_hosvd_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "rff_pca_B",
+      "config_id": "pca_B",
+      "model_type": "rff_unrevised",
+      "calibrated": true,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_rff_pca_B.pkl",
+      "source_calibrator": "Phase5_SVM_Kernel_RFF_Results/models/calibrator_rff_pca_B.pkl",
+      "source_mapping": "Phase5_SVM_Kernel_RFF_Results/models/rff_mapping_revised_pca_B_D2048_s44.npz",
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_pca_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "rff_hosvd_B",
+      "config_id": "hosvd_B",
+      "model_type": "rff_unrevised",
+      "calibrated": true,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_rff_hosvd_B.pkl",
+      "source_calibrator": "Phase5_SVM_Kernel_RFF_Results/models/calibrator_rff_hosvd_B.pkl",
+      "source_mapping": "Phase5_SVM_Kernel_RFF_Results/models/rff_mapping_revised_hosvd_B_D2048_s44.npz",
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_hosvd_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "stageB_full_pca_B",
+      "config_id": "pca_B",
+      "model_type": "exact_rbf",
+      "calibrated": false,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_stageB_full_pca_B.pkl",
+      "source_calibrator": null,
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_pca_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    },
+    {
+      "model_id": "stageB_full_hosvd_B",
+      "config_id": "hosvd_B",
+      "model_type": "exact_rbf",
+      "calibrated": false,
+      "source_model": "Phase5_SVM_Kernel_RFF_Results/models/final_stageB_full_hosvd_B.pkl",
+      "source_calibrator": null,
+      "scaler": "Phase5_SVM_Kernel_RFF_Results/models/scaler_hosvd_B.npz",
+      "feature_file_prefix": "phase4_output/features_"
+    }
+  ]
+}

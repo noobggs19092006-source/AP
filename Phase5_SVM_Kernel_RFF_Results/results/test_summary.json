@@ -1,0 +1,10 @@
+{
+  "command": "/usr/bin/python -m pytest /home/claude/w/pkg/tests -v -rs --tb=short --junitxml=/home/claude/w/pkg/logs/pytest_junit.xml --output-dir /home/claude/w/pkg --input-dir /home/claude/w/Phase_5_Input_FIles/Phase 5 Input FIles",
+  "returncode": 0,
+  "total": 66,
+  "passed": 66,
+  "failed": 0,
+  "skipped": 0,
+  "skipped_tests": [],
+  "seconds": 11.3
+}

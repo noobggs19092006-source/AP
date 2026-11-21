@@ -1,0 +1,67 @@
+{
+  "C_grid_stage_a": [
+    0.01,
+    0.1,
+    1,
+    10,
+    100
+  ],
+  "stage_b": {
+    "gamma_scale_a": [
+      0.1,
+      1,
+      10
+    ],
+    "gamma": "a/192",
+    "C": [
+      0.1,
+      1,
+      10
+    ],
+    "fit_n": [
+      4000,
+      8000
+    ],
+    "subset": "systematic temporal blocks of 100 rows, evenly spaced, identical rows for both representations"
+  },
+  "stage_c": {
+    "D": [
+      256,
+      1024,
+      2048
+    ],
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "coarse_tuning": "a in {0.1,1,10}, C in {0.01,0.1,1,10} at D=1024 seed 42",
+    "linear_solver": "LinearSVC squared_hinge ovr dual=False max_iter=5000 random_state=42"
+  },
+  "calibration": {
+    "split": "chronological first 80% of TRAIN fits base; last 20% tail fits multinomial LR (C=1, lbfgs)",
+    "eps_logloss": 1e-12,
+    "class_order": [
+      0,
+      1,
+      2
+    ]
+  },
+  "bootstrap": {
+    "n": 1000,
+    "seed": 42,
+    "blocks_hours": [
+      24,
+      168
+    ],
+    "block_definition": "calendar blocks from real target_timestamp"
+  },
+  "cost_sensitive_lambda": [
+    1,
+    2,
+    5,
+    10
+  ]
+}

@@ -1,0 +1,5 @@
+numpy>=2.0   # tested with 2.5.4
+scipy>=1.11  # tested with 1.18.1
+matplotlib>=3.7  # tested with 3.11.2
+psutil>=5.9  # tested with 7.2.2
+pytest>=7.0  # tested with 9.2.0

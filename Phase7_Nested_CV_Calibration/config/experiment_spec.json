@@ -1,0 +1,14 @@
+{
+  "phase": "Phase 7",
+  "version": "1.0.0",
+  "description": "Nested cross-validation calibration for Exact RBF SVMs",
+  "extends_phase": "Phase 6",
+  "addressing_limitations": [
+    "Calibration isolation not fully nested",
+    "Exact-RBF probability fusion unsupported",
+    "No cost-sensitive retraining"
+  ],
+  "calibration_method": "out_of_fold_platt_scaling",
+  "n_folds": 5,
+  "random_seed": 42
+}

@@ -1,0 +1,10 @@
+split,scope,model,denominator_note,n_evaluated,n_true_change,change_prevalence_pct,n_pred_change,n_change_detected_tp,change_precision,change_recall,change_f1,n_correct_next_state_given_change,next_state_accuracy_given_change,n_enter_high_events,n_enter_high_predicted_correctly,enter_high_recall,n_pred_enter_high,enter_high_precision
+train,observed_current_only,majority,rows with observed current_state only,23976,2741,11.432265598932265,13634,2025,0.1485257444623735,0.7387814666180226,0.24732824427480915,735,0.2681503101058008,735,735,1.0,13634,0.05390934428634297
+train,observed_current_only,persistence,rows with observed current_state only,23976,2741,11.432265598932265,0,0,,0.0,,0,0.0,735,0,0.0,0,
+train,observed_current_only,markov,rows with observed current_state only,23976,2741,11.432265598932265,0,0,,0.0,,0,0.0,735,0,0.0,0,
+validation,observed_current_only,majority,rows with observed current_state only,4197,488,11.627352871098404,2935,368,0.12538330494037478,0.7540983606557377,0.215016067776804,122,0.25,122,122,1.0,2935,0.041567291311754684
+validation,observed_current_only,persistence,rows with observed current_state only,4197,488,11.627352871098404,0,0,,0.0,,0,0.0,122,0,0.0,0,
+validation,observed_current_only,markov,rows with observed current_state only,4197,488,11.627352871098404,0,0,,0.0,,0,0.0,122,0,0.0,0,
+test,observed_current_only,majority,rows with observed current_state only,5685,526,9.252418645558487,3325,375,0.11278195488721804,0.7129277566539924,0.19475460919241755,154,0.29277566539923955,154,154,1.0,3325,0.04631578947368421
+test,observed_current_only,persistence,rows with observed current_state only,5685,526,9.252418645558487,0,0,,0.0,,0,0.0,154,0,0.0,0,
+test,observed_current_only,markov,rows with observed current_state only,5685,526,9.252418645558487,0,0,,0.0,,0,0.0,154,0,0.0,0,

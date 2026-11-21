@@ -1,0 +1,7 @@
+model_id,inference_time_s,storage_kb
+M0_Markov,0.05,1
+M1_Standalone_SVM,0.12,120
+F1_Fixed_Fusion,0.15,125
+F2_Adaptive_Fusion,0.18,125
+F3_Transition_Fusion,0.22,130
+Phase6_Total_Pipeline,17.04,500

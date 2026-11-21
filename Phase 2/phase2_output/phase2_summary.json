@@ -1,0 +1,143 @@
+{
+  "timestamps": 35064,
+  "stations": [
+    "Aotizhongxin",
+    "Changping",
+    "Dingling",
+    "Dongsi",
+    "Guanyuan",
+    "Gucheng",
+    "Huairou",
+    "Nongzhanguan",
+    "Shunyi",
+    "Tiantan",
+    "Wanliu",
+    "Wanshouxigong"
+  ],
+  "features": [
+    "PM2.5",
+    "PM10",
+    "SO2",
+    "NO2",
+    "CO",
+    "O3",
+    "TEMP",
+    "PRES",
+    "DEWP",
+    "RAIN",
+    "WSPM"
+  ],
+  "shape_raw": [
+    35064,
+    12,
+    11
+  ],
+  "thresholds": {
+    "low": "PM2.5 < 35",
+    "moderate": "35 <= PM2.5 < 75",
+    "high": "PM2.5 >= 75",
+    "units": "ug/m3",
+    "caveat": "Research-defined instantaneous hourly PM2.5 bins; not official AQI/24-hour guideline levels."
+  },
+  "window_hours": 24,
+  "target": "Aotizhongxin PM2.5 state in hour immediately after the window",
+  "notes": [
+    "Sequential forward-fill limited to 6 hours within each split (never backward-filled).",
+    "Any still-missing measurements replaced by median for that station-feature fitted on training split only.",
+    "Standardization fitted on imputed training hours only, separately by station-feature.",
+    "Target labels derived from original unfilled PM2.5 and unobserved targets excluded.",
+    "Windows formed separately within chronological splits: no cross-boundary history.",
+    "Current state derived from raw PM2.5 at last historical hour; -1 if missing, so exclude from Markov fusion evaluation.",
+    "Wind direction excluded from the 11 numeric features; can be added later as controlled ablation.",
+    "All reported compressed sizes reflect on-disk NPZ files; uncompressed logical array sizes are reported separately."
+  ],
+  "splits": {
+    "train": {
+      "start": "2013-03-01 00:00:00",
+      "end": "2015-12-31 23:00:00",
+      "raw_hours": 24864,
+      "possible_windows": 24840,
+      "excluded_missing_target": 732,
+      "usable_samples": 24108,
+      "class_counts": {
+        "low": 7872,
+        "moderate": 5832,
+        "high": 10404
+      },
+      "class_percentages": {
+        "low": 32.65,
+        "moderate": 24.19,
+        "high": 43.16
+      },
+      "missing_current_state": 132,
+      "nan_inputs_after_forward_fill_before_median": 27767,
+      "tensor_shape": [
+        24108,
+        24,
+        12,
+        11
+      ],
+      "raw_float32_MB": 305.5,
+      "compressed_npz_MB": 10.45,
+      "file": "train_windows.npz"
+    },
+    "validation": {
+      "start": "2016-01-01 00:00:00",
+      "end": "2016-06-30 23:00:00",
+      "raw_hours": 4368,
+      "possible_windows": 4344,
+      "excluded_missing_target": 105,
+      "usable_samples": 4239,
+      "class_counts": {
+        "low": 1848,
+        "moderate": 1114,
+        "high": 1277
+      },
+      "class_percentages": {
+        "low": 43.6,
+        "moderate": 26.28,
+        "high": 30.13
+      },
+      "missing_current_state": 42,
+      "nan_inputs_after_forward_fill_before_median": 1454,
+      "tensor_shape": [
+        4239,
+        24,
+        12,
+        11
+      ],
+      "raw_float32_MB": 53.72,
+      "compressed_npz_MB": 1.87,
+      "file": "validation_windows.npz"
+    },
+    "test": {
+      "start": "2016-07-01 00:00:00",
+      "end": "2017-02-28 23:00:00",
+      "raw_hours": 5832,
+      "possible_windows": 5808,
+      "excluded_missing_target": 88,
+      "usable_samples": 5720,
+      "class_counts": {
+        "low": 2142,
+        "moderate": 1202,
+        "high": 2376
+      },
+      "class_percentages": {
+        "low": 37.45,
+        "moderate": 21.01,
+        "high": 41.54
+      },
+      "missing_current_state": 35,
+      "nan_inputs_after_forward_fill_before_median": 3287,
+      "tensor_shape": [
+        5720,
+        24,
+        12,
+        11
+      ],
+      "raw_float32_MB": 72.48,
+      "compressed_npz_MB": 2.44,
+      "file": "test_windows.npz"
+    }
+  }
+}

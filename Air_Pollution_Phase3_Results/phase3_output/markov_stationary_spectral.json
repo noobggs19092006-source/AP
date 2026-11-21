@@ -1,0 +1,133 @@
+{
+  "pi": [
+    0.31987569538359695,
+    0.240439071094781,
+    0.4396852335216226
+  ],
+  "constraint_matrix_rank": 3,
+  "constraint_matrix_condition": 21.062057641369698,
+  "stationary_residual_inf_norm": 2.7755575615628914e-17,
+  "pi_sum_error": 4.440892098500626e-16,
+  "pi_min": 0.240439071094781,
+  "pi_nonnegative_within_tol": true,
+  "unique_solution_of_constrained_system": true,
+  "eigenvalues": [
+    {
+      "real": 1.0,
+      "imag": 0.0
+    },
+    {
+      "real": 0.9174116662119158,
+      "imag": 0.0
+    },
+    {
+      "real": 0.695041363817039,
+      "imag": 0.0
+    }
+  ],
+  "algebraic_multiplicity_of_1": 1,
+  "pi_left_eigenvector_check": [
+    0.3198756953835961,
+    0.24043907109478108,
+    0.4396852335216228
+  ],
+  "pi_vs_eigenvector_max_abs_diff": 8.326672684688674e-16,
+  "irreducible": true,
+  "state_periods": [
+    1,
+    1,
+    1
+  ],
+  "aperiodic_given_irreducible": true,
+  "second_largest_eigenvalue_modulus": 0.9174116662119158,
+  "spectral_gap": 0.08258833378808417,
+  "spectral_gap_status": "interpretable: chain irreducible, aperiodic, eigenvalue 1 simple; gap = 1 - max|nontrivial eigenvalue| (conditional on the fitted model)",
+  "reachability_matrix": [
+    [
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true
+    ]
+  ],
+  "expected_run_length_hours": [
+    11.413994169096213,
+    4.334578043315909,
+    14.444134078212286
+  ],
+  "empirical_run_lengths_train": {
+    "0": {
+      "n_runs_all": 729,
+      "mean_all": 10.799725651577504,
+      "n_runs_uncensored": 639,
+      "mean_uncensored": 10.242566510172145
+    },
+    "1": {
+      "n_runs_all": 1367,
+      "mean_all": 4.266276517922458,
+      "n_runs_uncensored": 1306,
+      "mean_uncensored": 4.32312404287902
+    },
+    "2": {
+      "n_runs_all": 778,
+      "mean_all": 13.372750642673521,
+      "n_runs_uncensored": 684,
+      "mean_uncensored": 12.747076023391813
+    }
+  },
+  "tolerance": {
+    "row_stochastic_atol": 1e-12,
+    "rtol": 0
+  },
+  "P2_row_sum_max_error": 1.1102230246251565e-16,
+  "P2_min_entry": 0.013956981343910279,
+  "P_min_entry": 0.0017879948914431673,
+  "empirical_class_fractions_descriptive_only": {
+    "train": [
+      0.32653061224489793,
+      0.2419113987058238,
+      0.4315579890492782
+    ],
+    "validation": [
+      0.4359518754423213,
+      0.2627978296768106,
+      0.30125029488086813
+    ],
+    "test": [
+      0.37447552447552446,
+      0.21013986013986014,
+      0.4153846153846154
+    ]
+  },
+  "adequacy": {
+    "method": "timestamp-exact triples from the observed hourly series reconstructed from y(t) and current_state(t) (never from shifted filtered arrays; X never used); strict Option-1 join counts reported for audit",
+    "n_train_triples": 23848,
+    "n_validation_triples": 4155,
+    "laplace_alpha_fixed_in_advance": 1.0,
+    "validation_mean_nll_nats": {
+      "first_order_laplace_same_triple_fit": 0.39714940025956413,
+      "second_order_laplace": 0.38602920362054216,
+      "primary_P_mle_clipped_eps": 0.3973330043392537
+    },
+    "second_minus_first_nll_validation": -0.011120196639021973,
+    "train_loglik_first_order": -9175.141393046348,
+    "train_loglik_second_order": -9018.59391083257,
+    "likelihood_ratio_G": 313.094964427557,
+    "lr_df": 12,
+    "lr_pvalue_nominal_iid": 8.324259184265416e-60,
+    "aic_first": 18362.282786092695,
+    "aic_second": 18073.18782166514,
+    "bic_first": 18410.759519904845,
+    "bic_second": 18218.618023101582,
+    "caveat": "Hourly states are serially dependent; nominal iid chi-square p-values are descriptive only. A formal Markov-property claim is NOT made."
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "project": "Phase 5 SVM / kernel / RFF",
+  "targets": {
+    "Low": "PM2.5<35",
+    "Moderate": "35<=PM2.5<75",
+    "High": ">=75",
+    "note": "research-defined, not official AQI"
+  },
+  "splits": {
+    "train": 24108,
+    "validation": 4239,
+    "test": 5720
+  },
+  "scope_A_counts": {
+    "train": 23976,
+    "validation": 4197,
+    "test": 5685
+  },
+  "representations": {
+    "pca": {
+      "A": 48,
+      "B": 192,
+      "C": 576
+    },
+    "hosvd": {
+      "A": [
+        48,
+        "4,3,4"
+      ],
+      "B": [
+        192,
+        "8,4,6"
+      ],
+      "C": [
+        576,
+        "12,8,6"
+      ],
+      "B_alt1": [
+        192,
+        "6,4,8"
+      ],
+      "B_alt2": [
+        192,
+        "8,6,4"
+      ]
+    }
+  },
+  "stages": {
+    "A": "LinearSVC squared-hinge OvR dual=False, 8 reps x C grid (40 fits)",
+    "B": "SVC rbf native OvO, pca_B/hosvd_B, fit_n {4000,8000}, a in {0.1,1,10}, C in {0.1,1,10}; optional full-train pilot",
+    "C": "RBFSampler + LinearSVC, D {256,1024,2048}, seeds 42-46, pca_B/hosvd_B"
+  }
+}

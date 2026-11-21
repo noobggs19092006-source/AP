@@ -1,0 +1,8 @@
+model_id,confusion_matrix
+M0_Markov_Baseline,"[[2005, 100, 24], [121, 945, 127], [5, 149, 2209]]"
+M1_Standalone_Linear_Best,"[[2061, 68, 13], [386, 740, 76], [9, 378, 1989]]"
+M1b_ExactRBF_stageB_full_pca_B,"[[1874, 235, 33], [226, 768, 208], [10, 191, 2175]]"
+M1b_ExactRBF_stageB_full_hosvd_B,"[[1813, 294, 35], [129, 841, 232], [5, 237, 2134]]"
+F1_Fixed_lam0.9_linear_hosvd_B,"[[1929, 183, 30], [192, 785, 225], [20, 165, 2191]]"
+F2_Adaptive_tau0.65_linear_pca_B,"[[2031, 94, 17], [270, 805, 127], [24, 242, 2110]]"
+F3_Transition_rho0.75_eta0.0_linear_best_overall,"[[2001, 88, 53], [110, 931, 161], [14, 252, 2110]]"

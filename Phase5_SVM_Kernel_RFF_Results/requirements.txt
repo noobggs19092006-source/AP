@@ -1,0 +1,9 @@
+# Phase 5 requirements. Versions in the right-hand comment were used for the remediation run;
+# the original Stage A/C/s06 run used scikit-learn >= 1.5 on the author's machine.
+numpy>=2.0            # tested 2.5.4
+scipy>=1.14           # tested 1.18.1
+scikit-learn>=1.5     # tested 1.9.1
+pandas>=2.2           # tested 3.0.6
+matplotlib>=3.8
+psutil>=5.9
+pytest>=8.0

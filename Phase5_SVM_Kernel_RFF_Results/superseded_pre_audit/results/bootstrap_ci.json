@@ -1,0 +1,29 @@
+{
+  "n_bootstrap": 1000,
+  "block_size_hours": 24,
+  "n_blocks": 239,
+  "paired_models": {
+    "model_A": "linear_pca_B",
+    "model_B": "linear_hosvd_B"
+  },
+  "macro_f1": {
+    "observed_pca_B": 0.7613962694006734,
+    "observed_hosvd_B": 0.7326948959799787,
+    "observed_diff (pca_B - hosvd_B)": 0.028701373420694676,
+    "ci_95": [
+      0.0054126652042907125,
+      0.05133299280319506
+    ],
+    "standard_error": 0.011768514931344405
+  },
+  "transition_f1": {
+    "observed_pca_B": 0.36314363143631434,
+    "observed_hosvd_B": 0.3555003107520199,
+    "observed_diff (pca_B - hosvd_B)": 0.007643320684294463,
+    "ci_95": [
+      -0.016990757526236775,
+      0.03157133184105412
+    ],
+    "standard_error": 0.012163515657376906
+  }
+}

@@ -1,0 +1,135 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /usr/bin/python
+cachedir: .pytest_cache
+rootdir: /home/claude/w
+plugins: platformdirs-4.13.0
+collecting ... collected 66 items
+
+tests/test_phase5_full.py::test_01_npz_five_key_schema PASSED            [  1%]
+tests/test_phase5_full.py::test_02_manifest_sha256_integrity PASSED      [  3%]
+tests/test_phase5_full.py::test_02b_duplicate_filename_resolution PASSED [  4%]
+tests/test_phase5_full.py::test_03_scalers_are_train_only PASSED         [  6%]
+tests/test_phase5_full.py::test_03b_no_fit_on_validation_or_test_in_source PASSED [  7%]
+tests/test_phase5_full.py::test_04_deterministic_configurations PASSED   [  9%]
+tests/test_phase5_full.py::test_05_hand_computed_rbf_kernel PASSED       [ 10%]
+tests/test_phase5_full.py::test_06_rff_convention_reproducibility_and_monte_carlo PASSED [ 12%]
+tests/test_phase5_full.py::test_07_qp_feasibility_and_kkt_direct PASSED  [ 13%]
+tests/test_phase5_full.py::test_07b_saved_qp_results PASSED              [ 15%]
+tests/test_phase5_full.py::test_08_class_order_and_shapes PASSED         [ 16%]
+tests/test_phase5_full.py::test_09_brier_and_logloss_known_examples PASSED [ 18%]
+tests/test_phase5_full.py::test_10_transitions_high_entry_and_edge_cases PASSED [ 19%]
+tests/test_phase5_full.py::test_11_phase3_counts_and_alignment PASSED    [ 21%]
+tests/test_phase5_full.py::test_12_selection_lock_before_test PASSED     [ 22%]
+tests/test_phase5_full.py::test_13_reload_reproduces_predictions PASSED  [ 24%]
+tests/test_phase5_full.py::test_13b_reload_revised_rff PASSED            [ 25%]
+tests/test_phase5_full.py::test_14_figures_and_inventory PASSED          [ 27%]
+tests/test_qp.py::TestSeparable::test_bound_feasibility PASSED           [ 28%]
+tests/test_qp.py::TestSeparable::test_equality_constraint PASSED         [ 30%]
+tests/test_qp.py::TestSeparable::test_kkt_stationarity PASSED            [ 31%]
+tests/test_qp.py::TestSeparable::test_complementary_slackness_cs1 PASSED [ 33%]
+tests/test_qp.py::TestSeparable::test_complementary_slackness_cs2 PASSED [ 34%]
+tests/test_qp.py::TestSeparable::test_primal_dual_gap PASSED             [ 36%]
+tests/test_qp.py::TestSeparable::test_primal_dual_ordering PASSED        [ 37%]
+tests/test_qp.py::TestSeparable::test_has_support_vectors PASSED         [ 39%]
+tests/test_qp.py::TestSeparable::test_sklearn_w_alignment PASSED         [ 40%]
+tests/test_qp.py::TestNonseparable::test_bound_feasibility PASSED        [ 42%]
+tests/test_qp.py::TestNonseparable::test_equality_constraint PASSED      [ 43%]
+tests/test_qp.py::TestNonseparable::test_kkt_stationarity PASSED         [ 45%]
+tests/test_qp.py::TestNonseparable::test_complementary_slackness_cs1 PASSED [ 46%]
+tests/test_qp.py::TestNonseparable::test_complementary_slackness_cs2 PASSED [ 48%]
+tests/test_qp.py::TestNonseparable::test_primal_dual_gap PASSED          [ 50%]
+tests/test_qp.py::TestNonseparable::test_has_bound_support_vectors PASSED [ 51%]
+tests/test_qp.py::TestNonseparable::test_nonzero_slack PASSED            [ 53%]
+tests/test_qp.py::TestNonseparable::test_sklearn_w_alignment PASSED      [ 54%]
+tests/test_qp.py::Test4PointAnalytic::test_weight_direction PASSED       [ 56%]
+tests/test_qp.py::Test4PointAnalytic::test_margin PASSED                 [ 57%]
+tests/test_qp.py::Test4PointAnalytic::test_bias_near_zero PASSED         [ 59%]
+tests/test_qp.py::Test4PointAnalytic::test_primal_dual_gap PASSED        [ 60%]
+tests/test_qp.py::Test4PointAnalytic::test_exactly_two_support_vectors PASSED [ 62%]
+tests/test_qp.py::Test4PointAnalytic::test_kkt_stationarity PASSED       [ 63%]
+tests/test_remediation.py::test_scaler_accepts_stage_a_keys PASSED       [ 65%]
+tests/test_remediation.py::test_scaler_accepts_legacy_sklearn_keys PASSED [ 66%]
+tests/test_remediation.py::test_scaler_missing_file_raises_never_fits PASSED [ 68%]
+tests/test_remediation.py::test_scaler_wrong_keys_and_bad_values_raise PASSED [ 69%]
+tests/test_remediation.py::test_saved_scalers_load PASSED                [ 71%]
+tests/test_remediation.py::test_stage_b_source_has_no_fallback_fit_and_uses_strict_loader PASSED [ 72%]
+tests/test_remediation.py::test_transform_uses_frozen_train_statistics_only PASSED [ 74%]
+tests/test_remediation.py::test_rff_policy_never_best_or_worst_seed_and_is_deterministic PASSED [ 75%]
+tests/test_remediation.py::test_rff_policy_picks_D_by_cross_seed_mean_not_best_single_run PASSED [ 77%]
+tests/test_remediation.py::test_revised_manifest_matches_policy_recomputation PASSED [ 78%]
+tests/test_remediation.py::test_tie_rule_prefers_transition_f1_within_tolerance PASSED [ 80%]
+tests/test_remediation.py::test_temporal_subset_deterministic_sorted_and_spread PASSED [ 81%]
+tests/test_remediation.py::test_stage_b_outputs_status_consistency FAILED [ 83%]
+tests/test_remediation.py::test_ovr_ablation_is_genuinely_different_from_dfs_toggle PASSED [ 84%]
+tests/test_remediation.py::test_calendar_blocks_follow_real_time_not_row_index PASSED [ 86%]
+tests/test_remediation.py::test_bootstrap_matches_sklearn_and_is_deterministic PASSED [ 87%]
+tests/test_remediation.py::test_bootstrap_artifact_not_overclaimed PASSED [ 89%]
+tests/test_remediation.py::test_metrics_table_matches_prediction_csvs_and_original_eval PASSED [ 90%]
+tests/test_remediation.py::test_audit_summary_and_report_are_generated_from_tables PASSED [ 92%]
+tests/test_remediation.py::test_report_does_not_carry_known_stale_values FAILED [ 93%]
+tests/test_remediation.py::test_master_pipeline_all_includes_stage_b_and_is_ordered PASSED [ 95%]
+tests/test_remediation.py::test_no_absolute_local_paths_anywhere PASSED  [ 96%]
+tests/test_remediation.py::test_common_metrics_equal_original_s06_implementations PASSED [ 98%]
+tests/test_remediation.py::test_reported_test_summary_is_not_hardcoded SKIPPED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_stage_b_outputs_status_consistency ____________________
+/usr/local/lib/python3.12/dist-packages/pandas/core/indexes/base.py:3641: in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pandas/_libs/index.pyx:168: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/index.pyx:197: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7668: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7676: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+E   KeyError: 'skip_reason'
+
+The above exception was the direct cause of the following exception:
+tests/test_remediation.py:157: in test_stage_b_outputs_status_consistency
+    assert df.loc[df.status != "done", "skip_reason"].notna().all()                    # every non-run cell has a reason
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/indexing.py:1200: in __getitem__
+    return self._getitem_tuple(key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/indexing.py:1386: in _getitem_tuple
+    return self._getitem_lowerdim(tup)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/indexing.py:1093: in _getitem_lowerdim
+    section = self._getitem_axis(key, axis=i)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/indexing.py:1449: in _getitem_axis
+    return self._get_label(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/indexing.py:1399: in _get_label
+    return self.obj.xs(label, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/generic.py:4227: in xs
+    return self[key]
+           ^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/frame.py:4378: in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/pandas/core/indexes/base.py:3648: in get_loc
+    raise KeyError(key) from err
+E   KeyError: 'skip_reason'
+________________ test_report_does_not_carry_known_stale_values _________________
+tests/test_remediation.py:247: in test_report_does_not_carry_known_stale_values
+    assert stale not in rep, stale
+E   AssertionError: statistically robust
+E   assert 'statistically robust' not in '# Phase 5 R...plementer.\n'
+E     
+E     'statistically robust' is contained here:
+E       # Phase 5 Research Report (post-audit remediation)
+E       
+E       *Generated 2026-11-15T14:18:55+00:00 by `source/s11_report_and_audit.py` from the result files in this package. Every number below is read from `results/`, `manifests/` or the prediction CSVs; none is typed in. Independent supervisor review of this remediated package is **pending** — nothing here should be read as audited or approved.*
+E       
+E       **Status vocabulary.** *Implemented* = code exists. *Executed* = a log/result file in this package shows it ran. *Independently verified* = repr...
+E     
+E     ...Full output truncated, use '-vv' to show
+--------- generated xml file: /home/claude/w/pkg/logs/pytest_junit.xml ---------
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_remediation.py:288: test summary not yet generated
+=================== 2 failed, 63 passed, 1 skipped in 18.02s ===================

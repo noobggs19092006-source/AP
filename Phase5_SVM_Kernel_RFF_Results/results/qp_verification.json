@@ -1,0 +1,112 @@
+{
+  "separable": {
+    "passed": true,
+    "C": 1.0,
+    "n": 100,
+    "d": 3,
+    "primal_dual_gap": 3.473526755115586e-08,
+    "kkt_stationarity_norm": 0.0,
+    "cs1_max_violation": 2.913685882971223e-08,
+    "cs2_max_violation": 2.9447273438697823e-09,
+    "bound_violation": 0.0,
+    "equality_constraint_violation": 9.14841348752649e-15,
+    "margin_width": 1.3588182354816836,
+    "n_support_vectors": 4,
+    "primal_objective": 1.095730948099037,
+    "dual_objective": 1.0957309133637694,
+    "sklearn_comparison": {
+      "sklearn_w": [
+        1.4568615132259666,
+        -0.006971582521329386,
+        0.2095204864423223
+      ],
+      "sklearn_b": -0.09636862493936137,
+      "qp_w": [
+        1.4568615627118733,
+        -0.006971615557665589,
+        0.20952053926399308
+      ],
+      "qp_b": -0.09636859631790758,
+      "w_cosine_similarity": 0.999999999999999,
+      "b_difference": 2.8621453790345086e-08,
+      "note": "Bias difference may arise because: (1) sklearn SMO averages b over all free support vectors with a numerical tolerance, while our SLSQP uses a simple mean; (2) LIBSVM may use a different regularisation for b; (3) SLSQP optimisation tolerance is 1e-12 vs sklearn's 1e-10."
+    },
+    "w": [
+      1.4568615627118733,
+      -0.006971615557665589,
+      0.20952053926399308
+    ],
+    "b": -0.09636859631790758
+  },
+  "nonseparable": {
+    "passed": true,
+    "C": 1.0,
+    "n": 100,
+    "d": 3,
+    "primal_dual_gap": 6.066322555398074e-09,
+    "kkt_stationarity_norm": 0.0,
+    "cs1_max_violation": 3.759730584768732e-09,
+    "cs2_max_violation": 2.0584901195757375e-09,
+    "bound_violation": 0.0,
+    "equality_constraint_violation": 8.881784197001252e-16,
+    "margin_width": 1.168326579905376,
+    "n_support_vectors": 38,
+    "primal_objective": 34.63396736362104,
+    "dual_objective": 34.63396735755472,
+    "sklearn_comparison": {
+      "sklearn_w": [
+        0.8068116261084757,
+        1.202423454875283,
+        0.913051842085422
+      ],
+      "sklearn_b": 0.10659848597905246,
+      "qp_w": [
+        0.8068116548657114,
+        1.2024234873430115,
+        0.9130517814968374
+      ],
+      "qp_b": 0.10659839479851356,
+      "w_cosine_similarity": 0.9999999999999988,
+      "b_difference": 9.118053889700661e-08,
+      "note": "Bias difference may arise because: (1) sklearn SMO averages b over all free support vectors with a numerical tolerance, while our SLSQP uses a simple mean; (2) LIBSVM may use a different regularisation for b; (3) SLSQP optimisation tolerance is 1e-12 vs sklearn's 1e-10."
+    },
+    "w": [
+      0.8068116548657114,
+      1.2024234873430115,
+      0.9130517814968374
+    ],
+    "b": 0.10659839479851356
+  },
+  "4point_analytic": {
+    "passed": true
+  },
+  "summary": {
+    "total_tests": 19,
+    "passed": 19,
+    "failed": 0,
+    "all_passed": true,
+    "separable_primal_dual_gap": 3.473526755115586e-08,
+    "nonseparable_primal_dual_gap": 6.066322555398074e-09,
+    "test_log": [
+      "  [PASS] bound feasibility (max violation): got 0, threshold 1.0e-08",
+      "  [PASS] equality |sum alpha*y|: got 9.14841e-15, threshold 1.0e-06",
+      "  [PASS] KKT stationarity ||grad_w L||: got 0, threshold 1.0e-03",
+      "  [PASS] complementary slackness CS1 max: got 2.91369e-08, threshold 1.0e-03",
+      "  [PASS] complementary slackness CS2 max: got 2.94473e-09, threshold 1.0e-03",
+      "  [PASS] primal-dual gap: got 3.47353e-08, threshold 1.0e-03",
+      "  [PASS] w cosine similarity vs sklearn: got 9.99201e-16, threshold 1.0e-03",
+      "  [PASS] bound feasibility (max violation): got 0, threshold 1.0e-08",
+      "  [PASS] equality |sum alpha*y|: got 8.88178e-16, threshold 1.0e-06",
+      "  [PASS] KKT stationarity ||grad_w L||: got 0, threshold 1.0e-03",
+      "  [PASS] complementary slackness CS1 max: got 3.75973e-09, threshold 1.0e-03",
+      "  [PASS] complementary slackness CS2 max: got 2.05849e-09, threshold 1.0e-03",
+      "  [PASS] primal-dual gap: got 6.06632e-09, threshold 1.0e-03",
+      "  [PASS] w cosine similarity vs sklearn: got 1.22125e-15, threshold 1.0e-03",
+      "  [PASS] 4pt: |w_norm[0]|==1 (direction): got 1, expected ~1 \u00b1 1.0e-03",
+      "  [PASS] 4pt: |w_norm[1]|==0: got 0, expected ~0 \u00b1 1.0e-03",
+      "  [PASS] 4pt: margin == 2.0: got 2, expected ~2 \u00b1 5.0e-02",
+      "  [PASS] 4pt: |b| \u2248 0: got 0, expected ~0 \u00b1 1.0e-01",
+      "  [PASS] 4pt: primal-dual gap < 1e-4: got 1.0103e-14, threshold 1.0e-04"
+    ]
+  }
+}

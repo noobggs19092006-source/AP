@@ -1,0 +1,8 @@
+model_id,scope,N,brier,log_loss,ECE,valid_probability_source
+M0_Markov_Baseline,ScopeA,5685,0.16659811,0.33916442,0.01751066,True
+M1_Standalone_Linear_Best,ScopeA,5685,0.21964663,0.37264058,0.01510391,True
+M1b_ExactRBF_stageB_full_pca_B,ScopeA,5685,,,,False
+M1b_ExactRBF_stageB_full_hosvd_B,ScopeA,5685,,,,False
+F1_Fixed_lam0.9_linear_hosvd_B,ScopeA,5685,0.20131224,0.35394591,0.03514386,True
+F2_Adaptive_tau0.65_linear_pca_B,ScopeA,5685,0.20810493,0.36993298,0.03201617,True
+F3_Transition_rho0.75_eta0.0_linear_best_overall,ScopeA,5685,0.18135925,0.3328946,0.06692127,True

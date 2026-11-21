@@ -1,0 +1,420 @@
+{
+  "phase": 5,
+  "revision": "post-audit remediation",
+  "generated_utc": "2026-11-15T14:21:37+00:00",
+  "generated_from": "results/*.csv|json (no hard-coded metrics)",
+  "status_labels": {
+    "implemented": true,
+    "executed_in_this_package": [
+      "integrity gate (original run)",
+      "QP synthetic checks (original run)",
+      "Stage A 40 fits (original run)",
+      "Stage B grid + ablation + full-train pilot (remediation run)",
+      "Stage C 30 fits (original run)",
+      "s06 original lock evaluation (original run)",
+      "revision stage, tables, bootstrap, report (remediation run)"
+    ],
+    "independently_verified": false
+  },
+  "integrity_gate": {
+    "passed": true,
+    "checks_passed": 210,
+    "checks_failed": 0,
+    "source": "results/integrity_gate.json (original run)"
+  },
+  "fits_completed": {
+    "stage_a_linear_svm": "40/40",
+    "stage_c_rff_svm": "30/30",
+    "stage_b_exact_rbf_grid": "36/36",
+    "stage_b_status_counts": {
+      "done": 36
+    },
+    "stage_b_ablation_variants_done": 8,
+    "stage_b_full_train_exact_pilot": {
+      "done": 2
+    }
+  },
+  "best_validation": {
+    "primary_criterion": "validation Scope B macro-F1",
+    "stage_a_best_per_config": {
+      "pca_A": {
+        "C": 0.01,
+        "val_scopeB_macro_f1": 0.6995593136285677
+      },
+      "pca_B": {
+        "C": 0.1,
+        "val_scopeB_macro_f1": 0.7628488776114373
+      },
+      "pca_C": {
+        "C": 1.0,
+        "val_scopeB_macro_f1": 0.773383350119318
+      },
+      "hosvd_A": {
+        "C": 100.0,
+        "val_scopeB_macro_f1": 0.594232946719856
+      },
+      "hosvd_B": {
+        "C": 0.01,
+        "val_scopeB_macro_f1": 0.7107912706856219
+      },
+      "hosvd_C": {
+        "C": 0.1,
+        "val_scopeB_macro_f1": 0.7443206482953171
+      },
+      "hosvd_B_alt1": {
+        "C": 1.0,
+        "val_scopeB_macro_f1": 0.7346342630186901
+      },
+      "hosvd_B_alt2": {
+        "C": 1.0,
+        "val_scopeB_macro_f1": 0.7219330764674973
+      }
+    },
+    "stage_b_validation_selection": {
+      "pca_B": {
+        "run_id": "B_pca_B_n8000_a0.1_C10.0",
+        "config": "pca_B",
+        "fit_n": 8000,
+        "gamma_scale": 0.1,
+        "gamma": 0.0005208333333333333,
+        "C": 10.0,
+        "val_scopeB_macro_f1": 0.7403971070394167,
+        "val_scopeB_accuracy": 0.7799009200283086,
+        "val_trans_f1": 0.3609898107714702,
+        "n_support_vectors": 3900,
+        "fit_time_s": 2.2623172790000012
+      },
+      "hosvd_B": {
+        "run_id": "B_hosvd_B_n8000_a0.1_C10.0",
+        "config": "hosvd_B",
+        "fit_n": 8000,
+        "gamma_scale": 0.1,
+        "gamma": 0.0005208333333333333,
+        "C": 10.0,
+        "val_scopeB_macro_f1": 0.76041992164205,
+        "val_scopeB_accuracy": 0.7869780608634112,
+        "val_trans_f1": 0.33610900832702495,
+        "n_support_vectors": 4033,
+        "fit_time_s": 2.610544926999978
+      }
+    },
+    "stage_c_best_single_run": {
+      "config": "pca_B",
+      "D": 2048,
+      "seed": 43,
+      "val_scopeB_macro_f1": 0.7464796357084641
+    }
+  },
+  "selection_manifests": {
+    "original_lock": "manifests/LOCKED_SELECTION.json",
+    "revised_post_audit": "manifests/REVISED_SELECTION_post_audit.json",
+    "stage_b_validation_only": "manifests/STAGE_B_SELECTION_validation_only.json"
+  },
+  "rff_seed_policy": {
+    "original": "arg-max over single validation rows (best-seed)",
+    "revised_rule": "median-seed common pair (see select_rff_policy docstring)",
+    "D_star": 2048,
+    "seed_star": 44,
+    "revised_is_pre_test_lock": false
+  },
+  "test_results_summary": {
+    "note": "each model evaluated once; original-lock, revised and Stage B families are distinct (see report)",
+    "family": {
+      "linear_pca_B": "original_lock",
+      "linear_hosvd_B": "original_lock",
+      "linear_best_overall": "original_lock",
+      "rff_pca_B": "original_lock",
+      "rff_hosvd_B": "original_lock",
+      "revised_rff_pca_B": "post_audit_revision",
+      "revised_rff_hosvd_B": "post_audit_revision",
+      "stageB_pca_B": "stage_b_addendum",
+      "stageB_hosvd_B": "stage_b_addendum",
+      "stageB_full_pca_B": "stage_b_addendum",
+      "stageB_full_hosvd_B": "stage_b_addendum",
+      "phase3_majority": "phase3_baseline",
+      "phase3_persistence": "phase3_baseline",
+      "phase3_markov": "phase3_baseline"
+    },
+    "scopeB_macro_f1": {
+      "linear_pca_B": 0.7613962694006734,
+      "linear_hosvd_B": 0.7326948959799789,
+      "linear_best_overall": 0.7907265339003069,
+      "rff_pca_B": 0.7523389174609858,
+      "rff_hosvd_B": 0.7396690776906606,
+      "revised_rff_pca_B": 0.7404839832069977,
+      "revised_rff_hosvd_B": 0.7394841082142043,
+      "stageB_pca_B": 0.7373189743984291,
+      "stageB_hosvd_B": 0.7594555549384735,
+      "stageB_full_pca_B": 0.8100996434425306,
+      "stageB_full_hosvd_B": 0.8112249350972561,
+      "phase3_majority": 0.1956521739130435,
+      "phase3_persistence": 0.8862421126671508,
+      "phase3_markov": 0.8862421126671508
+    },
+    "scopeB_accuracy": {
+      "linear_pca_B": 0.8262237762237762,
+      "linear_hosvd_B": 0.8059440559440559,
+      "linear_best_overall": 0.8337412587412587,
+      "rff_pca_B": 0.8062937062937063,
+      "rff_hosvd_B": 0.7945804195804196,
+      "revised_rff_pca_B": 0.7993006993006992,
+      "revised_rff_hosvd_B": 0.7944055944055944,
+      "stageB_pca_B": 0.7912587412587413,
+      "stageB_hosvd_B": 0.8029720279720279,
+      "stageB_full_pca_B": 0.8421328671328672,
+      "stageB_full_hosvd_B": 0.8370629370629371,
+      "phase3_majority": 0.4153846153846154,
+      "phase3_persistence": 0.904195804195804,
+      "phase3_markov": 0.904195804195804
+    },
+    "scopeA_transition_f1": {
+      "linear_pca_B": 0.3631436314363143,
+      "linear_hosvd_B": 0.3555003107520199,
+      "linear_best_overall": 0.3689320388349515,
+      "rff_pca_B": 0.3440453686200378,
+      "rff_hosvd_B": 0.3351416515973477,
+      "revised_rff_pca_B": 0.3386114494518879,
+      "revised_rff_hosvd_B": 0.3349397590361445,
+      "stageB_pca_B": 0.336866902237927,
+      "stageB_hosvd_B": 0.3421865348980852,
+      "stageB_full_pca_B": 0.3721940622737147,
+      "stageB_full_hosvd_B": 0.3732394366197183,
+      "phase3_majority": 0.1947546091924175,
+      "phase3_persistence": 0.0,
+      "phase3_markov": 0.0
+    },
+    "scopeA_transition_recall": {
+      "linear_pca_B": 0.5095057034220533,
+      "linear_hosvd_B": 0.5437262357414449,
+      "linear_best_overall": 0.5057034220532319,
+      "rff_pca_B": 0.5190114068441065,
+      "rff_hosvd_B": 0.5285171102661597,
+      "revised_rff_pca_B": 0.5285171102661597,
+      "revised_rff_hosvd_B": 0.5285171102661597,
+      "stageB_pca_B": 0.5437262357414449,
+      "stageB_hosvd_B": 0.526615969581749,
+      "stageB_full_pca_B": 0.4885931558935361,
+      "stageB_full_hosvd_B": 0.5038022813688213,
+      "phase3_majority": 0.7129277566539924,
+      "phase3_persistence": 0.0,
+      "phase3_markov": 0.0
+    },
+    "scopeA_transition_precision": {
+      "linear_pca_B": 0.2821052631578947,
+      "linear_hosvd_B": 0.2640812557710064,
+      "linear_best_overall": 0.2903930131004367,
+      "rff_pca_B": 0.2573044297832234,
+      "rff_hosvd_B": 0.2453662842012356,
+      "revised_rff_pca_B": 0.2491039426523297,
+      "revised_rff_hosvd_B": 0.2451499118165784,
+      "stageB_pca_B": 0.2440273037542662,
+      "stageB_hosvd_B": 0.253430924062214,
+      "stageB_full_pca_B": 0.3005847953216374,
+      "stageB_full_hosvd_B": 0.2964205816554809,
+      "phase3_majority": 0.112781954887218,
+      "phase3_persistence": 0.0,
+      "phase3_markov": 0.0
+    },
+    "scopeA_high_entry_recall": {
+      "linear_pca_B": 0.6298701298701299,
+      "linear_hosvd_B": 0.6948051948051948,
+      "linear_best_overall": 0.461038961038961,
+      "rff_pca_B": 0.5844155844155844,
+      "rff_hosvd_B": 0.5584415584415584,
+      "revised_rff_pca_B": 0.6363636363636364,
+      "revised_rff_hosvd_B": 0.5584415584415584,
+      "stageB_pca_B": 0.6233766233766234,
+      "stageB_hosvd_B": 0.577922077922078,
+      "stageB_full_pca_B": 0.461038961038961,
+      "stageB_full_hosvd_B": 0.4675324675324675,
+      "phase3_majority": 1.0,
+      "phase3_persistence": 0.0,
+      "phase3_markov": 0.0
+    },
+    "scopeA_high_entry_precision": {
+      "linear_pca_B": 0.2657534246575342,
+      "linear_hosvd_B": 0.2093933463796477,
+      "linear_best_overall": 0.3212669683257919,
+      "rff_pca_B": 0.2284263959390862,
+      "rff_hosvd_B": 0.1981566820276497,
+      "revised_rff_pca_B": 0.236144578313253,
+      "revised_rff_hosvd_B": 0.1986143187066974,
+      "stageB_pca_B": 0.28486646884273,
+      "stageB_hosvd_B": 0.2458563535911602,
+      "stageB_full_pca_B": 0.3271889400921659,
+      "stageB_full_hosvd_B": 0.291497975708502,
+      "phase3_majority": 0.0463157894736842,
+      "phase3_persistence": 0.0,
+      "phase3_markov": 0.0
+    }
+  },
+  "block_bootstrap_24h": {
+    "linear_pca_B - linear_hosvd_B [macro_f1]": {
+      "observed_diff": 0.0287013734206944,
+      "ci95": [
+        0.0045152669725499,
+        0.0512514868269434
+      ],
+      "ci_includes_zero": false
+    },
+    "linear_pca_B - linear_hosvd_B [trans_f1]": {
+      "observed_diff": 0.0076433206842944,
+      "ci95": [
+        -0.0171804515510316,
+        0.0337299015385676
+      ],
+      "ci_includes_zero": true
+    },
+    "revised_rff_pca_B - revised_rff_hosvd_B [macro_f1]": {
+      "observed_diff": 0.0009998749927934,
+      "ci95": [
+        -0.020143821495868,
+        0.0191618650740491
+      ],
+      "ci_includes_zero": true
+    },
+    "revised_rff_pca_B - revised_rff_hosvd_B [trans_f1]": {
+      "observed_diff": 0.0036716904157433,
+      "ci95": [
+        -0.019552766655733,
+        0.026320648961666
+      ],
+      "ci_includes_zero": true
+    },
+    "linear_pca_B - revised_rff_pca_B [macro_f1]": {
+      "observed_diff": 0.0209122861936756,
+      "ci95": [
+        0.0037179305939181,
+        0.0399312440249454
+      ],
+      "ci_includes_zero": false
+    },
+    "linear_pca_B - revised_rff_pca_B [trans_f1]": {
+      "observed_diff": 0.0245321819844264,
+      "ci95": [
+        0.0031922408459118,
+        0.0470457706669111
+      ],
+      "ci_includes_zero": false
+    },
+    "linear_hosvd_B - revised_rff_hosvd_B [macro_f1]": {
+      "observed_diff": -0.0067892122342253,
+      "ci95": [
+        -0.0247119401324835,
+        0.0101494221307921
+      ],
+      "ci_includes_zero": true
+    },
+    "linear_hosvd_B - revised_rff_hosvd_B [trans_f1]": {
+      "observed_diff": 0.0205605517158753,
+      "ci95": [
+        3.4740049220717924e-05,
+        0.0419689857464167
+      ],
+      "ci_includes_zero": false
+    },
+    "stageB_pca_B - stageB_hosvd_B [macro_f1]": {
+      "observed_diff": -0.0221365805400444,
+      "ci95": [
+        -0.0444726205599022,
+        -0.0029467543426309
+      ],
+      "ci_includes_zero": false
+    },
+    "stageB_pca_B - stageB_hosvd_B [trans_f1]": {
+      "observed_diff": -0.0053196326601582,
+      "ci95": [
+        -0.0297926230133543,
+        0.0170961716654928
+      ],
+      "ci_includes_zero": true
+    },
+    "revised_rff_pca_B - stageB_pca_B [macro_f1]": {
+      "observed_diff": 0.0031650088085686,
+      "ci95": [
+        -0.0142056631094811,
+        0.020489081179664
+      ],
+      "ci_includes_zero": true
+    },
+    "revised_rff_pca_B - stageB_pca_B [trans_f1]": {
+      "observed_diff": 0.0017445472139609,
+      "ci95": [
+        -0.022125290374086,
+        0.0238042245431665
+      ],
+      "ci_includes_zero": true
+    },
+    "stageB_full_pca_B - stageB_full_hosvd_B [macro_f1]": {
+      "observed_diff": -0.0011252916547255,
+      "ci95": [
+        -0.0172521432934664,
+        0.0141961356785205
+      ],
+      "ci_includes_zero": true
+    },
+    "stageB_full_pca_B - stageB_full_hosvd_B [trans_f1]": {
+      "observed_diff": -0.0010453743460036,
+      "ci95": [
+        -0.0286327333501585,
+        0.0288387649150933
+      ],
+      "ci_includes_zero": true
+    },
+    "stageB_full_pca_B - revised_rff_pca_B [macro_f1]": {
+      "observed_diff": 0.0696156602355329,
+      "ci95": [
+        0.052502430329614,
+        0.0898444928102459
+      ],
+      "ci_includes_zero": false
+    },
+    "stageB_full_pca_B - revised_rff_pca_B [trans_f1]": {
+      "observed_diff": 0.0335826128218268,
+      "ci95": [
+        0.0072601457125749,
+        0.0640097999547792
+      ],
+      "ci_includes_zero": false
+    },
+    "stageB_full_pca_B - linear_pca_B [macro_f1]": {
+      "observed_diff": 0.0487033740418572,
+      "ci95": [
+        0.0271956657341391,
+        0.0705358910921371
+      ],
+      "ci_includes_zero": false
+    },
+    "stageB_full_pca_B - linear_pca_B [trans_f1]": {
+      "observed_diff": 0.0090504308374004,
+      "ci95": [
+        -0.0234056855629439,
+        0.041733649363392
+      ],
+      "ci_includes_zero": true
+    }
+  },
+  "tests": {
+    "source": "results/test_summary.json",
+    "total": 66,
+    "passed": 66,
+    "failed": 0,
+    "skipped": 0
+  },
+  "planned_not_executed": [
+    "Stage B probability calibration (exact SVC probabilities missing)",
+    "RFF/exact-SVC dimension controls (d=48, 576) and alternative pairs",
+    "multi-fold chronological cross-fit calibration (single 80/20 tail split used)",
+    "inference-time benchmarking with warm-up/repeats",
+    "train+validation refit study (not performed by design)",
+    "re-execution of original Stage A / Stage C / s06 runs (verified by reload + reconciliation only)"
+  ],
+  "limitations": [
+    "Phase 4 representations fitted over the whole training period",
+    "75 ug/m3 boundary is research-defined",
+    "bootstrap = test-sampling uncertainty only",
+    "grid-edge optima in Stage B/C",
+    "Stage A selection used arg-max, not the documented tie rule (see results/stage_a_tie_rule_audit.csv)",
+    "Stage B timings are on different hardware from Stage A/C"
+  ]
+}

@@ -1,0 +1,491 @@
+#!/usr/bin/env python3
+"""
+s05_stage_c_rff.py — Stage C: Random Fourier Features and SVM
+Phase 5 SVM/RFF Air Pollution Classification
+
+Sections:
+  1. RFF theory verification: manual vs RBFSampler, Bochner expectation check, reproducibility
+  2. Kernel approximation quality study (m=500, 1000; D=256, 1024, 2048; seeds 42..46)
+  3. Coarse (gamma, C) grid tuning at D=1024, seed=42 on train, evaluated on val Scope B
+  4. Full RFF experiments across D in {256, 1024, 2048} and 5 seeds {42, 43, 44, 45, 46}
+  5. Save results CSVs, figures, predictions, checkpoints
+"""
+
+import argparse
+import json
+import logging
+import os
+import pickle
+import sys
+import time
+from pathlib import Path
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import psutil
+from sklearn.kernel_approximation import RBFSampler
+from sklearn.metrics import (
+    accuracy_score, balanced_accuracy_score, f1_score,
+    precision_recall_fscore_support
+)
+from sklearn.svm import LinearSVC
+
+CONFIGS = ["pca_B", "hosvd_B"]
+D_GRID = [256, 1024, 2048]
+SEEDS = [42, 43, 44, 45, 46]
+GAMMA_SCALES = [0.1, 1.0, 10.0]
+C_GRID = [0.01, 0.1, 1.0, 10.0]
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Phase 5 Stage C: Random Fourier Features SVM")
+    parser.add_argument("--input-dir", type=str, default=".", help="Input directory")
+    parser.add_argument("--output-dir", type=str, default=str(Path(__file__).resolve().parent.parent), help="Output directory")
+    parser.add_argument("--seed", type=int, default=42, help="Default random seed")
+    parser.add_argument("--max-iter", type=int, default=5000, help="Max iterations for LinearSVC")
+    return parser.parse_args()
+
+
+def compute_transition_metrics(y_true, y_pred, current_state):
+    mask = current_state >= 0
+    y_true_s = y_true[mask]
+    y_pred_s = y_pred[mask]
+    c_s = current_state[mask]
+
+    T = (y_true_s != c_s).astype(int)
+    T_hat = (y_pred_s != c_s).astype(int)
+
+    tp = int(np.sum((T == 1) & (T_hat == 1)))
+    fp = int(np.sum((T == 0) & (T_hat == 1)))
+    fn = int(np.sum((T == 1) & (T_hat == 0)))
+    tn = int(np.sum((T == 0) & (T_hat == 0)))
+
+    prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    rec = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+
+    actual_trans_mask = (T == 1)
+    dest_acc = float(np.mean(y_true_s[actual_trans_mask] == y_pred_s[actual_trans_mask])) if np.sum(actual_trans_mask) > 0 else 0.0
+    stable_mask = (T == 0)
+    stable_acc = float(np.mean(y_true_s[stable_mask] == y_pred_s[stable_mask])) if np.sum(stable_mask) > 0 else 0.0
+
+    H = ((c_s != 2) & (y_true_s == 2)).astype(int)
+    H_hat = ((c_s != 2) & (y_pred_s == 2)).astype(int)
+    h_tp = int(np.sum((H == 1) & (H_hat == 1)))
+    h_fp = int(np.sum((H == 0) & (H_hat == 1)))
+    h_fn = int(np.sum((H == 1) & (H_hat == 0)))
+    h_prec = h_tp / (h_tp + h_fp) if (h_tp + h_fp) > 0 else 0.0
+    h_rec = h_tp / (h_tp + h_fn) if (h_tp + h_fn) > 0 else 0.0
+    h_f1 = 2 * h_prec * h_rec / (h_prec + h_rec) if (h_prec + h_rec) > 0 else 0.0
+
+    return {
+        "trans_tp": tp, "trans_fp": fp, "trans_fn": fn, "trans_tn": tn,
+        "trans_precision": prec, "trans_recall": rec, "trans_f1": f1,
+        "trans_dest_accuracy": dest_acc, "trans_stable_accuracy": stable_acc,
+        "high_tp": h_tp, "high_fp": h_fp, "high_fn": h_fn,
+        "high_precision": h_prec, "high_recall": h_rec, "high_f1": h_f1
+    }
+
+
+def verify_rff_convention(logger, results_dir):
+    """
+    Step 1: Test RFF theory and convention vs manual implementation.
+    """
+    logger.info("Verifying RFF convention & Bochner expectation...")
+    rng = np.random.RandomState(42)
+    d = 10
+    D = 5000
+    gamma = 0.5
+    X = rng.randn(100, d).astype(np.float64)
+
+    # Manual sampling according to Bochner theorem:
+    # K(x,z) = exp(-gamma ||x-z||^2)
+    # Spectral density p(omega) is N(0, 2*gamma*I)
+    W_manual = rng.normal(loc=0.0, scale=np.sqrt(2 * gamma), size=(d, D))
+    b_manual = rng.uniform(low=0.0, high=2 * np.pi, size=D)
+
+    # z(x) = sqrt(2/D) * cos(x W + b)
+    Z_manual = np.sqrt(2.0 / D) * np.cos(X @ W_manual + b_manual)
+    K_approx_manual = Z_manual @ Z_manual.T
+
+    # Exact RBF Kernel
+    dist_sq = np.sum((X[:, None, :] - X[None, :, :]) ** 2, axis=-1)
+    K_exact = np.exp(-gamma * dist_sq)
+
+    diff_manual = np.abs(K_exact - K_approx_manual)
+    mean_err_manual = float(np.mean(diff_manual))
+    max_err_manual = float(np.max(diff_manual))
+
+    # Test sklearn RBFSampler
+    rbf_sampler = RBFSampler(gamma=gamma, n_components=D, random_state=42)
+    Z_sklearn = rbf_sampler.fit_transform(X)
+    K_approx_sklearn = Z_sklearn @ Z_sklearn.T
+    diff_sklearn = np.abs(K_exact - K_approx_sklearn)
+    mean_err_sklearn = float(np.mean(diff_sklearn))
+
+    # Test reproducibility
+    rbf_sampler2 = RBFSampler(gamma=gamma, n_components=D, random_state=42)
+    Z_sklearn2 = rbf_sampler2.fit_transform(X)
+    reproducible = bool(np.array_equal(Z_sklearn, Z_sklearn2))
+
+    test_res = {
+        "manual_mae": mean_err_manual,
+        "manual_max_err": max_err_manual,
+        "sklearn_mae": mean_err_sklearn,
+        "reproducible": reproducible,
+        "passed": bool(mean_err_sklearn < 0.05 and reproducible)
+    }
+
+    test_json = results_dir / "rff_convention_test.json"
+    with open(test_json, "w") as f:
+        json.dump(test_res, f, indent=2)
+
+    logger.info(f"RFF Convention Test: Sklearn MAE={mean_err_sklearn:.4f}, Reproducible={reproducible}, Passed={test_res['passed']}")
+    return test_res
+
+
+def main():
+    args = parse_args()
+    input_dir = Path(args.input_dir)
+    output_dir = Path(args.output_dir)
+
+    log_dir = output_dir / "logs"
+    models_dir = output_dir / "models"
+    results_dir = output_dir / "results"
+    figures_dir = output_dir / "figures"
+    checkpoints_dir = output_dir / "checkpoints"
+
+    for d in [log_dir, models_dir, results_dir, figures_dir, checkpoints_dir]:
+        d.mkdir(parents=True, exist_ok=True)
+
+    log_file = log_dir / "s05_stage_c.log"
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(asctime)s] %(levelname)s: %(message)s",
+        handlers=[
+            logging.FileHandler(log_file, mode="w"),
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    logger = logging.getLogger("stage_c")
+    logger.info("Starting Phase 5 Stage C: Random Fourier Features SVM...")
+
+    # Step 1: Verify RFF convention
+    verify_rff_convention(logger, results_dir)
+
+    # Load scaled data for pca_B and hosvd_B
+    logger.info("Loading scaled data for pca_B and hosvd_B...")
+    scaled_data = {}
+    for cfg in CONFIGS:
+        scaler_file = models_dir / f"scaler_{cfg}.npz"
+        scaler_npz = np.load(scaler_file)
+        mean_ = scaler_npz["mean"]
+        scale_ = scaler_npz["scale"]
+
+        with np.load(input_dir / f"features_train_{cfg}.npz") as d:
+            F_train = (d["F"] - mean_) / scale_
+            y_train = d["y"].astype(np.int8)
+            cs_train = d["current_state"].astype(np.int8)
+
+        with np.load(input_dir / f"features_validation_{cfg}.npz") as d:
+            F_val = (d["F"] - mean_) / scale_
+            y_val = d["y"].astype(np.int8)
+            cs_val = d["current_state"].astype(np.int8)
+
+        scaled_data[cfg] = {
+            "F_train": F_train.astype(np.float32),
+            "y_train": y_train,
+            "cs_train": cs_train,
+            "F_val": F_val.astype(np.float32),
+            "y_val": y_val,
+            "cs_val": cs_val
+        }
+
+    # Step 2: Kernel Approximation Quality Study
+    logger.info("=" * 60)
+    logger.info("STEP 2: Kernel Approximation Quality Study (Frobenius Error & MAE)")
+    logger.info("=" * 60)
+
+    approx_rows = []
+    d_dim = 192
+    gamma_test = 1.0 / d_dim
+
+    for cfg in CONFIGS:
+        F_train = scaled_data[cfg]["F_train"]
+        for m in [500, 1000]:
+            X_sub = F_train[:m].astype(np.float64)
+            # Compute exact Gram
+            dist_sq = np.sum((X_sub[:, None, :] - X_sub[None, :, :]) ** 2, axis=-1)
+            K_exact = np.exp(-gamma_test * dist_sq)
+            frob_k_exact = np.linalg.norm(K_exact, "fro")
+
+            for D in D_GRID:
+                for seed in SEEDS:
+                    rbf_sampler = RBFSampler(gamma=gamma_test, n_components=D, random_state=seed)
+                    Z = rbf_sampler.fit_transform(X_sub)
+                    K_hat = Z @ Z.T
+
+                    diff = K_exact - K_hat
+                    frob_err = np.linalg.norm(diff, "fro")
+                    rel_frob_err = frob_err / frob_k_exact
+                    mae = float(np.mean(np.abs(diff)))
+
+                    approx_rows.append({
+                        "config": cfg,
+                        "m": m,
+                        "D": D,
+                        "seed": seed,
+                        "gamma": gamma_test,
+                        "rel_frob_error": float(rel_frob_err),
+                        "mae": mae
+                    })
+
+    df_approx = pd.DataFrame(approx_rows)
+    approx_csv = results_dir / "rff_kernel_approx.csv"
+    df_approx.to_csv(approx_csv, index=False)
+    logger.info(f"Saved kernel approximation results to {approx_csv}")
+
+    # Plot Frobenius error vs D
+    plt.figure(figsize=(10, 5))
+    for idx, cfg in enumerate(CONFIGS):
+        plt.subplot(1, 2, idx + 1)
+        sub = df_approx[(df_approx["config"] == cfg) & (df_approx["m"] == 1000)]
+        for seed in SEEDS:
+            s_data = sub[sub["seed"] == seed]
+            plt.plot(s_data["D"], s_data["rel_frob_error"], marker="o", linestyle="--", alpha=0.7, label=f"Seed {seed}")
+        avg_data = sub.groupby("D")["rel_frob_error"].mean().reset_index()
+        plt.plot(avg_data["D"], avg_data["rel_frob_error"], color="black", linewidth=2.5, marker="s", label="Mean")
+        plt.xlabel("RFF Dimension D")
+        plt.ylabel("Relative Frobenius Error ||K - K_hat||_F / ||K||_F")
+        plt.title(f"{cfg} (m=1000, gamma=1/192)")
+        plt.grid(True, linestyle=":", alpha=0.6)
+        if idx == 0:
+            plt.legend(fontsize=8)
+
+    plt.tight_layout()
+    approx_fig = figures_dir / "rff_kernel_approx.png"
+    plt.savefig(approx_fig, dpi=300)
+    plt.close()
+    logger.info(f"Saved RFF kernel approximation plot to {approx_fig}")
+
+    # Step 3: Coarse Grid Tuning at D=1024, seed=42
+    logger.info("=" * 60)
+    logger.info("STEP 3: Coarse Hyperparameter Tuning (D=1024, Seed=42)")
+    logger.info("=" * 60)
+
+    coarse_rows = []
+    best_candidate_params = {}
+
+    for cfg in CONFIGS:
+        logger.info(f"--- Coarse tuning for {cfg} ---")
+        F_train = scaled_data[cfg]["F_train"]
+        y_train = scaled_data[cfg]["y_train"]
+        F_val = scaled_data[cfg]["F_val"]
+        y_val = scaled_data[cfg]["y_val"]
+
+        best_score = -1.0
+        best_param = None
+
+        for a in GAMMA_SCALES:
+            gamma_val = a / d_dim
+            rbf_sampler = RBFSampler(gamma=gamma_val, n_components=1024, random_state=42)
+            Z_train = rbf_sampler.fit_transform(F_train)
+            Z_val = rbf_sampler.transform(F_val)
+
+            for c_val in C_GRID:
+                start_t = time.time()
+                clf = LinearSVC(
+                    C=c_val,
+                    loss="squared_hinge",
+                    multi_class="ovr",
+                    max_iter=args.max_iter,
+                    random_state=42,
+                    dual=False
+                )
+                clf.fit(Z_train, y_train)
+                fit_t = time.time() - start_t
+
+                pred_val = clf.predict(Z_val)
+                acc = accuracy_score(y_val, pred_val)
+                macro_f1 = f1_score(y_val, pred_val, average="macro", zero_division=0)
+
+                row = {
+                    "config": cfg,
+                    "gamma_scale": a,
+                    "gamma": gamma_val,
+                    "C": c_val,
+                    "D": 1024,
+                    "val_scopeB_accuracy": acc,
+                    "val_scopeB_macro_f1": macro_f1,
+                    "fit_time_sec": fit_t
+                }
+                coarse_rows.append(row)
+                logger.info(f"[{cfg} | gamma_scale={a}, C={c_val}] ScopeB Macro-F1={macro_f1:.4f}, Acc={acc:.4f}, Time={fit_t:.2f}s")
+
+                if macro_f1 > best_score:
+                    best_score = macro_f1
+                    best_param = (gamma_val, a, c_val)
+
+        best_candidate_params[cfg] = best_param
+        logger.info(f"Best coarse candidate for {cfg}: gamma_scale={best_param[1]}, C={best_param[2]} (Val Macro-F1={best_score:.4f})")
+
+    df_coarse = pd.DataFrame(coarse_rows)
+    coarse_csv = results_dir / "stage_c_coarse_grid.csv"
+    df_coarse.to_csv(coarse_csv, index=False)
+    logger.info(f"Saved coarse grid results to {coarse_csv}")
+
+    # Step 4: Full RFF Experiment across D and 5 Seeds
+    logger.info("=" * 60)
+    logger.info("STEP 4: Full RFF Experiment (D in {256, 1024, 2048} x 5 Seeds)")
+    logger.info("=" * 60)
+
+    full_rows = []
+
+    for cfg in CONFIGS:
+        gamma_val, gamma_scale, c_val = best_candidate_params[cfg]
+        F_train = scaled_data[cfg]["F_train"]
+        y_train = scaled_data[cfg]["y_train"]
+        F_val = scaled_data[cfg]["F_val"]
+        y_val = scaled_data[cfg]["y_val"]
+        cs_val = scaled_data[cfg]["cs_val"]
+        scope_a_mask = (cs_val >= 0)
+
+        for D in D_GRID:
+            for seed in SEEDS:
+                logger.info(f"Running {cfg} | D={D} | seed={seed} (gamma_scale={gamma_scale}, C={c_val})...")
+                start_t = time.time()
+
+                rbf_sampler = RBFSampler(gamma=gamma_val, n_components=D, random_state=seed)
+                # Fit only on feature dimension, transform
+                t0_tf = time.time()
+                Z_train = rbf_sampler.fit_transform(F_train)
+                Z_val = rbf_sampler.transform(F_val)
+                tf_time = time.time() - t0_tf
+
+                t0_fit = time.time()
+                clf = LinearSVC(
+                    C=c_val,
+                    loss="squared_hinge",
+                    multi_class="ovr",
+                    max_iter=args.max_iter,
+                    random_state=42,
+                    dual=False
+                )
+                clf.fit(Z_train, y_train)
+                fit_time = time.time() - t0_fit
+                total_time = time.time() - start_t
+
+                # Predictions
+                pred_val = clf.predict(Z_val)
+
+                # Scope B
+                acc_b = accuracy_score(y_val, pred_val)
+                macro_f1_b = f1_score(y_val, pred_val, average="macro", zero_division=0)
+                weighted_f1_b = f1_score(y_val, pred_val, average="weighted", zero_division=0)
+                bal_acc_b = balanced_accuracy_score(y_val, pred_val)
+
+                # Scope A
+                y_val_a = y_val[scope_a_mask]
+                pred_val_a = pred_val[scope_a_mask]
+                acc_a = accuracy_score(y_val_a, pred_val_a)
+                macro_f1_a = f1_score(y_val_a, pred_val_a, average="macro", zero_division=0)
+                bal_acc_a = balanced_accuracy_score(y_val_a, pred_val_a)
+
+                # Transitions
+                trans = compute_transition_metrics(y_val, pred_val, cs_val)
+
+                # Resource sizes
+                mapping_bytes = d_dim * D * 4
+                projected_train_bytes = F_train.shape[0] * D * 4
+                ckpt_path = checkpoints_dir / f"stage_c_{cfg}_D{D}_s{seed}.pkl"
+                with open(ckpt_path, "wb") as f:
+                    pickle.dump({"clf": clf, "sampler": rbf_sampler}, f)
+                model_bytes = os.path.getsize(ckpt_path)
+
+                row = {
+                    "config": cfg,
+                    "D": D,
+                    "seed": seed,
+                    "gamma_scale": gamma_scale,
+                    "gamma": gamma_val,
+                    "C": c_val,
+                    "transform_time_sec": tf_time,
+                    "fit_time_sec": fit_time,
+                    "total_time_sec": total_time,
+                    "mapping_bytes": mapping_bytes,
+                    "model_bytes": model_bytes,
+                    "val_scopeB_accuracy": acc_b,
+                    "val_scopeB_macro_f1": macro_f1_b,
+                    "val_scopeB_weighted_f1": weighted_f1_b,
+                    "val_scopeB_balanced_accuracy": bal_acc_b,
+                    "val_scopeA_accuracy": acc_a,
+                    "val_scopeA_macro_f1": macro_f1_a,
+                    "val_scopeA_balanced_accuracy": bal_acc_a,
+                    "val_trans_tp": trans["trans_tp"],
+                    "val_trans_fp": trans["trans_fp"],
+                    "val_trans_fn": trans["trans_fn"],
+                    "val_trans_tn": trans["trans_tn"],
+                    "val_trans_precision": trans["trans_precision"],
+                    "val_trans_recall": trans["trans_recall"],
+                    "val_trans_f1": trans["trans_f1"],
+                    "val_trans_dest_accuracy": trans["trans_dest_accuracy"],
+                    "val_high_tp": trans["high_tp"],
+                    "val_high_fp": trans["high_fp"],
+                    "val_high_fn": trans["high_fn"],
+                    "val_high_precision": trans["high_precision"],
+                    "val_high_recall": trans["high_recall"],
+                    "val_high_f1": trans["high_f1"],
+                }
+                full_rows.append(row)
+                logger.info(
+                    f"[{cfg} | D={D} | s={seed}] Val ScopeB Macro-F1={macro_f1_b:.4f}, ScopeB Acc={acc_b:.4f}, "
+                    f"Trans-F1={trans['trans_f1']:.4f}, FitTime={fit_time:.2f}s"
+                )
+
+    df_full = pd.DataFrame(full_rows)
+    full_csv = results_dir / "stage_c_full_experiment.csv"
+    df_full.to_csv(full_csv, index=False)
+    logger.info(f"Saved full RFF experiment results to {full_csv}")
+
+    # Plot Macro-F1 vs D with seed spread
+    plt.figure(figsize=(9, 5))
+    for cfg in CONFIGS:
+        sub = df_full[df_full["config"] == cfg]
+        color = "blue" if "pca" in cfg else "green"
+        linestyle = "-" if "pca" in cfg else "--"
+
+        # Plot individual seeds
+        for seed in SEEDS:
+            s_data = sub[sub["seed"] == seed]
+            plt.plot(s_data["D"], s_data["val_scopeB_macro_f1"], color=color, alpha=0.25, linestyle=":", marker=".")
+
+        # Plot mean
+        mean_data = sub.groupby("D")["val_scopeB_macro_f1"].mean().reset_index()
+        std_data = sub.groupby("D")["val_scopeB_macro_f1"].std().reset_index()
+        plt.errorbar(
+            mean_data["D"], mean_data["val_scopeB_macro_f1"],
+            yerr=std_data["val_scopeB_macro_f1"],
+            color=color, linestyle=linestyle, marker="o", linewidth=2.0, capsize=4,
+            label=f"{cfg} (Mean ± 1 SD)"
+        )
+
+    plt.xlabel("RFF Dimension D")
+    plt.ylabel("Validation Scope B Macro-F1")
+    plt.title("RFF SVM: Validation Scope B Macro-F1 vs Dimension D (5 Random Seeds)")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    rff_f1_fig = figures_dir / "rff_macro_f1_vs_D.png"
+    plt.savefig(rff_f1_fig, dpi=300)
+    plt.close()
+    logger.info(f"Saved Macro-F1 vs D plot to {rff_f1_fig}")
+
+    logger.info("Stage C completed successfully!")
+
+
+if __name__ == "__main__":
+    main()
+

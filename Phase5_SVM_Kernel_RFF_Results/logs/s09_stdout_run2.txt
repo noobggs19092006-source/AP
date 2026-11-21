@@ -1,0 +1,14 @@
+[2026-11-15 09:19:04,558] INFO: s09 start 2026-11-15T09:19:04+00:00 | sklearn 1.9.1 | numpy 2.5.4
+[2026-11-15 09:19:04,603] INFO: R1: D*=2048 seed*=44 (seed order best->worst [43, 45, 44, 42, 46]); original lock picks: {'rff_pca_B': {'D': 2048, 'seed': 43, 'val_macro_f1': 0.7464796357084641, 'rank_among_5_seeds_best_is_1': 1, 'is_best_validation_seed': True}, 'rff_hosvd_B': {'D': 2048, 'seed': 44, 'val_macro_f1': 0.7420753154476509, 'rank_among_5_seeds_best_is_1': 1, 'is_best_validation_seed': True}}
+[2026-11-15 09:19:04,622] INFO: Stage A tie-rule audit: selections that would change = ['hosvd_A', 'hosvd_B', 'hosvd_B_alt2', 'pca_A', 'pca_B']
+[2026-11-15 09:19:04,958] INFO: pca_B seed 42: resumed from checkpoint
+[2026-11-15 09:19:04,959] INFO: pca_B seed 43: resumed from checkpoint
+[2026-11-15 09:20:08,987] INFO: pca_B seed 44 fit (RFF+LinearSVC) 63.5s
+[2026-11-15 09:21:01,020] INFO: pca_B revised final (D=2048, seed=44) saved with train-only calibrator
+[2026-11-15 09:21:01,074] INFO: pca_B seed 45: resumed from checkpoint
+[2026-11-15 09:21:01,076] INFO: pca_B seed 46: resumed from checkpoint
+[2026-11-15 09:22:30,352] INFO: hosvd_B seed 42 fit (RFF+LinearSVC) 88.4s
+[2026-11-15 09:23:46,937] INFO: hosvd_B seed 43 fit (RFF+LinearSVC) 76.0s
+[2026-11-15 09:25:10,181] INFO: hosvd_B seed 44 fit (RFF+LinearSVC) 82.6s
+[2026-11-15 09:26:08,227] INFO: hosvd_B revised final (D=2048, seed=44) saved with train-only calibrator
+[2026-11-15 09:27:31,578] INFO: hosvd_B seed 45 fit (RFF+LinearSVC) 82.6s

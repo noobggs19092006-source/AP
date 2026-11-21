@@ -1,0 +1,8 @@
+[2026-11-15 09:08:23,295] INFO: s09 start 2026-11-15T09:08:23+00:00 | sklearn 1.9.1 | numpy 2.5.4
+[2026-11-15 09:08:23,314] INFO: R1: D*=2048 seed*=44 (seed order best->worst [43, 45, 44, 42, 46]); original lock picks: {'rff_pca_B': {'D': 2048, 'seed': 43, 'val_macro_f1': 0.7464796357084641, 'rank_among_5_seeds_best_is_1': 1, 'is_best_validation_seed': True}, 'rff_hosvd_B': {'D': 2048, 'seed': 44, 'val_macro_f1': 0.7420753154476509, 'rank_among_5_seeds_best_is_1': 1, 'is_best_validation_seed': True}}
+[2026-11-15 09:08:23,328] INFO: Stage A tie-rule audit: selections that would change = ['hosvd_A', 'hosvd_B', 'hosvd_B_alt2', 'pca_A', 'pca_B']
+[2026-11-15 09:09:30,173] INFO: pca_B seed 42 fit (RFF+LinearSVC) 65.6s
+[2026-11-15 09:10:37,112] INFO: pca_B seed 43 fit (RFF+LinearSVC) 66.4s
+[2026-11-15 09:11:41,350] INFO: pca_B seed 44 fit (RFF+LinearSVC) 63.6s
+[2026-11-15 09:12:45,065] INFO: pca_B seed 45 fit (RFF+LinearSVC) 63.2s
+[2026-11-15 09:13:54,759] INFO: pca_B seed 46 fit (RFF+LinearSVC) 69.1s

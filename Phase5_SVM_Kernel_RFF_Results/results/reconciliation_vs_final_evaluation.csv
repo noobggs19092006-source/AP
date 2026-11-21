@@ -1,0 +1,11 @@
+model_id,split,max_abs_diff,worst_column
+linear_pca_B,validation,3.885780586188048e-16,scopeB_log_loss
+linear_pca_B,test,1.1102230246251565e-16,scopeB_weighted_f1
+linear_hosvd_B,validation,1.6653345369377348e-16,scopeB_log_loss
+linear_hosvd_B,test,2.7755575615628914e-16,scopeB_log_loss
+linear_best_overall,validation,2.220446049250313e-16,scopeB_macro_f1
+linear_best_overall,test,1.1102230246251565e-16,scopeB_weighted_f1
+rff_pca_B,validation,3.885780586188048e-16,scopeA_log_loss
+rff_pca_B,test,3.3306690738754696e-16,scopeA_log_loss
+rff_hosvd_B,validation,1.1102230246251565e-16,scopeB_weighted_f1
+rff_hosvd_B,test,2.7755575615628914e-16,scopeA_log_loss

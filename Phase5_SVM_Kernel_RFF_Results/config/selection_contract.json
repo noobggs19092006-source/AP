@@ -1,0 +1,21 @@
+{
+  "primary_criterion": "validation Scope B macro-F1",
+  "tie_rule": {
+    "tolerance": 0.005,
+    "order": [
+      "validation Scope A transition F1",
+      "transition recall",
+      "balanced accuracy",
+      "cost"
+    ],
+    "status": "practical convention, not significance"
+  },
+  "original_lock": {
+    "file": "manifests/LOCKED_SELECTION.json",
+    "rff_rule": "arg-max single validation row (found to be best-seed selection)",
+    "stage_a_rule_applied": "arg-max (tie rule not applied; see results/stage_a_tie_rule_audit.csv)"
+  },
+  "revised_rff_rule": "median-seed common pair: D* by cross-seed mean; seed* = median-ranked pair-mean seed; ties -> smaller value; validation only; written after original test was seen (post-audit)",
+  "stage_b_rule": "tie rule over (fit_n, a, C) within representation; validation only; cost = fit_n",
+  "test_policy": "no test metric may influence any rule; each final model evaluated once"
+}

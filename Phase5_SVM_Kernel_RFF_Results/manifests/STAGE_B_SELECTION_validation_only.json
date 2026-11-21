@@ -1,0 +1,86 @@
+{
+  "selection_rule": "validation Scope B macro-F1; ties within 0.005 -> Scope A transition F1, recall, balanced accuracy, then smaller fit_n (cost). No test data used.",
+  "utc": "2026-11-15T09:05:14+00:00",
+  "per_config": {
+    "pca_B": {
+      "run_id": "B_pca_B_n8000_a0.1_C10.0",
+      "config": "pca_B",
+      "fit_n": 8000,
+      "gamma_scale": 0.1,
+      "gamma": 0.0005208333333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.7403971070394167,
+      "val_scopeB_accuracy": 0.7799009200283086,
+      "val_trans_f1": 0.3609898107714702,
+      "n_support_vectors": 3900,
+      "fit_time_s": 2.2623172790000012
+    },
+    "hosvd_B": {
+      "run_id": "B_hosvd_B_n8000_a0.1_C10.0",
+      "config": "hosvd_B",
+      "fit_n": 8000,
+      "gamma_scale": 0.1,
+      "gamma": 0.0005208333333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.76041992164205,
+      "val_scopeB_accuracy": 0.7869780608634112,
+      "val_trans_f1": 0.33610900832702495,
+      "n_support_vectors": 4033,
+      "fit_time_s": 2.610544926999978
+    }
+  },
+  "per_config_and_fit_n": {
+    "pca_B|fit_n=4000": {
+      "run_id": "B_pca_B_n4000_a0.1_C10.0",
+      "config": "pca_B",
+      "fit_n": 4000,
+      "gamma_scale": 0.1,
+      "gamma": 0.0005208333333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.7414249380660021,
+      "val_scopeB_accuracy": 0.7596131163010144,
+      "val_trans_f1": 0.34328358208955223,
+      "n_support_vectors": 2005,
+      "fit_time_s": 0.7646407419999974
+    },
+    "pca_B|fit_n=8000": {
+      "run_id": "B_pca_B_n8000_a0.1_C10.0",
+      "config": "pca_B",
+      "fit_n": 8000,
+      "gamma_scale": 0.1,
+      "gamma": 0.0005208333333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.7403971070394167,
+      "val_scopeB_accuracy": 0.7799009200283086,
+      "val_trans_f1": 0.3609898107714702,
+      "n_support_vectors": 3900,
+      "fit_time_s": 2.2623172790000012
+    },
+    "hosvd_B|fit_n=4000": {
+      "run_id": "B_hosvd_B_n4000_a0.1_C10.0",
+      "config": "hosvd_B",
+      "fit_n": 4000,
+      "gamma_scale": 0.1,
+      "gamma": 0.0005208333333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.7084484228543416,
+      "val_scopeB_accuracy": 0.7282377919320594,
+      "val_trans_f1": 0.3072100313479623,
+      "n_support_vectors": 2034,
+      "fit_time_s": 0.7560672120000049
+    },
+    "hosvd_B|fit_n=8000": {
+      "run_id": "B_hosvd_B_n8000_a0.1_C10.0",
+      "config": "hosvd_B",
+      "fit_n": 8000,
+      "gamma_scale": 0.1,
+      "gamma": 0.0005208333333333333,
+      "C": 10.0,
+      "val_scopeB_macro_f1": 0.76041992164205,
+      "val_scopeB_accuracy": 0.7869780608634112,
+      "val_trans_f1": 0.33610900832702495,
+      "n_support_vectors": 4033,
+      "fit_time_s": 2.610544926999978
+    }
+  }
+}

@@ -1,0 +1,10 @@
+model_id,config_id,model_type,calibrated,eligible_for_fusion,row_sum_check_val,row_sum_check_test,reason
+linear_pca_B,pca_B,linear,True,True,2.220446049250313e-16,2.220446049250313e-16,valid_calibrated_probabilities
+linear_hosvd_B,hosvd_B,linear,True,True,2.220446049250313e-16,2.220446049250313e-16,valid_calibrated_probabilities
+linear_best_overall,pca_C,linear,True,True,2.220446049250313e-16,2.220446049250313e-16,valid_calibrated_probabilities
+revised_rff_pca_B,pca_B,rff,True,True,2.220446049250313e-16,2.220446049250313e-16,valid_calibrated_probabilities
+revised_rff_hosvd_B,hosvd_B,rff,True,True,2.220446049250313e-16,2.220446049250313e-16,valid_calibrated_probabilities
+rff_pca_B,pca_B,rff_unrevised,True,True,2.220446049250313e-16,2.220446049250313e-16,valid_calibrated_probabilities
+rff_hosvd_B,hosvd_B,rff_unrevised,True,True,2.220446049250313e-16,2.220446049250313e-16,valid_calibrated_probabilities
+stageB_full_pca_B,pca_B,exact_rbf,False,False,,,exact_RBF_lacks_calibrated_probabilities
+stageB_full_hosvd_B,hosvd_B,exact_rbf,False,False,,,exact_RBF_lacks_calibrated_probabilities

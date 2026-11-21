@@ -1,0 +1,50 @@
+[2026-11-15 13:07:40,377] INFO: Starting Phase 5 Model Selection, Calibration & Evaluation...
+[2026-11-15 13:07:40,377] INFO: ============================================================
+[2026-11-15 13:07:40,378] INFO: MODULE 1: Locking Model Selection (VALIDATION-ONLY)
+[2026-11-15 13:07:40,378] INFO: ============================================================
+[2026-11-15 13:07:40,385] INFO: FROZEN and locked model selection to: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/manifests/LOCKED_SELECTION.json
+[2026-11-15 13:07:40,385] INFO: ============================================================
+[2026-11-15 13:07:40,385] INFO: MODULE 2: Recomputing Phase 3 Markov Baselines from CSVs
+[2026-11-15 13:07:40,385] INFO: ============================================================
+[2026-11-15 13:07:40,392] INFO: Loaded validation Markov CSV: 4239 rows
+[2026-11-15 13:07:40,392] INFO: Loaded test Markov CSV: 5720 rows
+[2026-11-15 13:07:40,425] INFO: Saved recomputed Markov baseline metrics to /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/results/markov_baseline_recomputed.csv
+[2026-11-15 13:07:40,425] INFO: Markov Test Scope A Accuracy: 0.907476 (Reference ~0.907476: delta = 0.000000)
+[2026-11-15 13:07:40,425] INFO: Markov Test Scope A Hard-Detected Transitions: 0 of 526 true changes! (Transition Recall = 0.0000, F1 = 0.0000)
+[2026-11-15 13:07:40,425] INFO: ============================================================
+[2026-11-15 13:07:40,425] INFO: MODULE 3 & 4: Training Calibration & Final Test Evaluation
+[2026-11-15 13:07:40,425] INFO: ============================================================
+[2026-11-15 13:07:40,425] INFO: Processing final model: linear_pca_B (pca_B, linear)...
+[2026-11-15 13:07:41,618] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_linear_pca_B_validation.csv
+[2026-11-15 13:07:41,660] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_linear_pca_B_test.csv
+[2026-11-15 13:07:41,660] INFO: Processing final model: linear_hosvd_B (hosvd_B, linear)...
+[2026-11-15 13:07:44,008] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_linear_hosvd_B_validation.csv
+[2026-11-15 13:07:44,050] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_linear_hosvd_B_test.csv
+[2026-11-15 13:07:44,050] INFO: Processing final model: linear_best_overall (pca_C, linear)...
+[2026-11-15 13:07:48,619] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_linear_best_overall_validation.csv
+[2026-11-15 13:07:48,666] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_linear_best_overall_test.csv
+[2026-11-15 13:07:48,666] INFO: Processing final model: rff_pca_B (pca_B, rff)...
+[2026-11-15 13:08:31,142] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_rff_pca_B_validation.csv
+[2026-11-15 13:08:31,216] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_rff_pca_B_test.csv
+[2026-11-15 13:08:31,216] INFO: Processing final model: rff_hosvd_B (hosvd_B, rff)...
+[2026-11-15 13:09:21,424] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_rff_hosvd_B_validation.csv
+[2026-11-15 13:09:21,485] INFO: Saved prediction CSV: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/predictions/final_rff_hosvd_B_test.csv
+[2026-11-15 13:09:21,487] INFO: Saved final evaluation metrics to /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/results/final_evaluation_scopeAB.csv
+[2026-11-15 13:09:21,487] INFO: ============================================================
+[2026-11-15 13:09:21,487] INFO: MODULE 5: Cost-Sensitive Transition Weighting Supplement
+[2026-11-15 13:09:21,487] INFO: ============================================================
+[2026-11-15 13:09:22,123] INFO: Cost-Sensitive [pca_B | lambda=1.0] Trans-Recall=0.5082, Trans-F1=0.3872, ScopeB Macro-F1=0.7628
+[2026-11-15 13:09:22,638] INFO: Cost-Sensitive [pca_B | lambda=2.0] Trans-Recall=0.5246, Trans-F1=0.3917, ScopeB Macro-F1=0.7603
+[2026-11-15 13:09:23,256] INFO: Cost-Sensitive [pca_B | lambda=5.0] Trans-Recall=0.5533, Trans-F1=0.3959, ScopeB Macro-F1=0.7601
+[2026-11-15 13:09:23,953] INFO: Cost-Sensitive [pca_B | lambda=10.0] Trans-Recall=0.5697, Trans-F1=0.3921, ScopeB Macro-F1=0.7631
+[2026-11-15 13:09:25,272] INFO: Cost-Sensitive [hosvd_B | lambda=1.0] Trans-Recall=0.4857, Trans-F1=0.3393, ScopeB Macro-F1=0.7108
+[2026-11-15 13:09:26,504] INFO: Cost-Sensitive [hosvd_B | lambda=2.0] Trans-Recall=0.5000, Trans-F1=0.3476, ScopeB Macro-F1=0.7168
+[2026-11-15 13:09:27,894] INFO: Cost-Sensitive [hosvd_B | lambda=5.0] Trans-Recall=0.5205, Trans-F1=0.3523, ScopeB Macro-F1=0.7291
+[2026-11-15 13:09:29,436] INFO: Cost-Sensitive [hosvd_B | lambda=10.0] Trans-Recall=0.5348, Trans-F1=0.3366, ScopeB Macro-F1=0.7220
+[2026-11-15 13:09:29,437] INFO: Saved cost-sensitive ablation results to /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/results/cost_sensitive_ablation.csv
+[2026-11-15 13:09:29,437] INFO: ============================================================
+[2026-11-15 13:09:29,437] INFO: MODULE 6: Generating Comparison Figures
+[2026-11-15 13:09:29,437] INFO: ============================================================
+[2026-11-15 13:09:29,644] INFO: Saved transition comparison figure to /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/figures/markov_vs_svm_transitions.png
+[2026-11-15 13:09:29,866] INFO: Saved high-entry comparison figure to /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/figures/high_entry_comparison.png
+[2026-11-15 13:09:29,866] INFO: Module 1-6 completed successfully!

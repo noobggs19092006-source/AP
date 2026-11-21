@@ -1,0 +1,20 @@
+[2026-11-15 14:14:05,183] INFO: s09 start 2026-11-15T14:14:05+00:00 | sklearn 1.9.1 | numpy 2.5.4
+[2026-11-15 14:14:05,216] INFO: R1: D*=2048 seed*=44 (seed order best->worst [43, 45, 44, 42, 46]); original lock picks: {'rff_pca_B': {'D': 2048, 'seed': 43, 'val_macro_f1': 0.7464796357084641, 'rank_among_5_seeds_best_is_1': 1, 'is_best_validation_seed': True}, 'rff_hosvd_B': {'D': 2048, 'seed': 44, 'val_macro_f1': 0.7420753154476509, 'rank_among_5_seeds_best_is_1': 1, 'is_best_validation_seed': True}}
+[2026-11-15 14:14:05,232] INFO: Stage A tie-rule audit: selections that would change = ['hosvd_A', 'hosvd_B', 'hosvd_B_alt2', 'pca_A', 'pca_B']
+[2026-11-15 14:14:06,986] INFO: pca_B seed 42: resumed from checkpoint
+[2026-11-15 14:14:06,988] INFO: pca_B seed 43: resumed from checkpoint
+[2026-11-15 14:14:06,990] INFO: pca_B seed 44: resumed from checkpoint
+[2026-11-15 14:14:06,993] INFO: pca_B seed 45: resumed from checkpoint
+[2026-11-15 14:14:06,995] INFO: pca_B seed 46: resumed from checkpoint
+[2026-11-15 14:14:08,084] INFO: hosvd_B seed 42: resumed from checkpoint
+[2026-11-15 14:14:08,086] INFO: hosvd_B seed 43: resumed from checkpoint
+[2026-11-15 14:14:08,088] INFO: hosvd_B seed 44: resumed from checkpoint
+[2026-11-15 14:14:08,089] INFO: hosvd_B seed 45: resumed from checkpoint
+[2026-11-15 14:15:30,761] INFO: hosvd_B seed 46 fit (RFF+LinearSVC) 82.1s
+[2026-11-15 14:15:35,526] INFO: Stage B pca_B validation predicted in 3.92s (run B_pca_B_n8000_a0.1_C10.0)
+[2026-11-15 14:15:40,968] INFO: Stage B pca_B test predicted in 5.37s (run B_pca_B_n8000_a0.1_C10.0)
+[2026-11-15 14:15:45,412] INFO: Stage B hosvd_B validation predicted in 3.92s (run B_hosvd_B_n8000_a0.1_C10.0)
+[2026-11-15 14:15:50,584] INFO: Stage B hosvd_B test predicted in 5.10s (run B_hosvd_B_n8000_a0.1_C10.0)
+[2026-11-15 14:16:17,831] INFO: Stage B FULL-train exact pca_B evaluated (hyper-parameters from fit_n=8000 validation winner)
+[2026-11-15 14:16:50,833] INFO: Stage B FULL-train exact hosvd_B evaluated (hyper-parameters from fit_n=8000 validation winner)
+[2026-11-15 14:16:50,834] INFO: s09 complete

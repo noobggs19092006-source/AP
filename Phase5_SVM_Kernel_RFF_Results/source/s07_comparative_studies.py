@@ -1,0 +1,276 @@
+#!/usr/bin/env python3
+"""
+s07_comparative_studies.py — Comparative Studies, Block Bootstrap & Pareto Analysis
+Phase 5 SVM/RFF Air Pollution Classification
+
+Studies:
+  1. Controlled PCA vs HoSVD across dimensions d in {48, 192, 576}
+  2. HoSVD rank allocation comparison: B (8,4,6) vs B_alt1 (6,4,8) vs B_alt2 (8,6,4) at d=192
+  3. Reconstruction error vs discriminative classification performance
+  4. Accuracy/Macro-F1 vs storage and runtime Pareto frontiers
+  5. Paired chronological block-bootstrap confidence intervals (1,000 iterations)
+"""
+
+import argparse
+import json
+import logging
+import os
+import pickle
+import sys
+import time
+from pathlib import Path
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.metrics import accuracy_score, f1_score
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Phase 5 Comparative Studies & Bootstrap")
+    parser.add_argument("--input-dir", type=str, default=".", help="Input directory")
+    parser.add_argument("--output-dir", type=str, default=str(Path(__file__).resolve().parent.parent), help="Output directory")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed")
+    parser.add_argument("--n-bootstrap", type=int, default=1000, help="Number of bootstrap iterations")
+    return parser.parse_args()
+
+
+def compute_trans_f1(y_true, y_pred, current_state):
+    mask = current_state >= 0
+    y_true_s = y_true[mask]
+    y_pred_s = y_pred[mask]
+    c_s = current_state[mask]
+
+    T = (y_true_s != c_s).astype(int)
+    T_hat = (y_pred_s != c_s).astype(int)
+
+    tp = int(np.sum((T == 1) & (T_hat == 1)))
+    fp = int(np.sum((T == 0) & (T_hat == 1)))
+    fn = int(np.sum((T == 1) & (T_hat == 0)))
+
+    prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    rec = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    return 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+
+
+def main():
+    args = parse_args()
+    input_dir = Path(args.input_dir)
+    output_dir = Path(args.output_dir)
+
+    log_dir = output_dir / "logs"
+    results_dir = output_dir / "results"
+    figures_dir = output_dir / "figures"
+    predictions_dir = output_dir / "predictions"
+    models_dir = output_dir / "models"
+
+    for d in [log_dir, results_dir, figures_dir, predictions_dir, models_dir]:
+        d.mkdir(parents=True, exist_ok=True)
+
+    log_file = log_dir / "s07_reports.log"
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(asctime)s] %(levelname)s: %(message)s",
+        handlers=[
+            logging.FileHandler(log_file, mode="w"),
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    logger = logging.getLogger("comparative")
+    logger.info("Starting Phase 5 Comparative Studies & Bootstrap Analysis...")
+
+    # Load Stage A best per config
+    stage_a_path = results_dir / "stage_a_best_per_config.csv"
+    if not stage_a_path.exists():
+        logger.error(f"Missing {stage_a_path}")
+        sys.exit(1)
+    df_stage_a = pd.read_csv(stage_a_path)
+
+    # -------------------------------------------------------------------------
+    # Study 1: Controlled PCA vs HoSVD across dimensions d in {48, 192, 576}
+    # -------------------------------------------------------------------------
+    logger.info("Study 1: PCA vs HoSVD across dimensions {48, 192, 576}...")
+    dim_map = {"A": 48, "B": 192, "C": 576}
+    pca_rows = []
+    hosvd_rows = []
+    for letter, d_val in dim_map.items():
+        pca_cfg = f"pca_{letter}"
+        hosvd_cfg = f"hosvd_{letter}"
+        p_row = df_stage_a[df_stage_a["config"] == pca_cfg].iloc[0]
+        h_row = df_stage_a[df_stage_a["config"] == hosvd_cfg].iloc[0]
+        pca_rows.append({"d": d_val, "macro_f1": p_row["val_scopeB_macro_f1"], "accuracy": p_row["val_scopeB_accuracy"]})
+        hosvd_rows.append({"d": d_val, "macro_f1": h_row["val_scopeB_macro_f1"], "accuracy": h_row["val_scopeB_accuracy"]})
+
+    df_dim_pca = pd.DataFrame(pca_rows)
+    df_dim_hosvd = pd.DataFrame(hosvd_rows)
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(df_dim_pca["d"], df_dim_pca["macro_f1"], marker="o", linewidth=2.0, color="#1f77b4", label="PCA (LinearSVC)")
+    plt.plot(df_dim_hosvd["d"], df_dim_hosvd["macro_f1"], marker="s", linewidth=2.0, linestyle="--", color="#ff7f0e", label="HoSVD (LinearSVC)")
+    plt.xlabel("Feature Dimension k (d)")
+    plt.ylabel("Validation Scope B Macro-F1")
+    plt.title("Dimension Scaling: PCA vs HoSVD (k in {48, 192, 576})")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    plt.xticks([48, 192, 576])
+    plt.legend()
+    plt.tight_layout()
+    dim_fig = figures_dir / "pca_vs_hosvd_macro_f1_vs_dim.png"
+    plt.savefig(dim_fig, dpi=300)
+    plt.close()
+    logger.info(f"Saved dimension scaling figure to {dim_fig}")
+
+    # -------------------------------------------------------------------------
+    # Study 2: HoSVD Rank Allocation Comparison at d=192
+    # -------------------------------------------------------------------------
+    logger.info("Study 2: HoSVD Rank Allocations B (8,4,6) vs B_alt1 (6,4,8) vs B_alt2 (8,6,4)...")
+    b_rows = df_stage_a[df_stage_a["config"].isin(["hosvd_B", "hosvd_B_alt1", "hosvd_B_alt2"])].copy()
+    rank_labels = {
+        "hosvd_B": "B: (8, 4, 6)",
+        "hosvd_B_alt1": "B_alt1: (6, 4, 8)",
+        "hosvd_B_alt2": "B_alt2: (8, 6, 4)"
+    }
+    b_rows["rank_label"] = b_rows["config"].map(rank_labels)
+
+    plt.figure(figsize=(8, 5))
+    x = np.arange(len(b_rows))
+    width = 0.35
+    plt.bar(x - width/2, b_rows["val_scopeB_macro_f1"], width, label="Val Scope B Macro-F1", color="#2ca02c")
+    plt.bar(x + width/2, b_rows["val_trans_f1"], width, label="Val Scope A Trans-F1", color="#98df8a")
+    plt.xticks(x, b_rows["rank_label"])
+    plt.ylabel("Score")
+    plt.title("HoSVD Rank Allocations at d=192: Classification & Transition Performance")
+    plt.ylim([0, 0.85])
+    plt.grid(True, linestyle=":", alpha=0.6, axis="y")
+    plt.legend()
+    plt.tight_layout()
+    rank_fig = figures_dir / "hosvd_rank_comparison.png"
+    plt.savefig(rank_fig, dpi=300)
+    plt.close()
+    logger.info(f"Saved HoSVD rank comparison figure to {rank_fig}")
+
+    # -------------------------------------------------------------------------
+    # Study 3: Link Phase 4 Reconstruction Errors to Phase 5 Classification
+    # -------------------------------------------------------------------------
+    logger.info("Study 3: Linking Phase 4 Reconstruction Error to Phase 5 Classification...")
+    # Load Phase 4 comparison CSV
+    phase4_csv = input_dir / "pca_hosvd_comparison.csv"
+    if phase4_csv.exists():
+        df_p4 = pd.read_csv(phase4_csv)
+        # Filter for validation split
+        df_p4_val = df_p4[df_p4["split"] == "validation"].copy()
+        # Match config names: method + "_" + config_id
+        df_p4_val["config"] = df_p4_val["method"] + "_" + df_p4_val["config_id"]
+        merged = pd.merge(df_p4_val, df_stage_a, on="config")
+
+        plt.figure(figsize=(8, 5))
+        for _, row in merged.iterrows():
+            marker = "o" if "pca" in row["config"] else "s"
+            color = "#1f77b4" if "pca" in row["config"] else "#ff7f0e"
+            rre_val = row["relative_reconstruction_error"]
+            plt.scatter(rre_val, row["val_scopeB_macro_f1"], marker=marker, color=color, s=100)
+            plt.annotate(row["config"], (rre_val + 0.005, row["val_scopeB_macro_f1"] - 0.005), fontsize=9)
+
+        plt.xlabel("Phase 4 Validation Relative Reconstruction Error (RRE_val)")
+        plt.ylabel("Phase 5 Validation Scope B Macro-F1")
+        plt.title("Unsupervised Reconstruction Error vs Supervised Macro-F1")
+        plt.grid(True, linestyle=":", alpha=0.6)
+        plt.tight_layout()
+        recon_fig = figures_dir / "reconstruction_vs_classification.png"
+        plt.savefig(recon_fig, dpi=300)
+        plt.close()
+        logger.info(f"Saved reconstruction vs classification plot to {recon_fig}")
+
+    # -------------------------------------------------------------------------
+    # Study 4: Pareto Analysis (Performance vs Storage & Runtime)
+    # -------------------------------------------------------------------------
+    logger.info("Study 4: Pareto Performance vs Storage & Runtime...")
+    # Collect models: 8 linear models + available RFF models
+    pareto_rows = []
+    for _, row in df_stage_a.iterrows():
+        cfg = row["config"]
+        c_val = row["C"]
+        ckpt = output_dir / "checkpoints" / f"stage_a_{cfg}_C{c_val}.pkl"
+        scaler_file = models_dir / f"scaler_{cfg}.npz"
+        model_size = os.path.getsize(ckpt) if ckpt.exists() else 0
+        scaler_size = os.path.getsize(scaler_file) if scaler_file.exists() else 0
+        total_storage = model_size + scaler_size
+
+        pareto_rows.append({
+            "model_id": f"Linear_{cfg}",
+            "config": cfg,
+            "type": "LinearSVC",
+            "storage_kb": total_storage / 1024,
+            "fit_time_sec": row["fit_time_sec"],
+            "val_macro_f1": row["val_scopeB_macro_f1"]
+        })
+
+    # Add RFF models if available
+    stage_c_path = results_dir / "stage_c_full_experiment.csv"
+    if stage_c_path.exists():
+        df_c = pd.read_csv(stage_c_path)
+        for _, row in df_c.iterrows():
+            D = row["D"]
+            seed = row["seed"]
+            cfg = row["config"]
+            ckpt = output_dir / "checkpoints" / f"stage_c_{cfg}_D{D}_s{seed}.pkl"
+            scaler_file = models_dir / f"scaler_{cfg}.npz"
+            m_size = os.path.getsize(ckpt) if ckpt.exists() else 0
+            s_size = os.path.getsize(scaler_file) if scaler_file.exists() else 0
+            total_storage = m_size + s_size + row["mapping_bytes"]
+
+            pareto_rows.append({
+                "model_id": f"RFF_{cfg}_D{D}_s{seed}",
+                "config": cfg,
+                "type": f"RFF_D{D}",
+                "storage_kb": total_storage / 1024,
+                "fit_time_sec": row["fit_time_sec"],
+                "val_macro_f1": row["val_scopeB_macro_f1"]
+            })
+
+    df_pareto = pd.DataFrame(pareto_rows)
+
+    # Plot 1: Macro-F1 vs Storage
+    plt.figure(figsize=(9, 5))
+    for mtype in df_pareto["type"].unique():
+        sub = df_pareto[df_pareto["type"] == mtype]
+        plt.scatter(sub["storage_kb"], sub["val_macro_f1"], label=mtype, alpha=0.8, s=60)
+    plt.xscale("log")
+    plt.xlabel("Total Deployable Storage (KB, log scale)")
+    plt.ylabel("Validation Scope B Macro-F1")
+    plt.title("Pareto Analysis: Validation Performance vs Total Deployable Storage")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+    plt.tight_layout()
+    storage_fig = figures_dir / "pareto_performance_vs_storage.png"
+    plt.savefig(storage_fig, dpi=300)
+    plt.close()
+    logger.info(f"Saved Pareto storage plot to {storage_fig}")
+
+    # Plot 2: Macro-F1 vs Fit Time
+    plt.figure(figsize=(9, 5))
+    for mtype in df_pareto["type"].unique():
+        sub = df_pareto[df_pareto["type"] == mtype]
+        plt.scatter(sub["fit_time_sec"], sub["val_macro_f1"], label=mtype, alpha=0.8, s=60)
+    plt.xlabel("Training Fit Time (seconds)")
+    plt.ylabel("Validation Scope B Macro-F1")
+    plt.title("Pareto Analysis: Validation Performance vs Training Time")
+    plt.grid(True, linestyle=":", alpha=0.6)
+    plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
+    plt.tight_layout()
+    runtime_fig = figures_dir / "pareto_performance_vs_runtime.png"
+    plt.savefig(runtime_fig, dpi=300)
+    plt.close()
+    logger.info(f"Saved Pareto runtime plot to {runtime_fig}")
+
+    # Study 5 (paired block bootstrap) was REMOVED from this module in the audit remediation:
+    # the original used 24 consecutive ROW-INDEX blocks and was reported incorrectly.  The corrected,
+    # timestamp-based bootstrap lives in s10_tables_and_bootstrap.py (results/bootstrap_ci.json).
+    logger.info("Study 5 (bootstrap) is produced by s10_tables_and_bootstrap.py")
+
+    logger.info("Comparative studies completed successfully!")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,15 @@
+{
+  "command": "/usr/bin/python -m pytest /home/claude/w/pkg/tests -v -rs --tb=short --junitxml=/home/claude/w/pkg/logs/pytest_junit.xml --output-dir /home/claude/w/pkg --input-dir /home/claude/w/Phase_5_Input_FIles/Phase 5 Input FIles",
+  "returncode": 1,
+  "total": 66,
+  "passed": 63,
+  "failed": 2,
+  "skipped": 1,
+  "skipped_tests": [
+    {
+      "test": "pkg.tests.test_remediation::test_reported_test_summary_is_not_hardcoded",
+      "reason": "test summary not yet generated"
+    }
+  ],
+  "seconds": 18.6
+}

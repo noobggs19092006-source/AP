@@ -1,0 +1,191 @@
+PHASE 3 -- FIRST-ORDER MARKOV MODEL AND SEQUENTIAL BASELINES: RESULTS AND MATHEMATICS
+Target: Aotizhongxin hourly PM2.5 state (research bins, NOT official AQI): 0 low <35, 1 moderate 35-<75, 2 high >=75 ug/m3.
+Everything in sections 3-9 is MEASURED by running phase3_markov.py on the supplied Phase 2 data.
+Section 1-2 and the hand example (section 2) are ILLUSTRATIVE / derivations, not Beijing results.
+
+==============================================================================
+1. MATHEMATICAL DEFINITIONS
+==============================================================================
+S_t in {0,1,2}. For a labelled row predicting hour t: current_state = S_(t-1), y = S_t.
+Counts      C_ij = #{train rows : current_state=i, y=j, i>=0}
+MLE         P_ij = C_ij / sum_j C_ij      (maximises prod P_ij^C_ij subject to row sums 1; Lagrange: C_ij/lambda_i)
+Two-step    (P^2)_ij = sum_k P_ik P_kj    (Chapman-Kolmogorov; a MODEL consequence, not measured 2-hour accuracy)
+Stationary  pi P = pi, pi>=0, sum pi = 1  <=>  (P^T - I) pi = 0 with the normalisation row appended (solved by least squares;
+            rank of the (k+1) x k system = k means the solution is unique).
+            Unique if the chain is irreducible (one communicating class). Convergence pi_0 P^n -> pi needs aperiodicity too.
+Spectral gap gamma = 1 - max|lambda| over non-trivial eigenvalues; read as a mixing-rate indicator ONLY if the chain is
+            irreducible, aperiodic and eigenvalue 1 is simple (otherwise reported as 'not interpreted').
+Run length  E[run | state i] = 1/(1-P_ii) for P_ii<1 under the time-homogeneous first-order model (geometric sojourn).
+Predictors  majority: constant argmax train y-counts (ties -> smallest index).  persistence: S_hat_t = S_(t-1).
+            Markov (modal): S_hat_t = argmax_j P[S_(t-1), j] with LOCKED tie rule: if current state i is in the argmax set, predict i;
+            else predict min(argmax set). Ties are decided by exact integer comparison of counts (same row denominator).
+            Majority vs persistence vs modal Markov: majority ignores the state; persistence is the Markov rule restricted to
+            'always stay'; the modal Markov rule only departs from persistence when some other state has a strictly higher
+            estimated next-hour probability than staying.
+Metrics     confusion matrix M (rows true, cols predicted); Precision_c = M_cc/sum_i M_ic; Recall_c = M_cc/sum_j M_cj;
+            F1_c = 2PR/(P+R); macro-F1 = mean_c F1_c; balanced accuracy = mean recall over classes with support>0 (zero_division=0).
+            Brier = mean_i sum_c (p_ic - 1[y_i=c])^2 (unnormalised, range 0..2).  Log loss uses clip eps=1e-12 then renormalise
+            (fixed, never tuned); not reported for persistence (one-hot, uncalibrated).
+
+==============================================================================
+2. HAND-WORKED ILLUSTRATIVE EXAMPLE (NOT BEIJING DATA)
+==============================================================================
+Sequence L,L,M,M,H,H,M,L,L = 0,0,1,1,2,2,1,0,0  -> 8 one-hour transitions.
+C =
+    [2, 1, 0]
+    [1, 1, 1]
+    [0, 1, 1]
+P = [[2/3,1/3,0],[1/3,1/3,1/3],[0,1/2,1/2]] =
+    [0.6667, 0.3333, 0.0000]
+    [0.3333, 0.3333, 0.3333]
+    [0.0000, 0.5000, 0.5000]
+P^2 = [[5/9,1/3,1/9],[1/3,7/18,5/18],[1/6,5/12,5/12]] =
+    [0.5556, 0.3333, 0.1111]
+    [0.3333, 0.3889, 0.2778]
+    [0.1667, 0.4167, 0.4167]
+e.g. (P^2)_00 = 2/3*2/3 + 1/3*1/3 + 0*0 = 4/9+1/9 = 5/9.
+pi = [3/8,3/8,1/4]: check pi P col0 = 3/8*2/3+3/8*1/3+0 = 1/4+1/8 = 3/8; col2 = 3/8*1/3+1/4*1/2 = 1/8+1/8 = 1/4.
+Eigenvalues (numerical): 1.00000000, 0.59359214, -0.09359214  -> illustrative gap ~ 0.40640786
+Tie-break: state M (1) has equal row (1/3,1/3,1/3) -> predict 1 (current state in tie set); state H (2) ties M/H -> predict 2.
+Persistence metrics on its 8 pairs: accuracy 4/8; M = [[2,1,0],[1,1,1],[0,1,1]]; precision=recall=F1=[2/3,1/3,1/2];
+macro-F1 = (2/3+1/3+1/2)/3 = 1/2; balanced accuracy = 1/2.  (code reproduces: acc=0.500 macro-F1=0.500 bal=0.500)
+
+==============================================================================
+3. INPUT AUDIT (MEASURED)
+==============================================================================
+train       total=24108 observed_current=23976 missing_current=132 observation_coverage=99.45% labels[low,mod,high]=[7872, 5832, 10404]
+validation  total=4239 observed_current=4197 missing_current=42 observation_coverage=99.01% labels[low,mod,high]=[1848, 1114, 1277]
+test        total=5720 observed_current=5685 missing_current=35 observation_coverage=99.39% labels[low,mod,high]=[2142, 1202, 2376]
+All loaded counts equal the Phase 2 contract; split isolation / strict timestamp order verified.
+Training prior uses all 24,108 y labels (independent of the missing-current mask); transition counts use 23,976 complete pairs.
+
+==============================================================================
+4. TRAIN-ONLY MARKOV ESTIMATES (MEASURED)
+==============================================================================
+C (rows=current state 0,1,2; cols=next state), C.sum()=23976, row sums=[7830, 5804, 10342]:
+    [7144, 672, 14]
+    [618, 4465, 721]
+    [57, 659, 9626]
+P (MLE):
+    [0.912388, 0.085824, 0.001788]
+    [0.106478, 0.769297, 0.124225]
+    [0.005512, 0.063721, 0.930768]
+P^2:
+    [0.841601, 0.144442, 0.013957]
+    [0.179748, 0.608872, 0.211380]
+    [0.016943, 0.108802, 0.874254]
+row-sum max error P: 0.00e+00; P^2: 1.11e-16; min entries P=0.001788, P^2=0.013957
+modal prediction by current state [0,1,2] = [0, 1, 2]; tie sets = [[0], [1], [2]]; majority label = 2; train prior = [0.326531, 0.241911, 0.431558]
+
+==============================================================================
+5. STATIONARY DISTRIBUTION, SPECTRUM, STRUCTURE (MEASURED)
+==============================================================================
+pi = [0.319876, 0.240439, 0.439685]  residual(inf-norm)=2.78e-17  sum error=4.44e-16  min=2.404e-01
+constraint-system rank=3 (3 => unique), condition number=21.062; left-eigenvector cross-check max diff=8.33e-16
+eigenvalues: 1.000000+0.000000i, 0.917412+0.000000i, 0.695041+0.000000i  (multiplicity of 1 = 1)
+irreducible=True (positive-edge reachability closure); per-state periods=[1, 1, 1] ; aperiodic=True
+spectral gap: 0.08258833378808417 -- interpretable: chain irreducible, aperiodic, eigenvalue 1 simple; gap = 1 - max|nontrivial eigenvalue| (conditional on the fitted model)
+Spectral gap is a property of the FITTED model; it is not a physical pollution-clearing time.
+state 0 low: model-implied mean run = 11.414 h; observed TRAIN mean run (all runs, edge-censored included) = 10.800 h over 729 runs; uncensored runs only = 10.243 h over 639
+state 1 moderate: model-implied mean run = 4.335 h; observed TRAIN mean run (all runs, edge-censored included) = 4.266 h over 1367 runs; uncensored runs only = 4.323 h over 1306
+state 2 high: model-implied mean run = 14.444 h; observed TRAIN mean run (all runs, edge-censored included) = 13.373 h over 778 runs; uncensored runs only = 12.747 h over 684
+Empirical class fractions (descriptive, not used to fit pi): train=[0.3265, 0.2419, 0.4316]; validation=[0.436, 0.2628, 0.3013]; test=[0.3745, 0.2101, 0.4154]
+
+==============================================================================
+6. BASELINE METRICS (MEASURED; Scope A = observed current only, Scope B = all rows + train-prior fallback)
+==============================================================================
+     split                          scope       model  n_total  n_observed_current  n_evaluated  n_fallback  observation_coverage_pct  prediction_coverage_pct  fallback_rate_pct  accuracy  macro_precision  macro_recall  macro_f1  balanced_accuracy  brier_score  log_loss
+     train          observed_current_only    majority    24108               23976        23976           0                   99.4525                  99.4525             0.0000    0.4321           0.1440        0.3333    0.2012             0.3333       0.6485    1.0712
+     train          observed_current_only persistence    24108               23976        23976           0                   99.4525                  99.4525             0.0000    0.8857           0.8708        0.8710    0.8709             0.8710       0.2286       NaN
+     train          observed_current_only      markov    24108               23976        23976           0                   99.4525                  99.4525             0.0000    0.8857           0.8708        0.8710    0.8709             0.8710       0.2005    0.3860
+     train full_split_with_prior_fallback    majority    24108               23976        24108           0                   99.4525                 100.0000             0.0000    0.4316           0.1439        0.3333    0.2010             0.3333       0.6486    1.0714
+     train full_split_with_prior_fallback persistence    24108               23976        24108         132                   99.4525                 100.0000             0.5475    0.8826           0.8683        0.8675    0.8679             0.8675       0.2311       NaN
+     train full_split_with_prior_fallback      markov    24108               23976        24108         132                   99.4525                 100.0000             0.5475    0.8826           0.8683        0.8675    0.8679             0.8675       0.2031    0.3899
+validation          observed_current_only    majority     4239                4197         4197           0                   99.0092                  99.0092             0.0000    0.3012           0.1004        0.3333    0.1543             0.3333       0.6797    1.1144
+validation          observed_current_only persistence     4239                4197         4197           0                   99.0092                  99.0092             0.0000    0.8837           0.8732        0.8730    0.8731             0.8730       0.2325       NaN
+validation          observed_current_only      markov     4239                4197         4197           0                   99.0092                  99.0092             0.0000    0.8837           0.8732        0.8730    0.8731             0.8730       0.2059    0.3994
+validation full_split_with_prior_fallback    majority     4239                4197         4239           0                   99.0092                 100.0000             0.0000    0.3013           0.1004        0.3333    0.1543             0.3333       0.6795    1.1140
+validation full_split_with_prior_fallback persistence     4239                4197         4239          42                   99.0092                 100.0000             0.9908    0.8780           0.8668        0.8680    0.8674             0.8680       0.2368       NaN
+validation full_split_with_prior_fallback      markov     4239                4197         4239          42                   99.0092                 100.0000             0.9908    0.8780           0.8668        0.8680    0.8674             0.8680       0.2104    0.4061
+      test          observed_current_only    majority     5720                5685         5685           0                   99.3881                  99.3881             0.0000    0.4157           0.1386        0.3333    0.1957             0.3333       0.6465    1.0663
+      test          observed_current_only persistence     5720                5685         5685           0                   99.3881                  99.3881             0.0000    0.9075           0.8894        0.8896    0.8895             0.8896       0.1850       NaN
+      test          observed_current_only      markov     5720                5685         5685           0                   99.3881                  99.3881             0.0000    0.9075           0.8894        0.8896    0.8895             0.8896       0.1666    0.3392
+      test full_split_with_prior_fallback    majority     5720                5685         5720           0                   99.3881                 100.0000             0.0000    0.4154           0.1385        0.3333    0.1957             0.3333       0.6466    1.0664
+      test full_split_with_prior_fallback persistence     5720                5685         5720          35                   99.3881                 100.0000             0.6119    0.9042           0.8867        0.8858    0.8862             0.8858       0.1880       NaN
+      test full_split_with_prior_fallback      markov     5720                5685         5720          35                   99.3881                 100.0000             0.6119    0.9042           0.8867        0.8858    0.8862             0.8858       0.1696    0.3438
+
+NOTE: Scope B prediction coverage is 100% of rows, but observation coverage of the previous-hour state is below 100%;
+the two are different quantities. Train rows are IN-SAMPLE for the Markov model. Test rows were evaluated once, with all parameters fixed.
+Timing (median of batched runs; see markov_baseline_metrics.csv columns fit_seconds / inference_seconds_median).
+
+Classwise metrics: see markov_classwise_metrics.csv.  Confusion matrices: markov_confusion_matrices.csv and figures/fig3_*.
+
+--- Regime-change diagnostics (Scope A rows only; denominators in CSV) ---
+     split       model  n_evaluated  n_true_change  change_prevalence_pct  n_pred_change  n_change_detected_tp  change_precision  change_recall  change_f1  n_correct_next_state_given_change  next_state_accuracy_given_change  n_enter_high_events  n_enter_high_predicted_correctly  enter_high_recall  n_pred_enter_high  enter_high_precision
+     train    majority        23976           2741                11.4323          13634                  2025            0.1485         0.7388     0.2473                                735                            0.2682                  735                               735             1.0000              13634                0.0539
+     train persistence        23976           2741                11.4323              0                     0               NaN         0.0000        NaN                                  0                            0.0000                  735                                 0             0.0000                  0                   NaN
+     train      markov        23976           2741                11.4323              0                     0               NaN         0.0000        NaN                                  0                            0.0000                  735                                 0             0.0000                  0                   NaN
+validation    majority         4197            488                11.6274           2935                   368            0.1254         0.7541     0.2150                                122                            0.2500                  122                               122             1.0000               2935                0.0416
+validation persistence         4197            488                11.6274              0                     0               NaN         0.0000        NaN                                  0                            0.0000                  122                                 0             0.0000                  0                   NaN
+validation      markov         4197            488                11.6274              0                     0               NaN         0.0000        NaN                                  0                            0.0000                  122                                 0             0.0000                  0                   NaN
+      test    majority         5685            526                 9.2524           3325                   375            0.1128         0.7129     0.1948                                154                            0.2928                  154                               154             1.0000               3325                0.0463
+      test persistence         5685            526                 9.2524              0                     0               NaN         0.0000        NaN                                  0                            0.0000                  154                                 0             0.0000                  0                   NaN
+      test      markov         5685            526                 9.2524              0                     0               NaN         0.0000        NaN                                  0                            0.0000                  154                                 0             0.0000                  0                   NaN
+Scope B diagnostics are not computed for unknown-current rows (a 'change' is undefined); on observed-current rows they coincide with Scope A.
+
+==============================================================================
+7. MARKOV ADEQUACY (MEASURED, TRAIN fit / VALIDATION NLL; test untouched)
+==============================================================================
+timestamp-exact triples from the observed hourly series reconstructed from y(t) and current_state(t) (never from shifted filtered arrays; X never used); strict Option-1 join counts reported for audit
+Triple audit: {"train": {"n_hours_in_series": 24841, "n_hours_observed": 24109, "n_conflicts_y_vs_next_current_state": 0, "n_hours_known_only_via_current_state": 1, "n_triples_reconstructed_series": 23848, "n_triples_strict_option1_join": 23848}, "validation": {"n_hours_in_series": 4345, "n_hours_observed": 4240, "n_conflicts_y_vs_next_current_state": 0, "n_hours_known_only_via_current_state": 1, "n_triples_reconstructed_series": 4155, "n_triples_strict_option1_join": 4155}, "test": {"n_hours_in_series": 5809, "n_hours_observed": 5721, "n_conflicts_y_vs_next_current_state": 0, "n_hours_known_only_via_current_state": 1, "n_triples_reconstructed_series": 5652, "n_triples_strict_option1_join": 5652}}
+ S_t-2  S_t-1  n_train_triples  P2_to_0  P2_to_1  P2_to_2  P1_to_0  P1_to_1  P1_to_2  tvd_second_vs_first  low_support_lt_100
+     0      0             7103   0.9236   0.0748   0.0017   0.9129   0.0853   0.0018               0.0106               False
+     0      1              669   0.1719   0.7593   0.0688   0.1066   0.7711   0.1223               0.0653               False
+     0      2               13   0.1538   0.2308   0.6154   0.0054   0.0639   0.9307               0.3153                True
+     1      0              618   0.7929   0.2071   0.0000   0.9129   0.0853   0.0018               0.1219               False
+     1      1             4449   0.0870   0.7889   0.1241   0.1066   0.7711   0.1223               0.0196               False
+     1      2              716   0.0042   0.1592   0.8366   0.0054   0.0639   0.9307               0.0953               False
+     2      0               55   0.8909   0.0727   0.0364   0.9129   0.0853   0.0018               0.0346                True
+     2      1              653   0.1730   0.6616   0.1654   0.1066   0.7711   0.1223               0.1095               False
+     2      2             9572   0.0053   0.0565   0.9382   0.0054   0.0639   0.9307               0.0075               False
+Validation mean NLL (nats, Laplace alpha=1.0 fixed in advance): first-order=0.39715, second-order=0.38603, difference (2nd-1st)=-0.01112; primary P (MLE, clipped)=0.39733
+Train LR statistic G=313.09 on df=12 (nominal p=8.32e-60); AIC first/second = 18362.3/18073.2; BIC first/second = 18410.8/18218.6
+Caveat: Hourly states are serially dependent; nominal iid chi-square p-values are descriptive only. A formal Markov-property claim is NOT made.
+
+==============================================================================
+8. NONSTATIONARITY ON TRAIN SUBPERIODS (MEASURED, descriptive)
+==============================================================================
+meteorological by calendar month of target timestamp: DJF=Dec-Feb, MAM=Mar-May, JJA=Jun-Aug, SON=Sep-Nov; pooled over training years; year = calendar year of target timestamp (2013 starts in March)
+group_type group  from_state  row_support  tvd_vs_pooled_train_row  low_support_lt_100
+      year  2013           0         2297                   0.0056               False
+      year  2013           1         1876                   0.0025               False
+      year  2013           2         3125                   0.0066               False
+      year  2014           0         2388                   0.0074               False
+      year  2014           1         1976                   0.0048               False
+      year  2014           2         3841                   0.0036               False
+      year  2015           0         3145                   0.0097               False
+      year  2015           1         1952                   0.0073               False
+      year  2015           2         3376                   0.0023               False
+    season   DJF           0         1697                   0.0246               False
+    season   DJF           1          693                   0.0810               False
+    season   DJF           2         2233                   0.0136               False
+    season   JJA           0         2123                   0.0159               False
+    season   JJA           1         1901                   0.0156               False
+    season   JJA           2         2448                   0.0141               False
+    season   MAM           0         1707                   0.0296               False
+    season   MAM           1         1817                   0.0063               False
+    season   MAM           2         2910                   0.0126               False
+    season   SON           0         2303                   0.0177               False
+    season   SON           1         1393                   0.0175               False
+    season   SON           2         2751                   0.0139               False
+Full counts/probabilities: markov_train_subperiod_transitions.csv. Rows with support <100 are flagged; no strong claims from them.
+
+==============================================================================
+9. LEAKAGE / REPRODUCIBILITY AUDIT (MEASURED)
+==============================================================================
+sha256(P) after_fit: 30c8455c11cf68bf1e133f1830f9753fa193d7ac1578f390472d00ab03c4b395
+sha256(P) after_evaluation_all_splits: 30c8455c11cf68bf1e133f1830f9753fa193d7ac1578f390472d00ab03c4b395
+sha256(P) after_diagnostics: 30c8455c11cf68bf1e133f1830f9753fa193d7ac1578f390472d00ab03c4b395
+P hash identical across fit / validation / test / end: True
+No fused Markov/HoSVD/PCA/RFF/SVM models, no imputation of current_state, X never loaded, no RNG used (seed recorded only).
+Limitations: raw PRSA CSV not supplied, so adequacy uses the timestamp-exact reconstruction (not Option 2); block bootstrap not implemented (optional).

@@ -1,0 +1,68 @@
+
+======================================================================
+SECTION: 1. DATA INTEGRITY GATE
+======================================================================
+Data Integrity Gate passed successfully.
+
+======================================================================
+SECTION: 2. MODEL PROBABILITY AUDIT & MARKOV PROBABILITIES
+======================================================================
+Loaded probabilities for linear_pca_B: val shape=(4239, 3), test shape=(5720, 3)
+Loaded probabilities for linear_hosvd_B: val shape=(4239, 3), test shape=(5720, 3)
+Loaded probabilities for linear_best_overall: val shape=(4239, 3), test shape=(5720, 3)
+Loaded probabilities for revised_rff_pca_B: val shape=(4239, 3), test shape=(5720, 3)
+Loaded probabilities for revised_rff_hosvd_B: val shape=(4239, 3), test shape=(5720, 3)
+Loaded probabilities for rff_pca_B: val shape=(4239, 3), test shape=(5720, 3)
+Loaded probabilities for rff_hosvd_B: val shape=(4239, 3), test shape=(5720, 3)
+
+======================================================================
+SECTION: 3. EXPERIMENT F1 — FIXED-WEIGHT PROBABILITY FUSION
+======================================================================
+Fixed fusion grid evaluated across 7 sources and 11 lambdas.
+
+======================================================================
+SECTION: 4. EXPERIMENT F2 — ADAPTIVE TRANSITION-RISK FUSION
+======================================================================
+Adaptive fusion grid evaluated (375 combinations).
+
+======================================================================
+SECTION: 5. EXPERIMENT F3 — TRANSITION / DESTINATION FUSION
+======================================================================
+Transition fusion grid evaluated (125 combinations).
+
+======================================================================
+SECTION: 6. VALIDATION-ONLY MODEL SELECTION & LOCKING
+======================================================================
+LOCKED Winner [F1_Fixed]: fixed_lambda_0.9 (source: linear_hosvd_B, J=0.589438, MacroF1=0.807291, ChangeF1=0.371585)
+LOCKED Winner [F2_Adaptive]: adaptive_tau0.65_low0.75_high1.0 (source: linear_pca_B, J=0.587580, MacroF1=0.811699, ChangeF1=0.363462)
+LOCKED Winner [F3_Transition]: transition_rho0.75_eta0.0 (source: linear_best_overall, J=0.594150, MacroF1=0.839407, ChangeF1=0.348894)
+
+======================================================================
+SECTION: 7. FINAL TEST EVALUATION & PREDICTION EXPORTS
+======================================================================
+Saved all final evaluation tables.
+
+======================================================================
+SECTION: 8. PAIRED TIME-BLOCK BOOTSTRAP CONFIDENCE INTERVALS
+======================================================================
+Bootstrap CIs calculated: F1 vs Markov diff=-0.0470 [-0.0629, -0.0324]
+
+======================================================================
+SECTION: 9. EXPORT PER-ROW PREDICTION CSVs
+======================================================================
+Saved merged test predictions CSV to C:\Users\aryan\Desktop\MATLAB\Project\AP\Phase6_Markov_SVM_Fusion_Results\predictions\test\test_predictions_merged.csv
+
+======================================================================
+SECTION: 10. COMPUTATIONAL COST MEASUREMENT
+======================================================================
+Phase 6 execution finished in 17.04 seconds.
+
+======================================================================
+SECTION: 11. SCIENTIFIC FIGURES GENERATION
+======================================================================
+Generated all 9 scientific figures in figures/.
+
+======================================================================
+SECTION: 12. ARTIFACT INVENTORY & PACKAGING
+======================================================================
+Recorded artifact inventory (53 files).

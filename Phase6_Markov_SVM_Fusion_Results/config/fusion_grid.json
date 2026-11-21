@@ -1,0 +1,32 @@
+{
+  "grid_version": "v1.0",
+  "frozen_utc": "2026-11-20T00:00:00Z",
+  "fixed_fusion": {
+    "lambda_grid": [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+    "eligible_svm_sources": ["linear_pca_B", "linear_hosvd_B", "linear_best_overall", "revised_rff_pca_B", "revised_rff_hosvd_B", "rff_pca_B", "rff_hosvd_B"],
+    "exact_rbf_probability_fusion": "unsupported",
+    "exact_rbf_hard_label_comparison": true
+  },
+  "adaptive_fusion": {
+    "tau_grid": [0.20, 0.35, 0.50, 0.65, 0.80],
+    "lambda_low_grid": [0.0, 0.25, 0.50, 0.75, 1.0],
+    "lambda_high_grid": [0.0, 0.25, 0.50, 0.75, 1.0],
+    "constraint": "lambda_low <= lambda_high",
+    "eligible_svm_sources": ["linear_pca_B", "linear_hosvd_B", "linear_best_overall", "revised_rff_pca_B", "revised_rff_hosvd_B"]
+  },
+  "transition_fusion": {
+    "rho_grid": [0.0, 0.25, 0.5, 0.75, 1.0],
+    "eta_grid": [0.0, 0.25, 0.5, 0.75, 1.0],
+    "optional_binary_classifier": {
+      "model": "LogisticRegression",
+      "solver": "lbfgs",
+      "max_iter": 1000,
+      "C_grid": [0.1, 1.0, 10.0],
+      "class_weight": "balanced",
+      "note": "fit on TRAIN only, OOF scores within training for calibration"
+    },
+    "eligible_svm_sources": ["linear_pca_B", "linear_hosvd_B", "linear_best_overall", "revised_rff_pca_B", "revised_rff_hosvd_B"]
+  },
+  "zero_denominator_policy": "deterministic_uniform_fallback",
+  "epsilon_logloss": 1e-12
+}

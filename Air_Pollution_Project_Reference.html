@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Air Pollution Project Reference</title>
+<style>
+:root{--bg:#0F172A;--card:#1E293B;--tx:#E2E8F0;--h:#5EEAD4;--ac:#A5B4FC;--mut:#94A3B8;--bd:#334155}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.7 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px}
+main{max-width:980px;margin:auto}
+h1,h2,h3{color:var(--h);line-height:1.3}
+h1{font-size:1.9rem}h2{font-size:1.45rem;margin-top:2.4rem;border-bottom:1px solid var(--bd);padding-bottom:.3rem}h3{font-size:1.1rem;color:var(--ac)}
+section,.card{background:var(--card);border-radius:12px;padding:6px 22px 18px;margin:18px 0}
+.card{padding:12px 18px;margin:12px 0}
+a{color:var(--ac)}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.92rem}
+th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#0F172A;color:var(--h)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+code,pre{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0F172A;color:#C7D2FE;border-radius:6px}
+code{padding:1px 5px}pre{padding:10px 14px;overflow-x:auto}
+details{background:#0F172A;border:1px solid var(--bd);border-radius:8px;padding:8px 14px;margin:8px 0}
+summary{cursor:pointer;color:var(--h);font-weight:600}
+.plan{border-left:4px solid #F59E0B;padding-left:14px}
+.note{border-left:4px solid var(--ac);padding-left:14px;color:var(--mut)}
+.tag{background:#F59E0B;color:#0F172A;border-radius:6px;padding:1px 8px;font-size:.8rem;font-weight:700}
+.ok{background:#14B8A6;color:#0F172A;border-radius:6px;padding:1px 8px;font-size:.8rem;font-weight:700}
+nav ol{columns:2;margin:0}
+@media(max-width:640px){nav ol{columns:1}body{padding:12px}}
+@media print{body{background:#fff;color:#000}section,.card,details,th,code,pre{background:#fff;color:#000;border:1px solid #999}h1,h2,h3,summary,a{color:#000}details{display:block}}
+</style>
+</head>
+<body>
+<main>
+<h1>Spatiotemporal Air Pollution State Prediction Using Higher-Order Singular Value Decomposition and Kernel Support Vector Machines</h1>
+<p style="color:var(--mut)">Beginner-friendly reference guide. Status: Phases 1-4 <span class="ok">COMPLETED</span>, Phase 5 onward <span class="tag">PLANNED</span>. Every number below comes from the project record; no new results are invented.</p>
+
+<section id="toc"><h2>Contents</h2>
+<nav><ol>
+<li><a href="#s1">Project introduction</a></li>
+<li><a href="#s2">Dataset</a></li>
+<li><a href="#gl">Concept glossary (beginner)</a></li>
+<li><a href="#s3">Phase 1: Exploration</a></li>
+<li><a href="#s4">Phase 2: Preprocessing and tensors</a></li>
+<li><a href="#s5">Phase 3: Markov chains</a></li>
+<li><a href="#s6">Phase 4: PCA vs HoSVD</a></li>
+<li><a href="#s7">Research papers</a></li>
+<li><a href="#s8">Planned next steps</a></li>
+<li><a href="#s9">Conclusions so far</a></li>
+<li><a href="#prof">Explaining it to my professor</a></li>
+<li><a href="#nums">Essential numbers</a></li>
+</ol></nav></section>
+
+<section id="s1"><h2>1. Project introduction</h2>
+<p><b>Problem.</b> Given the previous 24 hours of pollutant and weather measurements from 12 Beijing monitoring stations, predict the PM2.5 pollution category at <b>Aotizhongxin</b> in the next hour. Each input is a tensor of shape <code>24 hours x 12 stations x 11 measurements = 3,168 numbers</code>.</p>
+<table><tr><th>State</th><th>Name</th><th>PM2.5 (µg/m³)</th></tr>
+<tr><td>0</td><td>LOW</td><td>below 35</td></tr><tr><td>1</td><td>MODERATE</td><td>35 to below 75</td></tr><tr><td>2</td><td>HIGH</td><td>75 or more</td></tr></table>
+<p class="note">These are <b>project-defined hourly concentration categories</b>, not official AQI classes or WHO thresholds.</p>
+<h3>Why this problem</h3>
+<ul><li>Air pollution matters for health and the environment.</li><li>Measurements change with both time and place.</li><li>Many stations give richer history than one station alone.</li><li>The data form a natural multidimensional array (a tensor).</li><li>Tensor compression, probability and optimization together make a substantial mathematics project.</li><li>Question: can efficient representations support accurate future-state prediction?</li></ul>
+<h3>Why it is difficult</h3>
+<ul><li>High-dimensional inputs (3,168 numbers per sample).</li><li>Missing measurements.</li><li>Temporal dependence: this hour resembles the last.</li><li>Neighbouring stations are strongly correlated.</li><li>Pollution distributions shift over the years.</li><li>State changes are rare compared with "no change".</li><li>Nonlinear classifiers are computationally expensive.</li><li>Trade-offs among accuracy, reconstruction quality, runtime and storage.</li><li>Information leakage (the model accidentally seeing the future) must be prevented.</li></ul>
+<h3>Objectives and contribution</h3>
+<p>We are <b>not</b> claiming to invent PCA, HoSVD, Markov chains, SVM or Random Fourier Features (RFF). Our scientifically defensible contribution is a <b>careful, reproducible, leakage-controlled comparison</b> of these established methods on one forecasting problem, including whether they detect state <i>changes</i>, not just overall accuracy.</p></section>
+
+<section id="s2"><h2>2. Dataset</h2>
+<p><b>Beijing Multi-Site Air Quality</b>, UCI Machine Learning Repository. Source: <a href="https://archive.ics.uci.edu/dataset/501/beijing">archive.ics.uci.edu/dataset/501/beijing</a>. DOI: 10.24432/C5RK5G. Coverage: 1 March 2013 to 28 February 2017.</p>
+<ul><li>12 stations x 35,064 hourly timestamps = 420,768 station-hour observations; no duplicate station-timestamp records.</li>
+<li>Station order used: Aotizhongxin, Changping, Dingling, Dongsi, Guanyuan, Gucheng, Huairou, Nongzhanguan, Shunyi, Tiantan, Wanliu, Wanshouxigong.</li></ul>
+<div class="tw"><table><tr><th>Channel</th><th>Meaning</th></tr>
+<tr><td>PM2.5 / PM10</td><td>Particles under 2.5 / 10 micrometres across (µg/m³). PM2.5 is the one we predict.</td></tr>
+<tr><td>SO2, NO2, CO, O3</td><td>Sulphur dioxide, nitrogen dioxide, carbon monoxide, ozone concentrations.</td></tr>
+<tr><td>TEMP</td><td>Air temperature (°C).</td></tr>
+<tr><td>PRES</td><td>Atmospheric pressure (hPa).</td></tr>
+<tr><td>DEWP</td><td>Dew-point temperature (°C), a measure of humidity.</td></tr>
+<tr><td>RAIN</td><td>Precipitation (mm).</td></tr>
+<tr><td>WSPM</td><td>Wind speed (m/s).</td></tr></table></div>
+<p>Wind direction (<code>wd</code>) was excluded from the numerical tensor because it is categorical (compass labels, not numbers on a scale).</p>
+<p><b>Why Aotizhongxin?</b> It is the single fixed target station chosen for the project (it has many valid PM2.5 readings: 34,139). The other 11 stations contribute <i>historical</i> information: pollution and weather upwind or nearby may show up at the target an hour or more later. Early planning documents considered six stations and alternative targets; the final implemented project uses <b>all 12 stations and Aotizhongxin</b>.</p></section>
+
+<section id="gl"><h2>Concept glossary (beginner)</h2>
+<p>Each entry: definition, why it matters, analogy, formula, and use in this project. Click to open.</p>
+
+<details><summary>Time series, feature, label</summary>
+<p><b>Definition:</b> A time series is measurements recorded in time order. A feature is one input number the model sees; a label is the answer it must predict. <b>Why:</b> Order carries information (today depends on yesterday). <b>Analogy:</b> A daily diary: each page is a time step; features are what you noted, the label is what happened next. <b>Formula:</b> none. <b>Here:</b> features = 3,168 numbers per window; label = pollution state (0, 1, 2) of the next hour.</p></details>
+
+<details><summary>Tensor</summary>
+<p><b>Definition:</b> A multi-axis array of numbers (vector = 1 axis, matrix = 2, tensor = 3 or more). <b>Why:</b> Keeps time, station and measurement structure instead of flattening it. <b>Analogy:</b> A stack of spreadsheets: each sheet is an hour, rows are stations, columns are measurements. <b>Formula:</b> <code>X in R^(24 x 12 x 11)</code>; each axis is called a <i>mode</i>. <b>Here:</b> every sample is one such tensor.</p></details>
+
+<details><summary>Imputation</summary>
+<p><b>Definition:</b> Filling in missing values with sensible substitutes. <b>Why:</b> Most mathematics cannot handle blanks. <b>Analogy:</b> A broken thermometer: you reuse the last reading for a few hours, then fall back on a typical value. <b>Formula:</b> none. <b>Here:</b> forward-fill up to 6 hours inside the same split, then station-feature medians from training data only. Missing target PM2.5 is never imputed; those samples are dropped.</p></details>
+
+<details><summary>Standardization</summary>
+<p><b>Definition:</b> Rescaling a channel to mean 0 and standard deviation 1. <b>Why:</b> Otherwise large-unit channels (pressure ~1000) dominate small ones (rain). <b>Analogy:</b> Converting exam marks to "how many standard deviations above average". <b>Formula:</b> <code>z = (x - training_mean) / training_std</code>.</p>
+<p><b>Illustrative example (made-up numbers, not project data):</b> if a channel has training mean 80 and std 40, a reading x = 120 gives z = (120-80)/40 = 1.0, i.e. one standard deviation above typical. Validation and test reuse the <i>training</i> mean and std, so no future information leaks in.</p></details>
+
+<details><summary>Markov chain, transition matrix, stationary distribution</summary>
+<p><b>Definition:</b> A system whose next-state probabilities depend only on its current state. The transition matrix P holds those probabilities; a stationary distribution π is the long-run mix of states that P leaves unchanged. <b>Why:</b> A simple, interpretable forecasting baseline. <b>Analogy:</b> Weather: "if it rained today, there is a 70% chance it rains tomorrow". <b>Formulas:</b> <code>P[i,j] = C[i,j] / sum_j C[i,j]</code> (C = observed counts i to j); <code>πP = π</code>, π sums to 1. <b>Here:</b> fitted on training transitions (Phase 3).</p></details>
+
+<details><summary>Eigenvalue and spectral gap</summary>
+<p><b>Definition:</b> For a square matrix A, an eigenvalue λ and eigenvector v satisfy <code>Av = λv</code>: v is only stretched, not turned. <b>Why:</b> Eigenvalues of P govern how fast a Markov chain forgets its start. <b>Analogy:</b> Pushing a swing along its natural direction: it just swings bigger or smaller. <b>Formula:</b> spectral gap = 1 - |second largest eigenvalue|. <b>Here:</b> eigenvalues 1, 0.917412, 0.695041; gap about 0.082588 (small gap = slow mixing, very "sticky" states).</p></details>
+
+<details><summary>Singular value, SVD, Gram matrix</summary>
+<p><b>Definition:</b> Any matrix A factors as <code>A = U S Vᵀ</code>; the diagonal of S holds singular values (importance of each direction). The Gram matrix is <code>G = AᵀA</code>, whose eigenvalues are the squared singular values. <b>Why:</b> It finds the most important directions in data and lets us discard the rest. <b>Analogy:</b> Describing a crowd by its main walking directions. <b>Here:</b> G is 3,168 x 3,168 (A is 24,108 x 3,168); its eigenvectors give PCA directions.</p></details>
+
+<details><summary>PCA</summary>
+<p><b>Definition:</b> Principal Component Analysis: project centred data onto the k directions of greatest variance. <b>Why:</b> Compresses 3,168 numbers to k while keeping as much variation as possible. <b>Analogy:</b> Photographing a 3D sculpture from the angle that shows the most detail. <b>Formula:</b> <code>F_PCA = flatten(Z) V_k</code>; Z = X - M (centred), V_k = top-k eigenvectors of G. <b>Here:</b> k = 48, 192, 576, fitted on training only.</p></details>
+
+<details><summary>HoSVD and Tucker decomposition</summary>
+<p><b>Definition:</b> Tucker decomposition writes a tensor as a small <i>core</i> tensor multiplied by one basis matrix per mode. Truncated HoSVD builds each basis from the SVD of that mode's unfolding. <b>Why:</b> Compresses time, station and measurement axes separately, respecting tensor structure. <b>Analogy:</b> PCA squashes the whole flattened pile at once; HoSVD learns separate "summaries" of the time axis, station axis and measurement axis. <b>Formula:</b> <code>Core = Z x_time Q_timeᵀ x_station Q_stationᵀ x_feature Q_featureᵀ</code> (x_mode = multiply along that axis). <b>Here:</b> ranks such as (8,4,6) give 8x4x6 = 192 core numbers.</p></details>
+
+<details><summary>Frobenius norm and reconstruction error</summary>
+<p><b>Definition:</b> The Frobenius norm is the square root of the sum of squares of all entries: the "length" of a matrix or tensor. Reconstruction maps compressed features back to the original size; error measures what was lost. <b>Analogy:</b> Zip a photo, unzip it, measure how different it looks. <b>Formula:</b> <code>RRE = ||Z - Z_hat||_F / ||Z||_F</code> (0 = perfect; 1 = nothing recovered). <b>Retained energy:</b> roughly 1 - RRE² for orthogonal projections. <b>Here:</b> Phase 4 metric.</p></details>
+
+<details><summary>Optimization</summary>
+<p><b>Definition:</b> Choosing parameters that minimize (or maximize) an objective. <b>Why:</b> Training any model is optimization. <b>Analogy:</b> Finding the lowest valley on a map. <b>Here:</b> PCA minimizes reconstruction error; SVM minimizes margin-plus-error cost (Phase 5, planned).</p></details>
+
+<details><summary>SVM, kernel, RBF, Random Fourier Features</summary>
+<p><b>SVM:</b> a classifier that draws the separating boundary (hyperplane) with the widest safety margin. <b>Kernel:</b> a similarity function that lets an SVM draw curved boundaries without building the new features explicitly. <b>RBF kernel:</b> <code>K(x,y) = exp(-γ||x-y||²)</code>, near 1 for close points, near 0 for distant ones (γ = how quickly similarity fades). <b>RFF:</b> approximates that kernel by random cosine features <code>z(x) = sqrt(2/D) cos(Wx + b)</code>, so a fast linear SVM can mimic a nonlinear one. <b>Analogy:</b> kernel = judging similarity by distance; RFF = a cheap random "ruler set" approximating it. <b>Here:</b> planned for Phase 5 (<span class="tag">PLANNED</span>).</p></details>
+
+<details><summary>Accuracy, precision, recall, macro-F1</summary>
+<p><b>Accuracy:</b> fraction of predictions correct. <b>Precision (class c):</b> of those predicted c, how many truly are c = TP/(TP+FP). <b>Recall (class c):</b> of true c cases, how many were found = TP/(TP+FN). <b>F1:</b> <code>2PR/(P+R)</code>. <b>Macro-F1:</b> plain average of per-class F1, so rare classes count equally. <b>Analogy:</b> A smoke alarm: precision = few false alarms; recall = few missed fires. <b>Why:</b> Accuracy alone can hide missed events (see Phase 3).</p></details>
+</section>
+
+<section id="s3"><h2>3. Phase 1: Data exploration <span class="ok">COMPLETED</span></h2>
+<p><b>Objective:</b> understand the raw data, verify integrity, inspect missingness and study pollution distributions. <b>Work:</b> inspected the 12 CSV files; verified timestamp coverage; checked duplicates; examined missing values; computed PM2.5 statistics; identified preprocessing challenges.</p>
+<div class="tw"><table><tr><th>Finding</th><th class="n">Value</th></tr>
+<tr><td>Station-hour records</td><td class="n">420,768</td></tr><tr><td>Unique hourly timestamps</td><td class="n">35,064</td></tr><tr><td>Duplicate station-timestamp records</td><td class="n">0</td></tr>
+<tr><td>PM2.5 missing</td><td class="n">8,739 (2.08%)</td></tr><tr><td>PM10 missing</td><td class="n">6,449 (1.53%)</td></tr><tr><td>SO2 missing</td><td class="n">9,021 (2.14%)</td></tr><tr><td>NO2 missing</td><td class="n">12,116 (2.88%)</td></tr><tr><td>CO missing</td><td class="n">20,701 (4.92%)</td></tr><tr><td>O3 missing</td><td class="n">13,277 (3.16%)</td></tr></table></div>
+<table><tr><th>PM2.5 statistic</th><th class="n">All stations</th><th class="n">Aotizhongxin</th></tr>
+<tr><td>Available readings</td><td class="n">n/a here</td><td class="n">34,139</td></tr><tr><td>Mean</td><td class="n">~79.79</td><td class="n">~82.77</td></tr><tr><td>Median</td><td class="n">55</td><td class="n">58</td></tr><tr><td>Std. deviation</td><td class="n">~80.82</td><td class="n">n/a here</td></tr><tr><td>Min / Max</td><td class="n">2 / 999</td><td class="n">n/a here</td></tr></table>
+<p>The mean sits well above the median, so the distribution is right-skewed (a few extreme smog hours).</p>
+<h3>Phase 1 files</h3>
+<table><tr><th>File</th><th>Role</th></tr>
+<tr><td><code>PRSA_Data_20130301-20170228.zip</code></td><td>Original raw dataset: 12 station CSVs.</td></tr>
+<tr><td><code>Air_Pollution_Phase1_EDA_Report.txt</code></td><td>Dataset validation, missingness statistics, PM2.5 distributions, first observations.</td></tr>
+<tr><td><code>Air_Pollution_PM25_Distribution.png</code></td><td>PM2.5 distribution plot.</td></tr>
+<tr><td><code>Air_Pollution_Missingness_by_Station.png</code></td><td>Station-wise missing-value plot.</td></tr></table>
+<p><b>Established:</b> the data are structurally clean (no duplicates, full timestamp grid) but contain gaps, skewed values and mixed units, so careful preprocessing was necessary.</p></section>
+
+<section id="s4"><h2>4. Phase 2: Preprocessing and tensor creation <span class="ok">COMPLETED</span></h2>
+<p><b>Objective:</b> turn raw hourly station data into valid, standardized, chronologically separated samples.</p>
+<h3>Step 1: Chronological splitting</h3>
+<ul><li>Training: March 2013 to December 2015.</li><li>Validation: January to June 2016.</li><li>Test: July 2016 to February 2017.</li></ul>
+<p><b>Why not random?</b> Windows overlap by 23 of 24 hours. With random splitting, a training window and a test window could share nearly identical hours, so the test would be secretly "seen" (leakage) and scores would look better than reality. Time-ordered splitting also mimics real use: train on the past, predict the future. Windows were built separately inside each split.</p>
+<h3>Step 2: Missing data and standardization</h3>
+<ul><li>Forward-fill up to six hours using earlier observations in the same split.</li><li>Remaining missing inputs: training-only station-feature medians.</li><li>Standardize with training mean and std (<code>z = (x - training_mean) / training_std</code>); validation and test reuse these.</li><li>Missing target-hour PM2.5 labels: sample excluded, never imputed.</li></ul>
+<h3>Step 3: Sliding windows</h3>
+<p>For target time t, the input is the previous 24 hours ending at t-1: <code>X = (24, 12, 11)</code>; target <code>y = state(observed Aotizhongxin PM2.5 at t)</code>. Consecutive windows overlap by 23 hours.</p>
+<div class="tw"><table><tr><th>Split</th><th class="n">Samples</th><th class="n">Excluded (missing target)</th><th class="n">Low</th><th class="n">Moderate</th><th class="n">High</th></tr>
+<tr><td>Training</td><td class="n">24,108</td><td class="n">732</td><td class="n">7,872</td><td class="n">5,832</td><td class="n">10,404</td></tr>
+<tr><td>Validation</td><td class="n">4,239</td><td class="n">105</td><td class="n">1,848</td><td class="n">1,114</td><td class="n">1,277</td></tr>
+<tr><td>Test</td><td class="n">5,720</td><td class="n">88</td><td class="n">2,142</td><td class="n">1,202</td><td class="n">2,376</td></tr>
+<tr><td><b>Total</b></td><td class="n"><b>34,067</b></td><td class="n">925</td><td></td><td></td><td></td></tr></table></div>
+<p><code>current_state</code> is the observed state of the previous hour. If previous-hour PM2.5 was missing it is <code>-1</code>; this is <b>not</b> a fourth class.</p>
+<h3>Phase 2 files</h3>
+<table><tr><th>File</th><th>Description</th></tr>
+<tr><td><code>phase2_build.py</code></td><td>Main preprocessing and tensor-generation program.</td></tr>
+<tr><td><code>Air_Pollution_Phase2_Processed_Data.zip</code></td><td>Package of processed arrays and metadata.</td></tr>
+<tr><td><code>train_windows.npz</code>, <code>validation_windows.npz</code>, <code>test_windows.npz</code></td><td>Feature tensors and labels for each split.</td></tr>
+<tr><td><code>training_preprocessing_parameters.npz</code></td><td>Training medians, means, standard deviations, channel information.</td></tr>
+<tr><td><code>window_labels_and_timestamps.csv</code></td><td>Labels, split identifiers, target timestamps.</td></tr>
+<tr><td><code>phase2_summary.json</code></td><td>Split counts, preprocessing details, metadata.</td></tr>
+<tr><td><code>PHASE2_README.txt</code></td><td>Execution and dataset documentation.</td></tr>
+<tr><td><code>Phase_2_Detailed_Explanation.txt</code></td><td>Beginner-friendly processing explanation.</td></tr></table>
+<h3>Keys inside each windows NPZ</h3>
+<table><tr><th>Key</th><th>Meaning</th><th>Shape (N = samples)</th></tr>
+<tr><td><code>X</code></td><td>Standardized input tensors</td><td>(N, 24, 12, 11)</td></tr>
+<tr><td><code>y</code></td><td>Next-hour state label 0/1/2</td><td>(N,)</td></tr>
+<tr><td><code>target_timestamp</code></td><td>Time of the predicted hour</td><td>(N,)</td></tr>
+<tr><td><code>current_state</code></td><td>Previous-hour state (-1 if unknown)</td><td>(N,)</td></tr>
+<tr><td><code>current_pm25</code></td><td>Previous-hour observed PM2.5</td><td>(N,)</td></tr></table>
+<p><b>Established:</b> leakage-controlled samples with consistent labels. Phase 3 used <code>y</code> and <code>current_state</code> for Markov modelling; Phase 4 used <code>X</code> for PCA and HoSVD.</p></section>
+
+<section id="s5"><h2>5. Phase 3: Markov chains <span class="ok">COMPLETED</span></h2>
+<p><b>Objective:</b> create mathematical and predictive baselines for next-hour state changes. A Markov chain says the next state's probabilities depend on the current state. Count transitions into matrix C, then normalize each row: <code>P[i,j] = C[i,j] / sum(C[i,:])</code>.</p>
+<pre>C = [[7144,  672,   14],     (training; 23,976 observations
+     [ 618, 4465,  721],      with known previous state)
+     [  57,  659, 9626]]
+
+P = [[0.912388, 0.085824, 0.001788],
+     [0.106478, 0.769297, 0.124225],
+     [0.005512, 0.063721, 0.930768]]</pre>
+<p><b>Reading P:</b> row = current state, column = next state. Row 0: after a LOW hour, about 91.2% stay LOW, 8.6% go MODERATE, 0.2% jump to HIGH. <b>Diagonal entries are large</b> (0.91, 0.77, 0.93) because pollution evolves slowly: this hour is mostly like the last. Jumps LOW to HIGH are very rare (0.0018); changes mainly step through MODERATE.</p>
+<h3>Three baselines</h3>
+<ol><li><b>Majority class:</b> always predict the most frequent training label.</li><li><b>Persistence:</b> predict the current state continues.</li><li><b>Modal Markov:</b> predict the next state with the highest transition probability in the current row.</li></ol>
+<p><b>Major finding:</b> the Markov hard predictions are <b>identical to persistence</b>, because the largest entry of every row is its diagonal entry.</p>
+<h3>Stationary distribution and spectrum</h3>
+<p><code>πP = π</code> gives the long-run state mix: <code>π ≈ [0.319876, 0.240439, 0.439685]</code> (about 32% LOW, 24% MODERATE, 44% HIGH). Eigenvalues: 1, 0.917412, 0.695041. The eigenvalue 1 corresponds to π. The second eigenvalue 0.917 is close to 1, so the spectral gap (~0.082588) is small: the chain forgets its starting state slowly, matching the sticky diagonals.</p>
+<h3>Test performance (5,685 observations with known previous state)</h3>
+<table><tr><th>Metric</th><th class="n">Markov / persistence</th></tr>
+<tr><td>Accuracy</td><td class="n">~90.75%</td></tr><tr><td>Macro-F1</td><td class="n">~0.8895</td></tr>
+<tr><td>Actual state changes</td><td class="n">526</td></tr><tr><td>Changes detected by hard predictions</td><td class="n">0</td></tr>
+<tr><td>Actual entries into High</td><td class="n">154</td></tr><tr><td>High entries correctly anticipated</td><td class="n">0</td></tr>
+<tr><td>Brier score, Markov probabilities</td><td class="n">~0.1666</td></tr><tr><td>Brier score, persistence one-hot</td><td class="n">~0.1850</td></tr></table>
+<p><b>Careful interpretation.</b> About 90.75% accuracy looks impressive, but 526 of 5,685 hours (about 9%) were changes and the model caught none of them; it can never predict a change by construction. Overall accuracy is dominated by the easy "nothing changes" hours. A smoke alarm that never rings would be "right" on all quiet days, yet useless on the day of a fire. High accuracy can therefore hide complete failure on important events.</p>
+<p><b>Why probabilities beat persistence even with equal hard predictions.</b> Persistence says "100% same state"; Markov says "91% same, 8.6% moderate, ...". The Brier score (mean squared error of the probability vector against the true one-hot outcome; lower is better) rewards honest uncertainty, hence 0.1666 &lt; 0.1850. The probabilities also leave room for later models to use them as features.</p>
+<h3>Phase 3 files</h3>
+<table><tr><th>File</th><th>Purpose</th></tr>
+<tr><td><code>Air_Pollution_Phase3_Results.zip</code></td><td>Packaged code, results, figures and tests.</td></tr>
+<tr><td><code>phase3_markov.py</code></td><td>Main Markov modelling pipeline.</td></tr>
+<tr><td><code>markov_transition_counts.csv</code></td><td>Observed transition counts C.</td></tr>
+<tr><td><code>markov_transition_matrix.csv</code></td><td>Estimated probabilities P.</td></tr>
+<tr><td><code>markov_two_step_matrix.csv</code></td><td>Two-step probabilities (P squared).</td></tr>
+<tr><td><code>markov_stationary_spectral.json</code></td><td>π, eigenvalues, spectral diagnostics.</td></tr>
+<tr><td><code>markov_baseline_metrics.csv</code></td><td>Classification and probability metrics.</td></tr>
+<tr><td><code>markov_predictions_validation.csv</code>, <code>markov_predictions_test.csv</code></td><td>Timestamp-aligned predictions for later paired comparisons.</td></tr>
+<tr><td><code>markov_model_parameters.npz</code></td><td>Fitted model parameters.</td></tr>
+<tr><td><code>markov_classwise_metrics.csv</code></td><td>Per-class statistics.</td></tr>
+<tr><td><code>markov_confusion_matrices.csv</code></td><td>Confusion matrices.</td></tr>
+<tr><td><code>markov_train_subperiod_transitions.csv</code></td><td>Training-period transition stability analysis.</td></tr>
+<tr><td><code>PHASE3_RESULTS_AND_MATH.txt</code></td><td>Derivations, numerical results, conclusions.</td></tr></table>
+<p><b>Conclusion:</b> Phase 3 established a strong but transition-insensitive benchmark that future classifiers must be compared against.</p></section>
+
+<section id="s6"><h2>6. Phase 4: PCA versus HoSVD <span class="ok">COMPLETED</span></h2>
+<p><b>Objective:</b> compare ordinary matrix dimensionality reduction (PCA) with tensor-aware reduction (truncated HoSVD, a Tucker-type decomposition). <b>Analogy:</b> PCA compresses a flattened collection of measurements; HoSVD separately learns compression directions along the time, station and measurement axes.</p>
+<h3>Mathematical setup</h3>
+<pre>A in R^(24108 x 3168)           flattened training matrix
+M = mean(X_train, axis=sample)  training-derived mean tensor
+Z = X - M                       centred data
+G = A^T A                       PCA Gram matrix (3168 x 3168)
+F_PCA = flatten(Z) V_k          PCA features
+Core = Z x_time Q_time^T x_station Q_station^T x_feature Q_feature^T</pre>
+<p>Z removes the average pattern so we compress deviations. G's top eigenvectors V_k are the best k flat directions. Q matrices are orthonormal bases for each mode (from SVDs of mode unfoldings); the Core is the compressed representation. <b>All means and bases are fitted on training data only</b>; validation and test are merely projected, so they never influence the compression.</p>
+<table><tr><th>Config</th><th>HoSVD ranks (time, station, feature)</th><th class="n">Features</th></tr>
+<tr><td>A</td><td>(4,3,4)</td><td class="n">48</td></tr><tr><td>B</td><td>(8,4,6)</td><td class="n">192</td></tr><tr><td>C</td><td>(12,8,6)</td><td class="n">576</td></tr><tr><td>B_alt1</td><td>(6,4,8)</td><td class="n">192</td></tr><tr><td>B_alt2</td><td>(8,6,4)</td><td class="n">192</td></tr></table>
+<p>PCA uses matching 48-, 192- and 576-dimensional representations.</p>
+<h3>Reconstruction error</h3>
+<p><code>RRE = ||Z - reconstructed_Z||_F / ||Z||_F</code>. The Frobenius norm measures total size; RRE is the fraction of the data's "size" lost by compression. Lower is better.</p>
+<table><tr><th class="n">Features</th><th>Method</th><th class="n">Train RRE</th><th class="n">Val RRE</th><th class="n">Test RRE</th></tr>
+<tr><td class="n">48</td><td>PCA</td><td class="n">0.412794</td><td class="n">0.376650</td><td class="n">0.382186</td></tr>
+<tr><td class="n">48</td><td>HoSVD</td><td class="n">0.555046</td><td class="n">0.495312</td><td class="n">0.514507</td></tr>
+<tr><td class="n">192</td><td>PCA</td><td class="n">0.288392</td><td class="n">0.288484</td><td class="n">0.274866</td></tr>
+<tr><td class="n">192</td><td>HoSVD</td><td class="n">0.434305</td><td class="n">0.387971</td><td class="n">0.399749</td></tr>
+<tr><td class="n">576</td><td>PCA</td><td class="n">0.162512</td><td class="n">0.167944</td><td class="n">0.166524</td></tr>
+<tr><td class="n">576</td><td>HoSVD</td><td class="n">0.375704</td><td class="n">0.337895</td><td class="n">0.346450</td></tr></table>
+<p><b>Finding:</b> PCA gave lower reconstruction error at all three matched feature counts.</p>
+<p><b>Why:</b> PCA searches over <i>all</i> k-dimensional linear subspaces of the flattened data; HoSVD is restricted to a product structure (time x station x feature bases), a smaller family. So on training data <code>SSE_PCA(k) ≤ SSE_HoSVD(k)</code> (SSE = sum of squared errors = ||Z - Z_hat||_F²). This is a statement about <i>training reconstruction</i>; it does not say PCA features will classify better, and validation/test values are not guaranteed by it.</p>
+<h3>HoSVD truncation bound (training)</h3>
+<table><tr><th>Config</th><th class="n">Actual squared error</th><th class="n">Upper bound</th></tr>
+<tr><td>A</td><td class="n">23,376,620</td><td class="n">30,562,704</td></tr><tr><td>B</td><td class="n">14,312,437</td><td class="n">17,067,797</td></tr><tr><td>C</td><td class="n">10,710,650</td><td class="n">11,574,575</td></tr></table>
+<p>The theory bounds the squared error by the sum of discarded squared singular values across the modes. Measured errors sit below the bounds, a <b>mathematical consistency check</b> that the implementation behaves as the theory says (not an accuracy result).</p>
+<h3>Alternative rank allocation at 192 features</h3>
+<table><tr><th>Config</th><th>Ranks</th><th class="n">Validation RRE</th></tr>
+<tr><td>B</td><td>(8,4,6)</td><td class="n">0.387971</td></tr><tr><td>B_alt1</td><td>(6,4,8)</td><td class="n">0.353845</td></tr><tr><td>B_alt2</td><td>(8,6,4)</td><td class="n">0.449601</td></tr></table>
+<p>Same total features, different reconstruction quality: the axes carry different amounts of structure. Here giving more dimensions to the measurement axis (8) helped, and giving fewer (4) hurt. Rank allocation is a real modelling choice.</p>
+<h3>Storage at 192 features</h3>
+<p>PCA model: <b>4,891,392 bytes</b>. HoSVD model: <b>27,792 bytes</b> (float64 mean and basis; not every application-level storage cost). PCA stores one big matrix (3,168 x 192); HoSVD stores three small matrices (24 x 8, 12 x 4, 11 x 6) plus the mean, because a product structure needs far fewer numbers than a full matrix.</p>
+<h3>Important limitations</h3>
+<ul><li>About 20 redundant meteorological station-feature channels exist, including 18 bitwise duplicates. The Gram matrix (3,168 x 3,168) had numerical rank about 2,688 under its stated tolerance. Numerical near-duplicates are not necessarily exact linear dependencies; "rank" depends on the tolerance chosen.</li>
+<li>A reconstruction advantage does not prove better classification.</li></ul>
+<h3>Phase 4 files</h3>
+<table><tr><th>File</th><th>Role</th></tr>
+<tr><td><code>Air_Pollution_Phase4_Results.zip</code></td><td>Complete output package.</td></tr>
+<tr><td><code>phase4_pca_hosvd.py</code></td><td>Main PCA/HoSVD program.</td></tr>
+<tr><td><code>test_phase4_transforms.py</code></td><td>Mathematical correctness tests.</td></tr>
+<tr><td><code>PHASE4_RESULTS_AND_MATH.txt</code></td><td>Results and derivations.</td></tr>
+<tr><td><code>pca_hosvd_comparison.csv</code></td><td>Reconstruction errors and performance comparisons.</td></tr>
+<tr><td><code>hosvd_truncation_bound.csv</code></td><td>HoSVD bound checks.</td></tr>
+<tr><td><code>compression_storage.csv</code></td><td>Storage and compression calculations.</td></tr>
+<tr><td><code>pca_components_spectrum.csv</code></td><td>PCA eigenvalue information.</td></tr>
+<tr><td><code>hosvd_mode_spectra.csv</code></td><td>Mode-wise spectra.</td></tr>
+<tr><td><code>stability_diagnostics.csv</code></td><td>Numerical and subspace stability.</td></tr>
+<tr><td><code>phase4_feature_manifest.csv</code></td><td>Exported feature inventory and hashes.</td></tr>
+<tr><td><code>phase4_metadata.json</code>, <code>execution.log</code></td><td>Run configuration, diagnostics, execution record.</td></tr>
+<tr><td><code>pytest_results.txt</code></td><td>Reported outcome: 52 passed.</td></tr>
+<tr><td><code>fitted_center_and_factors.npz</code></td><td>Shared center, fitted HoSVD factors, eigenvalue information.</td></tr>
+<tr><td><code>fitted_pca_basis_48.npz</code>, <code>_192.npz</code>, <code>_576.npz</code></td><td>PCA projection matrices.</td></tr></table>
+<p>Feature datasets: <code>features_{train|validation|test}_pca_{A|B|C}.npz</code> (9 files) and <code>features_{train|validation|test}_hosvd_{A|B|C|B_alt1|B_alt2}.npz</code> (15 files). Each holds <code>F</code> (compressed features, shape N x number of features), <code>y</code>, <code>target_timestamp</code>, <code>current_state</code>, <code>current_pm25</code>. In Phase 5 these become the inputs to the classifiers.</p>
+<p class="note">Claude reported 52 passing tests; a later source-code audit found the mathematics consistent but did not independently execute the full tests because of a tool error.</p></section>
+
+<section id="s7"><h2>7. Research papers</h2>
+<div class="tw"><table><tr><th>Paper</th><th>Main contribution</th><th>Connection to our project</th></tr>
+<tr><td><b>Beijing Multi-Site Air Quality</b>, UCI, DOI 10.24432/C5RK5G</td><td>Public hourly multi-station air-quality and weather dataset.</td><td>Our data source.</td></tr>
+<tr><td><b>Zhang et al. (2017)</b>, "Cautionary tales on air-quality improvement in Beijing", DOI 10.1098/rspa.2017.0457</td><td>Discusses Beijing air-pollution behaviour and improvement efforts.</td><td>Real-world context and motivation.</td></tr>
+<tr><td><b>Zakaria et al. (2019)</b>, "Markov Chain Model Development for Forecasting Air Pollution Index of Miri, Sarawak", DOI 10.3390/su11195190</td><td>Applies Markov chains to pollution-index forecasting.</td><td>Precedent for our Markov baseline.</td></tr>
+<tr><td><b>De Lathauwer, De Moor and Vandewalle (2000)</b>, "A Multilinear Singular Value Decomposition", DOI 10.1137/S0895479896305696</td><td>Introduces the multilinear SVD (HoSVD).</td><td>Theory behind our HoSVD and truncation bound.</td></tr>
+<tr><td><b>Kolda and Bader (2009)</b>, "Tensor Decompositions and Applications", DOI 10.1137/07070111X</td><td>Survey of tensor decompositions including Tucker.</td><td>Background for tensor notation and Tucker structure.</td></tr>
+<tr><td><b>Cortes and Vapnik (1995)</b>, "Support-vector networks", DOI 10.1007/BF00994018</td><td>Introduces the soft-margin support vector machine.</td><td>Foundation of the planned classifiers.</td></tr>
+<tr><td><b>Rahimi and Recht (2007)</b>, "Random Features for Large-Scale Kernel Machines", NeurIPS</td><td>Approximates shift-invariant kernels with random Fourier features.</td><td>Basis of the planned RFF + linear SVM.</td></tr>
+<tr><td><b>Jolliffe and Cadima (2016)</b>, "Principal component analysis: a review and recent developments", DOI 10.1098/rsta.2015.0202</td><td>Review of PCA theory and extensions.</td><td>PCA fundamentals for our baseline compressor.</td></tr></table></div>
+<p class="note">These works are cited for background and methods. None evaluated our exact project, and we claim no numerical results from them.</p></section>
+
+<section id="s8" class="plan"><h2>8. What we will implement next <span class="tag">PLANNED - NOT YET IMPLEMENTED</span></h2>
+<h3>Phase 5: SVM and kernel classification</h3>
+<ul><li>Raw features + linear SVM.</li><li>Raw features + RBF SVM.</li><li>PCA features + linear / RBF SVM.</li><li>HoSVD features + linear / RBF SVM.</li><li>HoSVD features + Random Fourier Features + linear SVM.</li></ul>
+<h3>Concepts to learn first</h3>
+<p><b>Soft-margin objective:</b> <code>min over w,b,slack: (1/2)||w||² + C Σ slack_i</code> subject to <code>y_i (w·x_i + b) ≥ 1 - slack_i, slack_i ≥ 0</code> (binary form; the 3-class problem uses a standard multiclass scheme).</p>
+<ul><li><b>Hyperplane:</b> the flat boundary <code>w·x + b = 0</code> separating classes.</li>
+<li><b>Margin:</b> the gap between the boundary and nearest points, equal to 2/||w||; minimizing ||w||² widens it.</li>
+<li><b>Support vectors:</b> the training points on or inside the margin; they alone determine the boundary.</li>
+<li><b>Slack and C:</b> slack lets points violate the margin; C sets the penalty. Large C = strict, risk of overfitting; small C = tolerant, smoother boundary.</li>
+<li><b>Kernel trick:</b> replace dot products by a kernel to get curved boundaries without computing the high-dimensional features.</li>
+<li><b>Gaussian RBF kernel:</b> <code>K(x,y) = exp(-γ||x-y||²)</code>.</li>
+<li><b>Random Fourier Features:</b> approximate that kernel by randomized cosine features so a linear SVM scales better.</li></ul>
+<h3>What we will compare</h3>
+<p>Accuracy, macro-F1, balanced accuracy, per-class precision and recall, actual state-change detection, High-state-entry detection, training time, prediction time, number of features, model memory and storage. <b>Hyperparameters (C, γ, number of RFF features, etc.) must be chosen on validation data, never on test data.</b> Results must be compared against the Phase 3 persistence/Markov benchmark.</p>
+<h3>Later work (plans, not results)</h3>
+<ul><li>Markov information combined with SVM representations.</li><li>Tensor-rank sensitivity.</li><li>RFF approximation studies.</li><li>Station and feature ablations.</li><li>Missingness/robustness experiments.</li><li>Final mathematical report and reproducibility package.</li></ul></section>
+
+<section id="s9"><h2>9. Conclusions so far</h2>
+<ol><li>We identified and audited a substantial real-world environmental dataset.</li>
+<li>We built leakage-controlled, chronologically separated spatiotemporal tensors.</li>
+<li>We established and mathematically investigated a Markov-chain baseline.</li>
+<li>We found that high baseline accuracy can hide complete failure to anticipate state changes (0 of 526 changes detected).</li>
+<li>We experimentally compared PCA and HoSVD dimensionality reduction.</li>
+<li>PCA reconstructed the standardized input data more accurately.</li>
+<li>HoSVD had substantially smaller projection-model storage.</li>
+<li>Rank allocation changed HoSVD reconstruction quality.</li>
+<li>We have <b>not yet</b> shown which representation is best for classification.</li>
+<li>Phase 5 will address that question.</li></ol></section>
+
+<section id="prof"><h2>How I Would Explain My Project to My Professor</h2>
+<p><i>(about 2-3 minutes spoken)</i></p>
+<p>"My project asks whether we can predict the next hour's PM2.5 pollution category in Beijing from the last 24 hours of data at 12 monitoring stations. Each input is a tensor of 24 hours by 12 stations by 11 measurements, 3,168 numbers, and the target is a project-defined Low, Moderate or High state at Aotizhongxin. I use the UCI Beijing Multi-Site dataset, 35,064 hours per station.</p>
+<p>First I audited the data: no duplicates, a few percent missing. In preprocessing I split chronologically into training, validation and test periods, because overlapping windows would leak information under random splitting. Missing values were forward-filled for up to six hours and then replaced by training-only medians, and everything was standardized with training statistics. That gave 34,067 samples.</p>
+<p>Then I built a Markov-chain baseline. Its transition matrix has large diagonal entries, so its hard predictions are identical to persistence, with about 90.75% test accuracy and macro-F1 near 0.89. But it detected none of the 526 actual state changes and none of 154 entries into High. So accuracy alone is misleading, and any new model must be judged on transitions as well.</p>
+<p>In Phase 4 I compared PCA, which compresses the flattened data, with truncated HoSVD, which compresses time, station and measurement axes separately. PCA reconstructed better at every size, for example validation error 0.288 versus 0.388 at 192 features, which agrees with theory. But the HoSVD model needs only 27,792 bytes versus 4,891,392 for PCA, and the way ranks are distributed across the axes matters.</p>
+<p>I have not yet shown which representation classifies best. Phase 5 will train linear, RBF and Random Fourier Feature SVMs on raw, PCA and HoSVD features, choose hyperparameters on validation only, and compare accuracy, macro-F1, change detection, runtime and storage. My contribution is a careful, reproducible comparison of established methods, not a new method."</p></section>
+
+<section id="nums"><h2>Essential Numbers to Remember</h2>
+<div class="tw"><table><tr><th>Item</th><th class="n">Value</th></tr>
+<tr><td>Stations / channels / window hours</td><td class="n">12 / 11 / 24</td></tr>
+<tr><td>Numbers per sample</td><td class="n">3,168</td></tr>
+<tr><td>Station-hour records / timestamps</td><td class="n">420,768 / 35,064</td></tr>
+<tr><td>Samples train / val / test (total)</td><td class="n">24,108 / 4,239 / 5,720 (34,067)</td></tr>
+<tr><td>Thresholds (µg/m³)</td><td class="n">35 and 75</td></tr>
+<tr><td>Markov test accuracy / macro-F1</td><td class="n">~90.75% / ~0.8895</td></tr>
+<tr><td>Changes detected / High entries anticipated</td><td class="n">0 of 526 / 0 of 154</td></tr>
+<tr><td>Stationary distribution π</td><td class="n">[0.3199, 0.2404, 0.4397]</td></tr>
+<tr><td>Eigenvalues / spectral gap</td><td class="n">1, 0.9174, 0.6950 / ~0.0826</td></tr>
+<tr><td>Brier: Markov / persistence</td><td class="n">~0.1666 / ~0.1850</td></tr>
+<tr><td>Test RRE at 192 (PCA / HoSVD)</td><td class="n">0.274866 / 0.399749</td></tr>
+<tr><td>Storage at 192 (PCA / HoSVD)</td><td class="n">4,891,392 / 27,792 bytes</td></tr>
+<tr><td>Feature files (PCA / HoSVD)</td><td class="n">9 / 15</td></tr>
+<tr><td>Tests reported</td><td class="n">52 passed</td></tr></table></div>
+<p class="note">Phase 5 onward is planned, not completed.</p></section>
+</main>
+</body>
+</html>

@@ -1,0 +1,258 @@
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] SECTION  PHASE 5 – INTEGRITY GATE
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] INFO  input_dir  = /Users/abhaychirayil/Desktop/Phase 5 Input FIles
+[2026-11-15T12:33:51] INFO  output_dir = /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output
+[2026-11-15T12:33:51] INFO  seed       = 42
+[2026-11-15T12:33:51] INFO  Manifest loaded: 24 rows
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] SECTION  CHECK 2 – File Presence
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_hosvd_A.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_hosvd_A.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_hosvd_A.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_pca_A.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_pca_A.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_pca_A.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_hosvd_B.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_hosvd_B.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_hosvd_B.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_pca_B.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_pca_B.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_pca_B.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_hosvd_C.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_hosvd_C.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_hosvd_C.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_pca_C.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_pca_C.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_pca_C.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_hosvd_B_alt1.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_hosvd_B_alt1.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_hosvd_B_alt1.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_train_hosvd_B_alt2.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_validation_hosvd_B_alt2.npz
+[2026-11-15T12:33:51] PASS  Feature NPZ present: features_test_hosvd_B_alt2.npz
+[2026-11-15T12:33:51] PASS  Window NPZ present: train_windows.npz
+[2026-11-15T12:33:51] PASS  Window NPZ present: validation_windows.npz
+[2026-11-15T12:33:51] PASS  Window NPZ present: test_windows.npz
+[2026-11-15T12:33:51] PASS  Metadata file present: phase4_feature_manifest.csv
+[2026-11-15T12:33:51] PASS  Metadata file present: phase4_metadata.json
+[2026-11-15T12:33:51] PASS  Markov CSV present: markov_predictions_validation.csv
+[2026-11-15T12:33:51] PASS  Markov CSV present: markov_predictions_test.csv
+[2026-11-15T12:33:51] PASS  Fitted basis present: fitted_pca_basis_48.npz
+[2026-11-15T12:33:51] PASS  Fitted basis present: fitted_pca_basis_192.npz
+[2026-11-15T12:33:51] PASS  Fitted basis present: fitted_pca_basis_576.npz
+[2026-11-15T12:33:51] PASS  Fitted basis present: fitted_center_and_factors.npz
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] SECTION  CHECK 3 – SHA-256 and File-Size Validation
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_hosvd_A.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_hosvd_A.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_hosvd_A.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_pca_A.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_pca_A.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_pca_A.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_hosvd_B.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_hosvd_B.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_hosvd_B.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_pca_B.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_pca_B.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_pca_B.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_hosvd_C.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_hosvd_C.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_hosvd_C.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_pca_C.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_pca_C.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_pca_C.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_hosvd_B_alt1.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_hosvd_B_alt1.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_hosvd_B_alt1.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_train_hosvd_B_alt2.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_validation_hosvd_B_alt2.npz
+[2026-11-15T12:33:51] PASS  SHA256+size match: features_test_hosvd_B_alt2.npz
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] SECTION  CHECK 4 – Feature NPZ Structure (keys, dtypes, shapes, values)
+[2026-11-15T12:33:51] ======================================================================
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_train_hosvd_A.npz (n=24108, k=48)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_validation_hosvd_A.npz (n=4239, k=48)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_test_hosvd_A.npz (n=5720, k=48)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_train_pca_A.npz (n=24108, k=48)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_validation_pca_A.npz (n=4239, k=48)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_test_pca_A.npz (n=5720, k=48)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_train_hosvd_B.npz (n=24108, k=192)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_validation_hosvd_B.npz (n=4239, k=192)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_test_hosvd_B.npz (n=5720, k=192)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_train_pca_B.npz (n=24108, k=192)
+[2026-11-15T12:33:51] PASS  NPZ structure valid: features_validation_pca_B.npz (n=4239, k=192)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_test_pca_B.npz (n=5720, k=192)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_train_hosvd_C.npz (n=24108, k=576)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_validation_hosvd_C.npz (n=4239, k=576)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_test_hosvd_C.npz (n=5720, k=576)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_train_pca_C.npz (n=24108, k=576)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_validation_pca_C.npz (n=4239, k=576)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_test_pca_C.npz (n=5720, k=576)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_train_hosvd_B_alt1.npz (n=24108, k=192)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_validation_hosvd_B_alt1.npz (n=4239, k=192)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_test_hosvd_B_alt1.npz (n=5720, k=192)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_train_hosvd_B_alt2.npz (n=24108, k=192)
+[2026-11-15T12:33:52] PASS  NPZ structure valid: features_validation_hosvd_B_alt2.npz (n=4239, k=192)
+[2026-11-15T12:33:53] PASS  NPZ structure valid: features_test_hosvd_B_alt2.npz (n=5720, k=192)
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 5 – Cross-Config Metadata Consistency
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] INFO  Split=train: reference config=pca_A, n=24108
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=train config=hosvd_A
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=train config=hosvd_B
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=train config=pca_B
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=train config=hosvd_C
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=train config=pca_C
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=train config=hosvd_B_alt1
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=train config=hosvd_B_alt2
+[2026-11-15T12:33:53] INFO  Split=validation: reference config=pca_A, n=4239
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=validation config=hosvd_A
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=validation config=hosvd_B
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=validation config=pca_B
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=validation config=hosvd_C
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=validation config=pca_C
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=validation config=hosvd_B_alt1
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=validation config=hosvd_B_alt2
+[2026-11-15T12:33:53] INFO  Split=test: reference config=pca_A, n=5720
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=test config=hosvd_A
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=test config=hosvd_B
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=test config=pca_B
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=test config=hosvd_C
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=test config=pca_C
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=test config=hosvd_B_alt1
+[2026-11-15T12:33:53] PASS  Cross-config consistent: split=test config=hosvd_B_alt2
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 6 – Phase-2 Window Metadata Alignment
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] PASS  Window alignment: split=train OK
+[2026-11-15T12:33:53] PASS  Window alignment: split=validation OK
+[2026-11-15T12:33:53] PASS  Window alignment: split=test OK
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 7 – Sample Counts
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] PASS  Sample count split=train config=hosvd_A: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=train config=pca_A: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=train config=hosvd_B: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=train config=pca_B: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=train config=hosvd_C: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=train config=pca_C: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=train config=hosvd_B_alt1: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=train config=hosvd_B_alt2: 24108
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=hosvd_A: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=pca_A: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=hosvd_B: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=pca_B: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=hosvd_C: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=pca_C: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=hosvd_B_alt1: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=validation config=hosvd_B_alt2: 4239
+[2026-11-15T12:33:53] PASS  Sample count split=test config=hosvd_A: 5720
+[2026-11-15T12:33:53] PASS  Sample count split=test config=pca_A: 5720
+[2026-11-15T12:33:53] PASS  Sample count split=test config=hosvd_B: 5720
+[2026-11-15T12:33:53] PASS  Sample count split=test config=pca_B: 5720
+[2026-11-15T12:33:53] PASS  Sample count split=test config=hosvd_C: 5720
+[2026-11-15T12:33:53] PASS  Sample count split=test config=pca_C: 5720
+[2026-11-15T12:33:53] PASS  Sample count split=test config=hosvd_B_alt1: 5720
+[2026-11-15T12:33:53] PASS  Sample count split=test config=hosvd_B_alt2: 5720
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 8 – Class Distribution
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] PASS  Class dist split=train label=Low: 7872
+[2026-11-15T12:33:53] PASS  Class dist split=train label=Moderate: 5832
+[2026-11-15T12:33:53] PASS  Class dist split=train label=High: 10404
+[2026-11-15T12:33:53] PASS  Class dist split=validation label=Low: 1848
+[2026-11-15T12:33:53] PASS  Class dist split=validation label=Moderate: 1114
+[2026-11-15T12:33:53] PASS  Class dist split=validation label=High: 1277
+[2026-11-15T12:33:53] PASS  Class dist split=test label=Low: 2142
+[2026-11-15T12:33:53] PASS  Class dist split=test label=Moderate: 1202
+[2026-11-15T12:33:53] PASS  Class dist split=test label=High: 2376
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 9 – Chronological Order, Duplicates, Cross-Split Overlap
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] PASS  Chronological order OK: split=train
+[2026-11-15T12:33:53] PASS  No duplicate timestamps: split=train
+[2026-11-15T12:33:53] PASS  Chronological order OK: split=validation
+[2026-11-15T12:33:53] PASS  No duplicate timestamps: split=validation
+[2026-11-15T12:33:53] PASS  Chronological order OK: split=test
+[2026-11-15T12:33:53] PASS  No duplicate timestamps: split=test
+[2026-11-15T12:33:53] PASS  No cross-split timestamp overlap: train vs validation
+[2026-11-15T12:33:53] PASS  No cross-split timestamp overlap: train vs test
+[2026-11-15T12:33:53] PASS  No cross-split timestamp overlap: validation vs test
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 10 – Scope A Counts (current_state >= 0)
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] PASS  Scope A count split=train: 23976
+[2026-11-15T12:33:53] PASS  Scope A count split=validation: 4197
+[2026-11-15T12:33:53] PASS  Scope A count split=test: 5685
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 11 – current_state==-1 ⟺ current_pm25 is NaN
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] PASS  State/PM25 consistency: split=train OK (n_missing=132)
+[2026-11-15T12:33:53] PASS  State/PM25 consistency: split=validation OK (n_missing=42)
+[2026-11-15T12:33:53] PASS  State/PM25 consistency: split=test OK (n_missing=35)
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 12 – Markov CSV Validation
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] PASS  Markov markov_predictions_validation.csv: row count 4239
+[2026-11-15T12:33:53] PASS  Markov markov_predictions_validation.csv: all required columns present
+[2026-11-15T12:33:53] PASS  Markov markov_predictions_validation.csv: timestamps align with feature file
+[2026-11-15T12:33:53] PASS  Markov markov_predictions_test.csv: row count 5720
+[2026-11-15T12:33:53] PASS  Markov markov_predictions_test.csv: all required columns present
+[2026-11-15T12:33:53] PASS  Markov markov_predictions_test.csv: timestamps align with feature file
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  CHECK 15 – Provenance Manifest
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] INFO  Computing SHA-256 for 39 input files …
+[2026-11-15T12:33:53] INFO    PHASE4_RESULTS_AND_MATH.txt: sha256=f9842fd1a7c9f103… bytes=44239
+[2026-11-15T12:33:53] INFO    features_test_hosvd_A.npz: sha256=d873b21a38849f9a… bytes=1080301
+[2026-11-15T12:33:53] INFO    features_test_hosvd_B.npz: sha256=911407585c73a8d3… bytes=4182306
+[2026-11-15T12:33:53] INFO    features_test_hosvd_B_alt1.npz: sha256=bd93c1ce57153793… bytes=4175903
+[2026-11-15T12:33:53] INFO    features_test_hosvd_B_alt2.npz: sha256=51ce8bddd7d397a8… bytes=4188340
+[2026-11-15T12:33:53] INFO    features_test_hosvd_C.npz: sha256=5a72973c70a26d40… bytes=12454802
+[2026-11-15T12:33:53] INFO    features_test_pca_A.npz: sha256=e3ef3c23a8ef879c… bytes=1073072
+[2026-11-15T12:33:53] INFO    features_test_pca_B.npz: sha256=b94d01391f7ca8eb… bytes=4156837
+[2026-11-15T12:33:53] INFO    features_test_pca_C.npz: sha256=5fb7f89c529efb59… bytes=12347140
+[2026-11-15T12:33:53] INFO    features_train_hosvd_A.npz: sha256=4a2927ae2ed982d1… bytes=4549080
+[2026-11-15T12:33:53] INFO    features_train_hosvd_B.npz: sha256=db7218dfada1941c… bytes=17621559
+[2026-11-15T12:33:53] INFO    features_train_hosvd_B_alt1.npz: sha256=3846e8919c7ba08e… bytes=17597982
+[2026-11-15T12:33:53] INFO    features_train_hosvd_B_alt2.npz: sha256=1d1cd18cd6437dfb… bytes=17650608
+[2026-11-15T12:33:53] INFO    features_train_hosvd_C.npz: sha256=cdc89b6cd0029aa1… bytes=52469652
+[2026-11-15T12:33:53] INFO    features_train_pca_A.npz: sha256=c27464e36c0c264a… bytes=4515099
+[2026-11-15T12:33:53] INFO    features_train_pca_B.npz: sha256=d7c111828b024633… bytes=17517030
+[2026-11-15T12:33:53] INFO    features_train_pca_C.npz: sha256=feae189712c4eebf… bytes=52051813
+[2026-11-15T12:33:53] INFO    features_validation_hosvd_A.npz: sha256=e2d6f668ced5f909… bytes=800664
+[2026-11-15T12:33:53] INFO    features_validation_hosvd_B.npz: sha256=fd95e844cba7fb24… bytes=3099031
+[2026-11-15T12:33:53] INFO    features_validation_hosvd_B_alt1.npz: sha256=47b5efe25218ef48… bytes=3094611
+[2026-11-15T12:33:53] INFO    features_validation_hosvd_B_alt2.npz: sha256=9e2add8aa961c108… bytes=3104060
+[2026-11-15T12:33:53] INFO    features_validation_hosvd_C.npz: sha256=21b711ae179c88b7… bytes=9228604
+[2026-11-15T12:33:53] INFO    features_validation_pca_A.npz: sha256=da5c9475ae93def0… bytes=794986
+[2026-11-15T12:33:53] INFO    features_validation_pca_B.npz: sha256=48bd3a951f957e67… bytes=3079780
+[2026-11-15T12:33:53] INFO    features_validation_pca_C.npz: sha256=f586e7a6459aa75a… bytes=9150920
+[2026-11-15T12:33:53] INFO    fitted_center_and_factors.npz: sha256=8adfb5f653298ed5… bytes=52808
+[2026-11-15T12:33:53] INFO    fitted_pca_basis_192.npz: sha256=4014cc80ba5427e7… bytes=4895048
+[2026-11-15T12:33:53] INFO    fitted_pca_basis_48.npz: sha256=f6882ae7c92ac350… bytes=1244360
+[2026-11-15T12:33:53] INFO    fitted_pca_basis_576.npz: sha256=e33162737d9bc251… bytes=14630216
+[2026-11-15T12:33:53] INFO    markov_baseline_metrics.csv: sha256=f5c9120006167f49… bytes=7744
+[2026-11-15T12:33:53] INFO    markov_predictions_test.csv: sha256=296931930b8cf292… bytes=698074
+[2026-11-15T12:33:53] INFO    markov_predictions_validation.csv: sha256=510930fbfcfcf356… bytes=517399
+[2026-11-15T12:33:53] INFO    pca_hosvd_comparison.csv: sha256=0163aed21bd17d5e… bytes=16040
+[2026-11-15T12:33:53] INFO    phase4_feature_manifest.csv: sha256=a9803fff82db118a… bytes=5497
+[2026-11-15T12:33:53] INFO    phase4_metadata.json: sha256=e32bf8b268e90aea… bytes=18667
+[2026-11-15T12:33:53] INFO    test_windows.npz: sha256=dd62d084edb1d1ba… bytes=2443186
+[2026-11-15T12:33:53] INFO    train_windows.npz: sha256=411e8bd22720ccb5… bytes=10446129
+[2026-11-15T12:33:53] INFO    train_windows.npz 2: sha256=411e8bd22720ccb5… bytes=10446129
+[2026-11-15T12:33:53] INFO    validation_windows.npz: sha256=f39b67a5fe098abd… bytes=1866079
+[2026-11-15T12:33:53] INFO  Provenance manifest written: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/manifests/input_provenance.json
+[2026-11-15T12:33:53] INFO  JSON report written: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/results/integrity_gate.json
+[2026-11-15T12:33:53] INFO  Text report written: /Users/abhaychirayil/Desktop/Phase 5 Input FIles/output/results/integrity_gate_report.txt
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] SECTION  FINAL SUMMARY
+[2026-11-15T12:33:53] ======================================================================
+[2026-11-15T12:33:53] INFO  Checks passed : 210
+[2026-11-15T12:33:53] INFO  Checks failed : 0
+[2026-11-15T12:33:53] INFO  Warnings      : 0
+[2026-11-15T12:33:53] INFO  Elapsed (s)   : 1.84
+[2026-11-15T12:33:53] INFO  INTEGRITY GATE: PASSED  (210 checks passed, 0 warnings)

@@ -1,0 +1,33 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/claude/phase3
+configfile: pytest.ini
+testpaths: tests
+plugins: platformdirs-4.13.0
+collecting ... collected 22 items
+
+tests/test_markov_core.py::test_counts_P_P2_pi PASSED                    [  4%]
+tests/test_markov_core.py::test_example_spectrum_and_gap PASSED          [  9%]
+tests/test_markov_core.py::test_tie_break_locked_rule PASSED             [ 13%]
+tests/test_markov_core.py::test_majority_tie_smallest_index PASSED       [ 18%]
+tests/test_markov_core.py::test_zero_support_row_fallback PASSED         [ 22%]
+tests/test_markov_core.py::test_gap_not_treated_as_one_hour_transition PASSED [ 27%]
+tests/test_markov_core.py::test_series_conflict_detected PASSED          [ 31%]
+tests/test_markov_core.py::test_non_whole_hour_rejected PASSED           [ 36%]
+tests/test_markov_core.py::test_missing_state_fallback_and_coverage PASSED [ 40%]
+tests/test_markov_core.py::test_invalid_labels_rejected PASSED           [ 45%]
+tests/test_markov_core.py::test_row_stochastic_checks PASSED             [ 50%]
+tests/test_markov_core.py::test_reducible_and_periodic_chains PASSED     [ 54%]
+tests/test_markov_core.py::test_expected_run_length PASSED               [ 59%]
+tests/test_markov_core.py::test_metrics_match_sklearn_and_absent_class PASSED [ 63%]
+tests/test_markov_core.py::test_brier_and_logloss PASSED                 [ 68%]
+tests/test_markov_core.py::test_change_metrics_denominators PASSED       [ 72%]
+tests/test_markov_core.py::test_split_isolation PASSED                   [ 77%]
+tests/test_markov_core.py::TestRealOutputs::test_metrics_table PASSED    [ 81%]
+tests/test_markov_core.py::TestRealOutputs::test_matrices PASSED         [ 86%]
+tests/test_markov_core.py::TestRealOutputs::test_prediction_schema[validation] PASSED [ 90%]
+tests/test_markov_core.py::TestRealOutputs::test_prediction_schema[test] PASSED [ 95%]
+tests/test_markov_core.py::TestRealOutputs::test_P_hash_unchanged PASSED [100%]
+
+============================== 22 passed in 1.28s ==============================

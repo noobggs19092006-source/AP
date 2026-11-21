@@ -1,0 +1,359 @@
+#!/usr/bin/env python3
+"""
+test_phase5_full.py — Section 15: Comprehensive Automated Test Suite
+Phase 5 SVM/RFF Air Pollution Classification
+
+Tests:
+  1. NPZ exact five-key schema and Phase 2 alignment
+  2. SHA-256 manifest integrity and duplicate filename handling
+  3. No validation/test fitting for scalers, SVMs, RFF sampler or probability calibrator
+  4. Deterministic C/gamma/D/seed run configurations
+  5. Hand-computed RBF entries vs library values
+  6. Hand-derived RFF distribution/normalization, reproducibility and Monte Carlo sanity
+  7. Small classical hinge-loss QP feasibility and KKT residuals
+  8. Class-order preservation and 3-class score/probability shape
+  9. Brier and clipped log-loss on known examples
+  10. Synthetic transitions, high-entry TP/FP/FN, zero-predicted-change edge case
+  11. Paired baseline alignment and expected Phase 3 counts
+  12. Locking selection before testing and no test-driven retry logic
+  13. Reload saved model + scaler + RFF + calibrator and reproduce predictions
+  14. Plotting and metadata inventory consistency
+"""
+
+import csv
+import hashlib
+import json
+import os
+import pickle
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import pytest
+from sklearn.kernel_approximation import RBFSampler
+from sklearn.svm import LinearSVC, SVC
+
+BASE_DIR = Path("/Users/abhaychirayil/Desktop/Phase 5 Input FIles")
+OUTPUT_DIR = BASE_DIR / "output"
+
+
+def compute_sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        while chunk := f.read(1 << 20):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+# ---------------------------------------------------------------------------
+# Test 1: NPZ exact five-key schema and shapes/dtypes
+# ---------------------------------------------------------------------------
+def test_01_npz_five_key_schema():
+    configs = ["pca_A", "pca_B", "pca_C", "hosvd_A", "hosvd_B", "hosvd_C", "hosvd_B_alt1", "hosvd_B_alt2"]
+    splits = ["train", "validation", "test"]
+    expected_n = {"train": 24108, "validation": 4239, "test": 5720}
+    dim_map = {"pca_A": 48, "pca_B": 192, "pca_C": 576,
+               "hosvd_A": 48, "hosvd_B": 192, "hosvd_C": 576,
+               "hosvd_B_alt1": 192, "hosvd_B_alt2": 192}
+
+    for cfg in configs:
+        for sp in splits:
+            path = BASE_DIR / f"features_{sp}_{cfg}.npz"
+            assert path.exists(), f"Missing file: {path}"
+            with np.load(path) as d:
+                keys = sorted(list(d.keys()))
+                assert keys == ["F", "current_pm25", "current_state", "target_timestamp", "y"], f"Wrong keys in {path}: {keys}"
+                assert d["F"].shape == (expected_n[sp], dim_map[cfg])
+                assert d["F"].dtype == np.float32
+                assert np.all(np.isfinite(d["F"]))
+                assert d["y"].shape == (expected_n[sp],)
+                assert d["y"].dtype == np.int8
+                assert set(np.unique(d["y"])).issubset({0, 1, 2})
+                assert d["current_state"].shape == (expected_n[sp],)
+                assert d["current_state"].dtype == np.int8
+                assert d["current_pm25"].shape == (expected_n[sp],)
+                assert d["current_pm25"].dtype == np.float32
+                assert d["target_timestamp"].shape == (expected_n[sp],)
+                assert d["target_timestamp"].dtype == np.dtype("datetime64[ns]")
+
+
+# ---------------------------------------------------------------------------
+# Test 2: SHA-256 manifest integrity
+# ---------------------------------------------------------------------------
+def test_02_manifest_sha256_integrity():
+    manifest_path = BASE_DIR / "phase4_feature_manifest.csv"
+    assert manifest_path.exists()
+    df_manifest = pd.read_csv(manifest_path)
+    assert len(df_manifest) == 24
+    for _, row in df_manifest.iterrows():
+        fpath = BASE_DIR / row["relative_path"]
+        assert fpath.exists(), f"File {fpath} does not exist"
+        assert fpath.stat().st_size == row["actual_file_bytes"], f"Byte mismatch on {fpath}"
+        computed_sha = compute_sha256(fpath)
+        assert computed_sha == row["sha256"], f"SHA mismatch on {fpath}: {computed_sha} != {row['sha256']}"
+
+
+# ---------------------------------------------------------------------------
+# Test 3: No validation/test fitting for scalers
+# ---------------------------------------------------------------------------
+def test_03_no_val_test_scaler_leakage():
+    for cfg in ["pca_A", "pca_B", "hosvd_B"]:
+        scaler_file = OUTPUT_DIR / "models" / f"scaler_{cfg}.npz"
+        assert scaler_file.exists(), f"Missing {scaler_file}"
+        with np.load(scaler_file) as sc:
+            saved_mean = sc["mean"]
+            saved_n = sc["n_samples_seen"]
+
+        # Recompute mean strictly on TRAIN F
+        with np.load(BASE_DIR / f"features_train_{cfg}.npz") as tr:
+            F_tr = tr["F"].astype(np.float64)
+            expected_mean = np.mean(F_tr, axis=0)
+
+        assert saved_n == 24108, f"Scaler was not fitted on 24108 train samples! Saw {saved_n}"
+        assert np.allclose(saved_mean, expected_mean, atol=1e-4), f"Scaler mean does not match train F mean for {cfg}"
+
+
+# ---------------------------------------------------------------------------
+# Test 4: Deterministic configurations
+# ---------------------------------------------------------------------------
+def test_04_deterministic_configurations():
+    rng = np.random.RandomState(42)
+    X = rng.randn(100, 10).astype(np.float32)
+    y = rng.choice([0, 1, 2], size=100).astype(np.int8)
+
+    clf1 = LinearSVC(C=1.0, loss="squared_hinge", multi_class="ovr", max_iter=2000, random_state=42, dual=False)
+    clf1.fit(X, y)
+    p1 = clf1.predict(X)
+
+    clf2 = LinearSVC(C=1.0, loss="squared_hinge", multi_class="ovr", max_iter=2000, random_state=42, dual=False)
+    clf2.fit(X, y)
+    p2 = clf2.predict(X)
+
+    assert np.array_equal(p1, p2)
+    assert np.allclose(clf1.coef_, clf2.coef_)
+
+
+# ---------------------------------------------------------------------------
+# Test 5: Hand-computed RBF kernel vs library values
+# ---------------------------------------------------------------------------
+def test_05_hand_computed_rbf_kernel():
+    gamma = 0.25
+    x = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]], dtype=np.float64)
+    z = np.array([[1.5, 2.5, 3.5], [0.0, 1.0, 2.0]], dtype=np.float64)
+
+    # Hand calculation:
+    # ||x[0] - z[0]||^2 = (0.5)^2 + (0.5)^2 + (0.5)^2 = 0.75
+    # K[0,0] = exp(-0.25 * 0.75) = exp(-0.1875)
+    hand_00 = np.exp(-0.1875)
+
+    # Scikit-learn / vector distance
+    diff = x[:, None, :] - z[None, :, :]
+    dist_sq = np.sum(diff ** 2, axis=-1)
+    K_lib = np.exp(-gamma * dist_sq)
+
+    assert abs(K_lib[0, 0] - hand_00) < 1e-14
+    assert np.all(K_lib >= 0.0) and np.all(K_lib <= 1.0)
+
+
+# ---------------------------------------------------------------------------
+# Test 6: RFF distribution, normalization & Monte Carlo sanity
+# ---------------------------------------------------------------------------
+def test_06_rff_distribution_and_mc_sanity():
+    gamma = 0.1
+    D = 4000
+    rbf_sampler1 = RBFSampler(gamma=gamma, n_components=D, random_state=42)
+    rbf_sampler2 = RBFSampler(gamma=gamma, n_components=D, random_state=42)
+
+    X = np.random.RandomState(42).randn(50, 16)
+    Z1 = rbf_sampler1.fit_transform(X)
+    Z2 = rbf_sampler2.fit_transform(X)
+
+    assert np.array_equal(Z1, Z2), "RFF sampler failed random_state reproducibility"
+
+    # Monte Carlo approximation to Gram matrix
+    dist_sq = np.sum((X[:, None, :] - X[None, :, :]) ** 2, axis=-1)
+    K_exact = np.exp(-gamma * dist_sq)
+    K_hat = Z1 @ Z1.T
+    mae = float(np.mean(np.abs(K_exact - K_hat)))
+    assert mae < 0.05, f"RFF Monte Carlo error too high: MAE = {mae}"
+
+
+# ---------------------------------------------------------------------------
+# Test 7: Small classical hinge-loss QP feasibility and KKT residuals
+# ---------------------------------------------------------------------------
+def test_07_qp_feasibility_and_kkt():
+    qp_json = OUTPUT_DIR / "results" / "qp_verification.json"
+    assert qp_json.exists(), f"Missing {qp_json}"
+    with open(qp_json) as f:
+        res = json.load(f)
+
+    summary = res["summary"]
+    assert summary["all_passed"] == True
+    assert summary["separable_primal_dual_gap"] < 1e-3
+    assert summary["nonseparable_primal_dual_gap"] < 1e-3
+
+
+# ---------------------------------------------------------------------------
+# Test 8: Class order preservation and 3-class score/probability shape
+# ---------------------------------------------------------------------------
+def test_08_class_order_preservation():
+    # Load any saved prediction CSV
+    pred_files = list((OUTPUT_DIR / "predictions").glob("*.csv"))
+    assert len(pred_files) > 0, "No prediction CSVs found"
+    for pf in pred_files:
+        df = pd.read_csv(pf)
+        for col in ["score_0", "score_1", "score_2", "prob_0", "prob_1", "prob_2"]:
+            assert col in df.columns, f"Missing {col} in {pf}"
+        probs = df[["prob_0", "prob_1", "prob_2"]].values
+        assert np.all(probs >= -1e-6) and np.all(probs <= 1.0 + 1e-6)
+        row_sums = np.sum(probs, axis=1)
+        assert np.allclose(row_sums, 1.0, atol=1e-4), f"Probabilities do not sum to 1 in {pf}"
+
+
+# ---------------------------------------------------------------------------
+# Test 9: Brier and log-loss on known examples
+# ---------------------------------------------------------------------------
+def test_09_brier_and_logloss_known_examples():
+    probs = np.array([[1/3, 1/3, 1/3]], dtype=np.float64)
+    y_true = np.array([0])
+
+    # Brier: (1/3 - 1)^2 + (1/3 - 0)^2 + (1/3 - 0)^2 = 4/9 + 1/9 + 1/9 = 6/9 = 2/3
+    expected_brier = 2.0 / 3.0
+    actual_brier = float(np.sum((probs - np.array([[1, 0, 0]])) ** 2))
+    assert abs(actual_brier - expected_brier) < 1e-12
+
+    # Log-loss: -log(1/3) = log(3)
+    expected_logloss = float(np.log(3.0))
+    actual_logloss = float(-np.log(probs[0, 0]))
+    assert abs(actual_logloss - expected_logloss) < 1e-12
+
+
+# ---------------------------------------------------------------------------
+# Test 10: Synthetic transitions, high-entry & zero-predicted-change edge case
+# ---------------------------------------------------------------------------
+def test_10_transitions_zero_change_edge_case():
+    y_true = np.array([0, 1, 2, 0, 1, 2, 0, 1, 2, 0])
+    c_state = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    # Edge case: Model predicts ALL zeros (never predicts a change from state 0)
+    y_pred_zero_change = np.zeros(10, dtype=int)
+
+    mask = c_state >= 0
+    T = (y_true != c_state).astype(int)
+    T_hat = (y_pred_zero_change != c_state).astype(int)
+
+    tp = int(np.sum((T == 1) & (T_hat == 1)))
+    fp = int(np.sum((T == 0) & (T_hat == 1)))
+    fn = int(np.sum((T == 1) & (T_hat == 0)))
+    tn = int(np.sum((T == 0) & (T_hat == 0)))
+
+    assert tp == 0
+    assert fp == 0
+    assert fn == 6  # 6 true transitions missed (indices 1, 2, 4, 5, 7, 8)
+    assert tn == 4  # 4 true non-transitions correctly preserved (indices 0, 3, 6, 9)
+
+    # Zero-denominator convention must not crash:
+    prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    rec = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+
+    assert prec == 0.0
+    assert rec == 0.0
+    assert f1 == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Test 11: Paired baseline alignment and expected Phase 3 counts
+# ---------------------------------------------------------------------------
+def test_11_markov_baseline_counts():
+    val_csv = BASE_DIR / "markov_predictions_validation.csv"
+    test_csv = BASE_DIR / "markov_predictions_test.csv"
+    df_val = pd.read_csv(val_csv)
+    df_test = pd.read_csv(test_csv)
+
+    val_a = df_val[df_val["scope_a_eligible"] == True]
+    test_a = df_test[df_test["scope_a_eligible"] == True]
+
+    assert len(val_a) == 4197
+    assert len(test_a) == 5685
+
+    # True transitions
+    assert int(np.sum(val_a["y"] != val_a["current_state"])) == 488
+    assert int(np.sum(test_a["y"] != test_a["current_state"])) == 526
+
+    # Entries into High
+    assert int(np.sum((val_a["current_state"] != 2) & (val_a["y"] == 2))) == 122
+    assert int(np.sum((test_a["current_state"] != 2) & (test_a["y"] == 2))) == 154
+
+    # Markov baseline hard-predicted transitions
+    markov_val_pred_trans = int(np.sum(val_a["pred_markov_scope_b"] != val_a["current_state"]))
+    markov_test_pred_trans = int(np.sum(test_a["pred_markov_scope_b"] != test_a["current_state"]))
+    assert markov_val_pred_trans == 0, f"Markov predicted {markov_val_pred_trans} transitions on val (expected 0)"
+    assert markov_test_pred_trans == 0, f"Markov predicted {markov_test_pred_trans} transitions on test (expected 0)"
+
+
+# ---------------------------------------------------------------------------
+# Test 12: Locking selection before testing and no test-driven retry logic
+# ---------------------------------------------------------------------------
+def test_12_selection_lock():
+    lock_file = OUTPUT_DIR / "manifests" / "LOCKED_SELECTION.json"
+    assert lock_file.exists(), "LOCKED_SELECTION.json does not exist"
+    with open(lock_file) as f:
+        lock = json.load(f)
+
+    assert lock["test_metrics_used"] == False
+    assert "timestamp_utc" in lock
+    assert "linear_pca_B" in lock["selected_models"]
+    assert "linear_hosvd_B" in lock["selected_models"]
+
+
+# ---------------------------------------------------------------------------
+# Test 13: Model reload & reproduction
+# ---------------------------------------------------------------------------
+def test_13_model_reload_reproducibility():
+    model_path = OUTPUT_DIR / "models" / "final_linear_pca_B.pkl"
+    scaler_path = OUTPUT_DIR / "models" / "scaler_pca_B.npz"
+    assert model_path.exists()
+    assert scaler_path.exists()
+
+    with open(model_path, "rb") as f:
+        clf = pickle.load(f)
+
+    with np.load(scaler_path) as sc:
+        mean_ = sc["mean"]
+        scale_ = sc["scale"]
+
+    with np.load(BASE_DIR / "features_test_pca_B.npz") as d:
+        F_sub = d["F"][:20]
+
+    F_scaled = (F_sub - mean_) / scale_
+    pred = clf.predict(F_scaled)
+
+    # Compare against saved predictions
+    pred_csv = OUTPUT_DIR / "predictions" / "final_linear_pca_B_test.csv"
+    assert pred_csv.exists()
+    df_pred = pd.read_csv(pred_csv)
+    saved_pred_sub = df_pred["hard_pred"].iloc[:20].values
+
+    assert np.array_equal(pred, saved_pred_sub), "Reloaded model predictions did not match saved predictions!"
+
+
+# ---------------------------------------------------------------------------
+# Test 14: Plotting and metadata inventory consistency
+# ---------------------------------------------------------------------------
+def test_14_artifacts_consistency():
+    figures = [
+        "stage_a_c_curves.png",
+        "stage_a_confusion_matrices.png",
+        "rff_kernel_approx.png",
+        "rff_macro_f1_vs_D.png",
+        "markov_vs_svm_transitions.png",
+        "high_entry_comparison.png",
+        "pca_vs_hosvd_macro_f1_vs_dim.png",
+        "hosvd_rank_comparison.png",
+        "reconstruction_vs_classification.png",
+        "pareto_performance_vs_storage.png",
+        "pareto_performance_vs_runtime.png"
+    ]
+    for fig in figures:
+        p = OUTPUT_DIR / "figures" / fig
+        assert p.exists(), f"Expected figure missing: {p}"

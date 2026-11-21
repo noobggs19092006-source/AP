@@ -1,0 +1,31 @@
+{
+  "selection_rule": "Primary: J = 0.5 * ScopeA_MacroF1 + 0.5 * ScopeA_ChangeF1 (Validation Scope A); Tie-break: MacroF1, then ChangeF1, then deterministic name",
+  "test_labels_used": false,
+  "validation_locked_utc": "2026-11-20T06:05:28Z",
+  "winners": {
+    "F1_Fixed": {
+      "svm_source": "linear_hosvd_B",
+      "lambda": 0.9,
+      "val_J": 0.5894379750000001,
+      "val_macro_f1": 0.80729125,
+      "val_change_f1": 0.3715847
+    },
+    "F2_Adaptive": {
+      "svm_source": "linear_pca_B",
+      "tau": 0.65,
+      "lambda_low": 0.75,
+      "lambda_high": 1.0,
+      "val_J": 0.58758003,
+      "val_macro_f1": 0.81169852,
+      "val_change_f1": 0.36346154
+    },
+    "F3_Transition": {
+      "svm_source": "linear_best_overall",
+      "rho": 0.75,
+      "eta": 0.0,
+      "val_J": 0.5941504550000001,
+      "val_macro_f1": 0.83940656,
+      "val_change_f1": 0.34889435
+    }
+  }
+}

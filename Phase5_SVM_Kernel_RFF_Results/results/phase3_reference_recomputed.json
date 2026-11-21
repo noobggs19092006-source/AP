@@ -1,0 +1,19 @@
+{
+  "validation": {
+    "scopeA_n": 4197,
+    "scopeB_n": 4239,
+    "actual_transitions": 488,
+    "entries_into_high": 122
+  },
+  "test": {
+    "scopeA_n": 5685,
+    "scopeB_n": 5720,
+    "actual_transitions": 526,
+    "entries_into_high": 154
+  },
+  "markov_test_scopeA_accuracy": 0.9074758135444151,
+  "markov_test_scopeB_accuracy": 0.9041958041958041,
+  "markov_test_hard_detected_changes": 0,
+  "markov_test_scopeA_brier": 0.16659810637163056,
+  "markov_test_scopeA_log_loss": 0.33916441917521006
+}

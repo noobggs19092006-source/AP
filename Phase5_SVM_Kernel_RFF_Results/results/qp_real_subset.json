@@ -1,0 +1,98 @@
+{
+  "utc": "2026-11-15T14:18:40+00:00",
+  "subset": {
+    "n": 100,
+    "n_low": 50,
+    "n_high": 50,
+    "first_timestamp": "2013-03-02T00:00:00.000000000",
+    "last_timestamp": "2015-12-31T23:00:00.000000000",
+    "source": "TRAIN split only"
+  },
+  "runs": {
+    "d192_C1": {
+      "d": 192,
+      "C": 1.0,
+      "all_checks_passed": true,
+      "n_sv": 71,
+      "n_free_sv": 71,
+      "n_bound_sv": 0,
+      "bound_violation": 0.0,
+      "equality_violation": 1.9329156331071573e-15,
+      "kkt_stationarity_norm": 0.0,
+      "cs1_max": 2.5056223939680274e-08,
+      "cs2_max": 2.006976325723608e-06,
+      "primal_objective": 0.4414791493502243,
+      "dual_objective": 0.44146215279139295,
+      "primal_dual_gap": 1.699655883136142e-05,
+      "w_cosine_vs_sklearn": 0.9999999999995647,
+      "b_qp": 0.14656117669701135,
+      "b_sklearn": 0.1465611023499204,
+      "b_difference": 7.43470909558841e-08,
+      "slack_sum": 1.6917772778679563e-05,
+      "tolerances": {
+        "kkt": 0.001,
+        "gap": 0.001,
+        "bound": 1e-08,
+        "equality": 1e-06
+      },
+      "note": "SLSQP (tol 1e-12) vs libsvm SMO (tol 1e-10); bias recovered differently, differences reported not hidden."
+    },
+    "d5_C1": {
+      "d": 5,
+      "C": 1.0,
+      "all_checks_passed": true,
+      "n_sv": 48,
+      "n_free_sv": 4,
+      "n_bound_sv": 44,
+      "bound_violation": 0.0,
+      "equality_violation": 1.4799272918253337e-13,
+      "kkt_stationarity_norm": 0.0,
+      "cs1_max": 1.3517069653739731e-15,
+      "cs2_max": 7.184034974499088e-07,
+      "primal_objective": 43.666102568906375,
+      "dual_objective": 43.66610104962158,
+      "primal_dual_gap": 1.5192847939715648e-06,
+      "w_cosine_vs_sklearn": 0.9999999999998842,
+      "b_qp": 0.30883304171683373,
+      "b_sklearn": 0.3088327636561171,
+      "b_difference": 2.780607166186222e-07,
+      "slack_sum": 41.7525261219392,
+      "tolerances": {
+        "kkt": 0.001,
+        "gap": 0.001,
+        "bound": 1e-08,
+        "equality": 1e-06
+      },
+      "note": "SLSQP (tol 1e-12) vs libsvm SMO (tol 1e-10); bias recovered differently, differences reported not hidden."
+    },
+    "d5_C10": {
+      "d": 5,
+      "C": 10.0,
+      "all_checks_passed": true,
+      "n_sv": 45,
+      "n_free_sv": 6,
+      "n_bound_sv": 39,
+      "bound_violation": 0.0,
+      "equality_violation": 1.2789769243681803e-13,
+      "kkt_stationarity_norm": 0.0,
+      "cs1_max": 9.502702437527916e-07,
+      "cs2_max": 1.4093428986912083e-06,
+      "primal_objective": 416.3561193019441,
+      "dual_objective": 416.3561144320556,
+      "primal_dual_gap": 4.8698884711484425e-06,
+      "w_cosine_vs_sklearn": 0.9999999999872564,
+      "b_qp": 0.2736107349023571,
+      "b_sklearn": 0.2736183154460767,
+      "b_difference": 7.580543719576394e-06,
+      "slack_sum": 41.37352189760203,
+      "tolerances": {
+        "kkt": 0.001,
+        "gap": 0.001,
+        "bound": 1e-08,
+        "equality": 1e-06
+      },
+      "note": "SLSQP (tol 1e-12) vs libsvm SMO (tol 1e-10); bias recovered differently, differences reported not hidden."
+    }
+  },
+  "all_runs_passed": true
+}

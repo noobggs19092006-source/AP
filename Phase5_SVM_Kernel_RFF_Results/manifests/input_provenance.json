@@ -1,0 +1,197 @@
+{
+  "PHASE4_RESULTS_AND_MATH.txt": {
+    "sha256": "f9842fd1a7c9f10357a97be074ef2a607da583777421ab8b7d4a684db1419d93",
+    "bytes": 44239,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/PHASE4_RESULTS_AND_MATH.txt"
+  },
+  "features_test_hosvd_A.npz": {
+    "sha256": "d873b21a38849f9ae69c1e4f64212222047ccd61903d7b0a058a62c230e8ca69",
+    "bytes": 1080301,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_hosvd_A.npz"
+  },
+  "features_test_hosvd_B.npz": {
+    "sha256": "911407585c73a8d368d5a47a8372c5d8995f082bc6bf56b8bad33993d84d85c8",
+    "bytes": 4182306,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_hosvd_B.npz"
+  },
+  "features_test_hosvd_B_alt1.npz": {
+    "sha256": "bd93c1ce5715379351db147916753f4d415998d611cb7d90f421f02c3d8e232f",
+    "bytes": 4175903,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_hosvd_B_alt1.npz"
+  },
+  "features_test_hosvd_B_alt2.npz": {
+    "sha256": "51ce8bddd7d397a82277200ca3ebd689facf1dde942750ed9a701aa95f44889d",
+    "bytes": 4188340,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_hosvd_B_alt2.npz"
+  },
+  "features_test_hosvd_C.npz": {
+    "sha256": "5a72973c70a26d4073d5d02d721100cd9d99ff38f8f1f0c1ca1a85401f51bfed",
+    "bytes": 12454802,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_hosvd_C.npz"
+  },
+  "features_test_pca_A.npz": {
+    "sha256": "e3ef3c23a8ef879c47ea7769d713c7081d034847a1755847f6cf5f96d443872b",
+    "bytes": 1073072,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_pca_A.npz"
+  },
+  "features_test_pca_B.npz": {
+    "sha256": "b94d01391f7ca8ebffdaa07cc3810e1dc0d3ef8158e6d28cd3b0c15462cc3c63",
+    "bytes": 4156837,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_pca_B.npz"
+  },
+  "features_test_pca_C.npz": {
+    "sha256": "5fb7f89c529efb5943908053eb0880016f088f1525bf684c1680a9603aeaeb97",
+    "bytes": 12347140,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_test_pca_C.npz"
+  },
+  "features_train_hosvd_A.npz": {
+    "sha256": "4a2927ae2ed982d1de411210ddd69f0957493d9429732b8604c7d5372d399683",
+    "bytes": 4549080,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_hosvd_A.npz"
+  },
+  "features_train_hosvd_B.npz": {
+    "sha256": "db7218dfada1941cb630cf587c858fc663a52a1b82505dcc9c4ce89af8ac322b",
+    "bytes": 17621559,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_hosvd_B.npz"
+  },
+  "features_train_hosvd_B_alt1.npz": {
+    "sha256": "3846e8919c7ba08ec041bdd88c29b48365fcf055449f4450ac495e525710839c",
+    "bytes": 17597982,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_hosvd_B_alt1.npz"
+  },
+  "features_train_hosvd_B_alt2.npz": {
+    "sha256": "1d1cd18cd6437dfbcf3eb51f31660c3a67bbbbd17506fc9f9746e02bfa20c2fc",
+    "bytes": 17650608,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_hosvd_B_alt2.npz"
+  },
+  "features_train_hosvd_C.npz": {
+    "sha256": "cdc89b6cd0029aa1678e52ab31e2cd7ceb2340f4ecbe53cb0e445a3ca1dfd9cb",
+    "bytes": 52469652,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_hosvd_C.npz"
+  },
+  "features_train_pca_A.npz": {
+    "sha256": "c27464e36c0c264a59384ced760a937bd9c0070411c0ec36780a2a1c387283e9",
+    "bytes": 4515099,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_pca_A.npz"
+  },
+  "features_train_pca_B.npz": {
+    "sha256": "d7c111828b0246333a85bc0e234f0d4e19ce2875cff63bc1a97771d4d8db3524",
+    "bytes": 17517030,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_pca_B.npz"
+  },
+  "features_train_pca_C.npz": {
+    "sha256": "feae189712c4eebffb66e466c65d3d0df44c821cb1186dbacdb5b0eb840a0516",
+    "bytes": 52051813,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_train_pca_C.npz"
+  },
+  "features_validation_hosvd_A.npz": {
+    "sha256": "e2d6f668ced5f909102416715c8765c0aa2665fbc36950fbc3de670b849ada46",
+    "bytes": 800664,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_hosvd_A.npz"
+  },
+  "features_validation_hosvd_B.npz": {
+    "sha256": "fd95e844cba7fb24975b01c41f1c7980755ca7d8e7c213fec7b093703dddf400",
+    "bytes": 3099031,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_hosvd_B.npz"
+  },
+  "features_validation_hosvd_B_alt1.npz": {
+    "sha256": "47b5efe25218ef48c1ae3bf552a3b34e6598c02acf9710e329dbd925b34a0c1e",
+    "bytes": 3094611,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_hosvd_B_alt1.npz"
+  },
+  "features_validation_hosvd_B_alt2.npz": {
+    "sha256": "9e2add8aa961c1081603cbf1c06fe69b7af90a1b2c3d37ee93f542c2afe3133f",
+    "bytes": 3104060,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_hosvd_B_alt2.npz"
+  },
+  "features_validation_hosvd_C.npz": {
+    "sha256": "21b711ae179c88b7acebd361ee4cc0807ad1c94b28a7e80fe803e018b47f1956",
+    "bytes": 9228604,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_hosvd_C.npz"
+  },
+  "features_validation_pca_A.npz": {
+    "sha256": "da5c9475ae93def06ba95f799d62dc04e8561bc1beab7fea923eec2293c49b9c",
+    "bytes": 794986,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_pca_A.npz"
+  },
+  "features_validation_pca_B.npz": {
+    "sha256": "48bd3a951f957e6770a1f1a0ffca618f57fc6cdd1e86e3e964ee00e423d9bda2",
+    "bytes": 3079780,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_pca_B.npz"
+  },
+  "features_validation_pca_C.npz": {
+    "sha256": "f586e7a6459aa75adb267405f22afde86b3af554e86c37c200f2a82903e2abea",
+    "bytes": 9150920,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/features_validation_pca_C.npz"
+  },
+  "fitted_center_and_factors.npz": {
+    "sha256": "8adfb5f653298ed5d20c5de05bb24fbc613df6ec004a95c3e3a00e56a69c3a4b",
+    "bytes": 52808,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/fitted_center_and_factors.npz"
+  },
+  "fitted_pca_basis_192.npz": {
+    "sha256": "4014cc80ba5427e7db227601553ec031f00943059ed2fbe8a2e214b1dd44e7a7",
+    "bytes": 4895048,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/fitted_pca_basis_192.npz"
+  },
+  "fitted_pca_basis_48.npz": {
+    "sha256": "f6882ae7c92ac350458ca64cb1b141d86be16269feef0b9b9cd7ca9bd49096e0",
+    "bytes": 1244360,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/fitted_pca_basis_48.npz"
+  },
+  "fitted_pca_basis_576.npz": {
+    "sha256": "e33162737d9bc25123d2d83c7ef5c7ce3b601d3c2483ea6bdcc8aa7aa114ca13",
+    "bytes": 14630216,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/fitted_pca_basis_576.npz"
+  },
+  "markov_baseline_metrics.csv": {
+    "sha256": "f5c9120006167f4999682da774521671f81ad946307051821d568c085521f26a",
+    "bytes": 7744,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/markov_baseline_metrics.csv"
+  },
+  "markov_predictions_test.csv": {
+    "sha256": "296931930b8cf29259cf44b7f0edbc926ac7638a6e50cc4597d7a3ad9e25a929",
+    "bytes": 698074,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/markov_predictions_test.csv"
+  },
+  "markov_predictions_validation.csv": {
+    "sha256": "510930fbfcfcf35626307f4c579a17fdf6e7adc28cc44495d6af7abb690a41b1",
+    "bytes": 517399,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/markov_predictions_validation.csv"
+  },
+  "pca_hosvd_comparison.csv": {
+    "sha256": "0163aed21bd17d5e84f4c79746fcb14ed10ad1526ee6925047a68be577e98fd9",
+    "bytes": 16040,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/pca_hosvd_comparison.csv"
+  },
+  "phase4_feature_manifest.csv": {
+    "sha256": "a9803fff82db118a0215ec55a6e6625b8c6fbcaa3072b937f43891e41f95dc76",
+    "bytes": 5497,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/phase4_feature_manifest.csv"
+  },
+  "phase4_metadata.json": {
+    "sha256": "e32bf8b268e90aea2a34ff1f664896adc5c2a765452f9d3cd32b8c4c1e8d2d28",
+    "bytes": 18667,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/phase4_metadata.json"
+  },
+  "test_windows.npz": {
+    "sha256": "dd62d084edb1d1ba20b12dc1b81c74b0bcf3a986d5d34fa8f5f8d290fa2b7705",
+    "bytes": 2443186,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/test_windows.npz"
+  },
+  "train_windows.npz": {
+    "sha256": "411e8bd22720ccb5948e5b8dee3719f24238623a4e0dbfbaff3bc17a0cd8bd0a",
+    "bytes": 10446129,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/train_windows.npz"
+  },
+  "train_windows.npz 2": {
+    "sha256": "411e8bd22720ccb5948e5b8dee3719f24238623a4e0dbfbaff3bc17a0cd8bd0a",
+    "bytes": 10446129,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/train_windows.npz 2"
+  },
+  "validation_windows.npz": {
+    "sha256": "f39b67a5fe098abda2635282ca8b975b5e7e5cf82c149d7fe125f4c0145d0f8e",
+    "bytes": 1866079,
+    "path": "/Users/abhaychirayil/Desktop/Phase 5 Input FIles/validation_windows.npz"
+  }
+}

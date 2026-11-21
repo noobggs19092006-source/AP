@@ -1,0 +1,6 @@
+fold,n_val_samples,classes_in_val,calibration_method
+0,4822,"[0, 1, 2]",one_vs_rest_platt
+1,4822,"[0, 1, 2]",one_vs_rest_platt
+2,4822,"[0, 1, 2]",one_vs_rest_platt
+3,4821,"[0, 1, 2]",one_vs_rest_platt
+4,4821,"[0, 1, 2]",one_vs_rest_platt

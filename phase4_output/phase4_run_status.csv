@@ -1,0 +1,6 @@
+config_id,k,status,reason
+A,48,COMPLETED,
+B,192,COMPLETED,
+C,576,COMPLETED,
+B_alt1,192,COMPLETED,
+B_alt2,192,COMPLETED,

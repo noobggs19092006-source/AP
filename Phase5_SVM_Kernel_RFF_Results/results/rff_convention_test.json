@@ -1,0 +1,7 @@
+{
+  "manual_mae": 0.011232154360092296,
+  "manual_max_err": 0.05271427653150088,
+  "sklearn_mae": 0.01131456398882032,
+  "reproducible": true,
+  "passed": true
+}

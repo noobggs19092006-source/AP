@@ -1,0 +1,114 @@
+# Phase 5: Spatiotemporal Air Pollution State Prediction Using Higher-Order Singular Value Decomposition and Kernel Support Vector Machines
+
+## Overview
+This package contains the complete, mathematically rigorous, independently auditable Python implementation of **Phase 5** of the research project.
+
+Phase 5 investigates discriminative classification of next-hour PM2.5 pollution states at the Aotizhongxin station from a 24-hour × 12-station × 11-measurement history tensor, comparing:
+1. **Full-training Linear Support Vector Classifiers** (LinearSVC with squared-hinge loss in One-vs-Rest) across 8 matrix PCA and tensor HoSVD representations ($k \in \{48, 192, 576\}$) and a 5-point regularization grid $C \in \{0.01, 0.1, 1, 10, 100\}$ (40 models).
+2. **Random Fourier Features (RFF)** approximating the non-linear Gaussian RBF kernel via Bochner's Theorem, evaluated across feature dimensions $D \in \{256, 1024, 2048\}$ and five predetermined seeds $\{42, 43, 44, 45, 46\}$.
+3. **Exact RBF Kernel SVC** (LIBSVM dual solver) on resource-bounded chronological training subsets ($N \in \{4000, 8000\}$).
+4. **Transition and High-Entry Responsiveness** (Scope A observed-current population: validation $N=4,197$, test $N=5,685$), benchmarked directly against the Phase 3 Markov transition model.
+5. **Strictly Training-Only Multiclass Probability Calibration** via out-of-fold chronological holdout scoring and multinomial logistic calibration.
+6. **Paired Chronological Block-Bootstrap Uncertainty Estimation** (1,000 iterations, 24-hour blocks) on test differences.
+
+---
+
+## Directory Structure
+```
+Phase5_SVM_Kernel_RFF_Results/
+├── phase5_run.py               # Master single-command pipeline runner
+├── requirements.txt            # Pinned dependency requirements
+├── README.md                   # This documentation and reproduction guide
+├── source/                     # Modular Python source code
+│   ├── utils.py                # Shared hashing and memory-conscious NPZ loaders
+│   ├── s01_integrity_gate.py   # Section 3: Hard data-integrity verification
+│   ├── s02_qp_verification.py  # Section 5: Dual QP solver and KKT residual checks
+│   ├── s03_stage_a_linear_svm.py # Section 4 & 6: Scaler fitting + 40 LinearSVC fits
+│   ├── s04_stage_b_rbf_svc.py  # Section 7: Exact RBF SVC & OvR/OvO ablation
+│   ├── s05_stage_c_rff.py      # Section 8: Random Fourier Features & kernel approx
+│   ├── s06_selection_and_evaluation.py # Section 9, 10, 11, 12: Selection, Markov & Test
+│   └── s07_comparative_studies.py # Section 13: PCA vs HoSVD, Pareto & Block Bootstrap
+├── tests/                      # Automated test suite
+│   ├── test_qp.py              # Synthetic QP optimality and KKT unit tests
+│   └── test_phase5_full.py     # 14 comprehensive schema, leakage & metric tests
+├── models/                     # Saved frozen scalers, final models & calibrators
+├── results/                    # Numerical candidate metrics, ablation tables, CIs
+├── predictions/                # Aligned prediction CSVs on validation and test
+├── figures/                    # Publication-quality evaluation plots
+├── manifests/                  # Provenance checksums, locked model selection
+├── reports/                    # Mathematical derivations, how-to-run, audit summary
+└── logs/                       # Full execution logs, timings, memory benchmarks
+```
+
+---
+
+## Installation & Environment
+The pipeline was developed and verified under Python 3.12/3.14 on macOS Apple Silicon.
+
+Install required dependencies:
+```bash
+pip install -r requirements.txt
+```
+Key libraries: `numpy>=2.0.0`, `scipy>=1.14.0`, `scikit-learn>=1.5.0`, `pandas>=2.2.0`, `matplotlib>=3.8.0`, `pytest>=8.0.0`, `psutil>=5.9.0`.
+
+---
+
+## Reproduction & Pipeline Execution
+
+### 1. One-Command Execution
+To run all core stages sequentially (Integrity Gate $\to$ QP verification $\to$ Stage A $\to$ Stage C $\to$ Calibration/Test Lock $\to$ Comparative Studies $\to$ Pytest Suite):
+```bash
+python3 phase5_run.py --input-dir /path/to/inputs --output-dir output --seed 42 --stage all
+```
+
+### 2. Staged Execution Commands
+Each stage can also be executed independently with modular checkpointing:
+
+1. **Integrity Gate (Section 3)**:
+   ```bash
+   python3 output/source/s01_integrity_gate.py --input-dir /path/to/inputs --output-dir output --seed 42
+   ```
+2. **Small QP Dual Verification (Section 5)**:
+   ```bash
+   python3 output/source/s02_qp_verification.py --output-dir output --seed 42
+   ```
+3. **Stage A Linear SVM (Section 4 & 6)**:
+   ```bash
+   python3 output/source/s03_stage_a_linear_svm.py --input-dir /path/to/inputs --output-dir output --seed 42
+   ```
+4. **Stage B Exact RBF SVC (Section 7)**:
+   ```bash
+   python3 output/source/s04_stage_b_rbf_svc.py --input-dir /path/to/inputs --output-dir output --seed 42
+   ```
+5. **Stage C Random Fourier Features (Section 8)**:
+   ```bash
+   python3 output/source/s05_stage_c_rff.py --input-dir /path/to/inputs --output-dir output --seed 42
+   ```
+6. **Model Selection & Final Test Evaluation (Section 9–12)**:
+   ```bash
+   python3 output/source/s06_selection_and_evaluation.py --input-dir /path/to/inputs --output-dir output --seed 42
+   ```
+7. **Comparative Studies & Block Bootstrap (Section 13)**:
+   ```bash
+   python3 output/source/s07_comparative_studies.py --input-dir /path/to/inputs --output-dir output --seed 42
+   ```
+8. **Automated Unit & Integration Tests (Section 15)**:
+   ```bash
+   pytest output/tests/test_phase5_full.py -v
+   ```
+
+---
+
+## Mathematical and Methodological Auditing Highlights
+1. **Mathematical Optimization & Formulation Distinction**:
+   - The classical hinge-loss dual quadratic program ($C$-SVM with $0 \le \alpha_i \le C$ and $\sum_i \alpha_i y_i = 0$) is formally derived and verified using `scipy.optimize.minimize` (SLSQP). Primal-dual duality gaps on synthetic benchmarks are $< 10^{-7}$, and KKT stationarity residuals are $< 10^{-6}$.
+   - Scikit-learn's `LinearSVC` optimizes an $L_2$-regularized **squared-hinge loss** in primal formulation: $\min_{w,b} \frac{1}{2} \|w\|^2 + C \sum_i \max(0, 1 - y_i(w^T x_i + b))^2$. We explicitly state that this differs from the non-smooth hinge loss and does not share dual variables.
+2. **Bochner's Theorem & Random Fourier Features**:
+   - Spectral sampling draws frequencies $\omega_j \sim \mathcal{N}(0, 2\gamma I_d)$ and phases $b_j \sim \text{Unif}(0, 2\pi)$.
+   - Explicit Monte Carlo convergence verifies $\|K - \hat{K}\|_F / \|K\|_F \approx \mathcal{O}(D^{-1/2})$. Seed variability across 5 fixed seeds is fully reported without cherry-picking.
+3. **Zero Information Leakage Guarantee**:
+   - `StandardScaler` transformations are fitted strictly on training partition features ($N=24,108$).
+   - Hyperparameter selection is strictly locked (`manifests/LOCKED_SELECTION.json`) using validation Scope B Macro-F1 before evaluating on test data.
+   - Probability calibrators are fitted strictly on an 80/20 chronological holdout within training data.
+4. **Transition Responsiveness vs Accuracy**:
+   - While the Phase 3 Markov baseline achieves high hard accuracy (~90.75%), it predicts **0 out of 526 transitions** on the test set. Linear SVM and RFF SVM models achieve active transition responsiveness ($F_1 \approx 0.38$, recall $\approx 0.50$), successfully capturing abrupt pollution shifts.
