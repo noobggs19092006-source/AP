@@ -1,0 +1,5 @@
+model,winner,status
+E3,threshold_C1.0_balanced_a0.75,PASS
+E4,temporal_C1.0_balanced_a0.75,PASS
+E5,all_C10.0_balanced_a0.75,PASS
+E7,all_C10.0_balanced_a1.0,PASS

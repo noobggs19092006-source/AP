@@ -1,0 +1,39 @@
+Claim_ID,Topic,Claim_Statement,Exact_Numerical_Value,Split,Scope,N_Samples,Model_ID,Source_File,Verification_Status
+CLM-01,Dataset & Split,Total raw hourly time points in UCI Beijing Air Quality dataset across 12 stations,35064 hours,all,N/A,35064,raw_data,Phase 2/phase2_output/phase2_summary.json,VERIFIED
+CLM-02,Dataset & Split,Chronological training split length (2013-03-01 to 2015-12-31),24108 usable windows,train,B,24108,phase2_windows,Phase 2/phase2_output/phase2_summary.json,VERIFIED
+CLM-03,Dataset & Split,Chronological validation split length (2016-01-01 to 2016-06-30),4239 usable windows,validation,B,4239,phase2_windows,Phase 2/phase2_output/phase2_summary.json,VERIFIED
+CLM-04,Dataset & Split,Chronological test split length (2016-07-01 to 2017-02-28),5720 usable windows,test,B,5720,phase2_windows,Phase 2/phase2_output/phase2_summary.json,VERIFIED
+CLM-05,Dataset & Split,Missing current state count in test split (Scope B minus Scope A),35 samples,test,B_minus_A,35,phase2_windows,Phase 2/phase2_output/phase2_summary.json,VERIFIED
+CLM-06,Dataset & Split,Valid observed current state samples in hold-out test set (Scope A),5685 samples,test,ScopeA,5685,phase2_windows,Phase 2/phase2_output/phase2_summary.json,VERIFIED
+CLM-07,Dataset & Split,Actual state transitions in hold-out test set Scope A,526 transitions (9.25%),test,ScopeA,5685,ground_truth,Phase7_Transition_Precursor_Results/results/transition_metrics.csv,VERIFIED
+CLM-08,Dataset & Split,Unchanged (stable) pollution states in hold-out test set Scope A,5159 stable (90.75%),test,ScopeA,5685,ground_truth,Phase7_Transition_Precursor_Results/results/transition_metrics.csv,VERIFIED
+CLM-09,Markov Baseline,Markov baseline transition detection recall on Test Scope A,0.00% (0/526 changes),test,ScopeA,5685,E0,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-10,Markov Baseline,Markov baseline overall classification accuracy on Test Scope A,90.75%,test,ScopeA,5685,E0,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-11,Markov Baseline,Markov baseline stable state persistence accuracy on Test Scope A,100.00% (5159/5159),test,ScopeA,5685,E0,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-12,Markov Baseline,Markov baseline High-pollution entry F1 on Test Scope A,0.0000,test,ScopeA,5685,E0,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-13,Phase 4 PCA,PCA relative reconstruction error on test set at k=192 (config B),0.2119 (retained energy: 94.62%),test,N/A,5720,pca_B,phase4_output/pca_hosvd_comparison.csv,VERIFIED
+CLM-14,Phase 4 HoSVD,HoSVD relative reconstruction error on test set at k=192 (core 8x4x6),0.3394,test,N/A,5720,hosvd_B,phase4_output/pca_hosvd_comparison.csv,VERIFIED
+CLM-15,Phase 5 SVM,"Best Linear SVM overall test accuracy on Scope A (linear_best_overall, pca_C)",83.69%,test,ScopeA,5685,E1,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-16,Phase 5 SVM,Best Linear SVM transition recall on Test Scope A,46.39% (244/526),test,ScopeA,5685,E1,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-17,Phase 5 SVM,Best Linear SVM false alarms on Test Scope A,616 false alarms,test,ScopeA,5685,E1,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-18,Phase 6 Fusion,Phase 6 F3 transition fusion test accuracy on Scope A,88.46%,test,ScopeA,5685,E2,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-19,Phase 6 Fusion,Phase 6 F3 transition fusion change recall on Test Scope A,26.43% (139/526),test,ScopeA,5685,E2,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-20,Phase 6 Fusion,Phase 6 F3 transition fusion false alarms on Test Scope A,212 false alarms,test,ScopeA,5685,E2,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-21,Phase 6 Fusion,Phase 6 F3 exact destination accuracy on real transitions,15.59% (82/526),test,ScopeA,5685,E2,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-22,Phase 6 Fusion,Phase 6 F3 stable state accuracy on Test Scope A,95.89%,test,ScopeA,5685,E2,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-23,Phase 7 Precursor,Phase 7 validation-selected model identifier,"E4 (temporal_C1.0_balanced, alpha=0.75)",validation,ScopeA,4197,E4,Phase7_Transition_Precursor_Results/config/selected_configuration.json,VERIFIED
+CLM-24,Phase 7 Precursor,Phase 7 E4 validation objective score J = 0.5*MacroF1 + 0.5*ChangeF1,0.620206,validation,ScopeA,4197,E4,Phase7_Transition_Precursor_Results/results/precursor_fusion_grid.csv,VERIFIED
+CLM-25,Phase 7 Precursor,Phase 7 E4 test change recall on Scope A,55.89% (294/526),test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-26,Phase 7 Precursor,Phase 7 E4 test change precision on Scope A,32.10% (294/916 predicted changes),test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-27,Phase 7 Precursor,Phase 7 E4 test change F1 on Scope A,0.4078,test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-28,Phase 7 Precursor,Phase 7 E4 test exact destination accuracy on actual transitions,40.11% (211/526),test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-29,Phase 7 Precursor,Phase 7 E4 test overall accuracy on Scope A,83.52%,test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-30,Phase 7 Precursor,Phase 7 E4 test stable state accuracy on Scope A,87.94%,test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-31,Phase 7 Precursor,Phase 7 E4 test false alarm count on Scope A,622 false alarms,test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-32,Phase 7 Precursor,Phase 7 E4 test High-pollution entry F1 on Scope A,0.3026 (recall: 21.3%),test,ScopeA,5685,E4,Phase7_Transition_Precursor_Results/results/final_evaluation.csv,VERIFIED
+CLM-33,Bootstrap Contrast,E4 vs E2 (Phase 6 F3) Change Recall Difference (95% CI),"+29.46 pp ([+23.98, +35.18])",test,ScopeA,5685,E4_vs_E2,Phase7_Transition_Precursor_Results/results/bootstrap_confidence_intervals.csv,VERIFIED
+CLM-34,Bootstrap Contrast,E4 vs E2 (Phase 6 F3) Overall Accuracy Difference (95% CI),"-4.94 pp ([-6.05, -3.93])",test,ScopeA,5685,E4_vs_E2,Phase7_Transition_Precursor_Results/results/bootstrap_confidence_intervals.csv,VERIFIED
+CLM-35,Bootstrap Contrast,E4 vs E2 (Phase 6 F3) Change-F1 Difference (95% CI),"+0.0908 ([+0.0511, +0.1316])",test,ScopeA,5685,E4_vs_E2,Phase7_Transition_Precursor_Results/results/bootstrap_confidence_intervals.csv,VERIFIED
+CLM-36,Bootstrap Contrast,E4 vs E2 (Phase 6 F3) Exact Destination Difference (95% CI),"+24.52 pp ([+19.62, +29.50])",test,ScopeA,5685,E4_vs_E2,Phase7_Transition_Precursor_Results/results/bootstrap_confidence_intervals.csv,VERIFIED
+CLM-37,Nested CV Calibration,"Historical Nested CV reported Markov accuracy evaluated across full 5,720 Scope B rows while labeled Scope A",90.4196%,test,ScopeB_labeled_ScopeA,5720,M0_Markov_Baseline,Phase7_Nested_CV_Calibration/results/phase7_comparison.csv,INCONSISTENT
+CLM-38,Nested CV Calibration,Nested CV calibrator training in nested_calibration.py uses in-sample decision scores,"clf.fit(train_scores, y_binary)",train,N/A,24108,rbf_calibrator,Phase7_Nested_CV_Calibration/source/nested_calibration.py,VERIFIED

@@ -1,0 +1,4 @@
+split,max_absolute_error,all_24_lags,imputation_policy,target_and_current_states_match,status
+train,3.8553922195205814e-05,True,split-local forward fill <=6 h then saved training median,True,PASS
+validation,3.43200325687576e-05,True,split-local forward fill <=6 h then saved training median,True,PASS
+test,3.6665667948909686e-05,True,split-local forward fill <=6 h then saved training median,True,PASS

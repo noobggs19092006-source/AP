@@ -1,0 +1,3 @@
+# Literature and novelty audit
+
+Fifteen research references are recorded with authors, title, year, venue, DOI/URL and source-access depth. The two supplied PDFs anchor the application context. Several foundational papers were checked at metadata/abstract depth, and one bootstrap publisher source was blocked. These access limitations are retained in the matrix. This is a targeted bibliography, not a systematic global novelty search. No first-ever claim or unmatched published accuracy comparison is supported. Method limitations in the matrix describe relevance to this project, not necessarily statements made by each author.

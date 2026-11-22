@@ -1,0 +1,71 @@
+{
+  "nodes": {
+    "a": [
+      6,
+      7,
+      "History tensor: 24 x 12 x 11"
+    ],
+    "b": [
+      3,
+      5,
+      "Flatten to 3,168 coordinates"
+    ],
+    "c": [
+      9,
+      5,
+      "Unfold time / station / channel"
+    ],
+    "d": [
+      3,
+      3,
+      "Project on k principal axes"
+    ],
+    "e": [
+      9,
+      3,
+      "Three mode matrices"
+    ],
+    "f": [
+      3,
+      1,
+      "k-dimensional feature vector"
+    ],
+    "g": [
+      9,
+      1,
+      "Core: r_time x r_station x r_feature"
+    ]
+  },
+  "edges": [
+    [
+      "a",
+      "b",
+      ""
+    ],
+    [
+      "a",
+      "c",
+      ""
+    ],
+    [
+      "b",
+      "d",
+      ""
+    ],
+    [
+      "c",
+      "e",
+      ""
+    ],
+    [
+      "d",
+      "f",
+      ""
+    ],
+    [
+      "e",
+      "g",
+      ""
+    ]
+  ]
+}

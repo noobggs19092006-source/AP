@@ -1,0 +1,3 @@
+# IEEE content readiness
+
+The supporting content package follows the required eleven-section sequence and includes equations, the algorithm, actual model choices, matched results, uncertainty, limitations, exact figure paths and a fifteen-paper bibliography. It is research-supporting Markdown, not an accepted or typeset IEEE submission. Author/institution details are deliberately not invented. Resolve the original rubric and the flagged primary reference before final submission; separately decide whether a missing original-feature SVM baseline is required by the professor. The nested-calibration experiment cannot supply independently verified scores without row-level predictions.

@@ -1,0 +1,86 @@
+{
+  "nodes": {
+    "a": [
+      2,
+      7,
+      "12-station hourly data"
+    ],
+    "b": [
+      6,
+      7,
+      "Training-only preprocessing"
+    ],
+    "c": [
+      10,
+      7,
+      "24 x 12 x 11 histories"
+    ],
+    "d": [
+      3,
+      4.8,
+      "PCA: flatten and project"
+    ],
+    "e": [
+      9,
+      4.8,
+      "HoSVD: mode projections"
+    ],
+    "f": [
+      6,
+      3,
+      "Linear / RBF / RFF SVM"
+    ],
+    "g": [
+      2,
+      1.2,
+      "Markov probabilities"
+    ],
+    "h": [
+      7,
+      1.2,
+      "F3 + precursor change risk"
+    ]
+  },
+  "edges": [
+    [
+      "a",
+      "b",
+      ""
+    ],
+    [
+      "b",
+      "c",
+      ""
+    ],
+    [
+      "c",
+      "d",
+      ""
+    ],
+    [
+      "c",
+      "e",
+      ""
+    ],
+    [
+      "d",
+      "f",
+      ""
+    ],
+    [
+      "e",
+      "f",
+      ""
+    ],
+    [
+      "f",
+      "h",
+      ""
+    ],
+    [
+      "g",
+      "h",
+      ""
+    ]
+  ]
+}

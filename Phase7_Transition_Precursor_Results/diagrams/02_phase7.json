@@ -1,0 +1,81 @@
+{
+  "nodes": {
+    "a": [
+      6,
+      7,
+      "Physical PM2.5 histories"
+    ],
+    "b": [
+      2,
+      5,
+      "Threshold distances + state"
+    ],
+    "c": [
+      6,
+      5,
+      "Target trends: 3 h and 6 h"
+    ],
+    "d": [
+      10,
+      5,
+      "11 other-station summaries"
+    ],
+    "e": [
+      6,
+      3.1,
+      "Scaled logistic change risk"
+    ],
+    "f": [
+      2,
+      1,
+      "Original F3 q and destination"
+    ],
+    "g": [
+      8,
+      1,
+      "Convex q fusion + probabilities"
+    ]
+  },
+  "edges": [
+    [
+      "a",
+      "b",
+      ""
+    ],
+    [
+      "a",
+      "c",
+      ""
+    ],
+    [
+      "a",
+      "d",
+      ""
+    ],
+    [
+      "b",
+      "e",
+      ""
+    ],
+    [
+      "c",
+      "e",
+      ""
+    ],
+    [
+      "d",
+      "e",
+      "E5/E6/E7"
+    ],
+    [
+      "e",
+      "g",
+      ""
+    ],
+    [
+      "f",
+      "g",
+      ""
+    ]
+  ]
+}

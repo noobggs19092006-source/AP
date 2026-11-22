@@ -1,0 +1,14 @@
+# P2-P7 working-topic compliance
+
+These are the prompt's working descriptions, not authenticated professor-issued wording.
+
+| topic | description | formula | code | output | figure | status |
+| --- | --- | --- | --- | --- | --- | --- |
+| P2 | PCA/SVD with SVM | F=(X-mu)V_k | AP/phase4_output/phase4_pca_hosvd.py: evaluate_split; AP/Phase5_SVM_Kernel_RFF_Results/source/s03_stage_a_linear_svm.py | features_*_pca_*.npz and stage_a_best_per_config.csv | Figures 16-17 | Working topic evidenced; original wording unavailable |
+| P3 | HoSVD with SVM and RFF | G=X times_1 U1^T times_2 U2^T times_3 U3^T | AP/phase4_output/phase4_pca_hosvd.py: accumulate_grams; AP/Phase5_SVM_Kernel_RFF_Results/source/s05_stage_c_rff.py | HoSVD features and revised RFF predictions | Figures 17-18 | Working topic evidenced |
+| P4 | Tensor compression | k=r1*r2*r3 | AP/phase4_output/phase4_pca_hosvd.py: storage_numbers | compression_storage.csv | Figure 16; diagram 4 | Working topic evidenced |
+| P5 | PCA versus HoSVD | RRE=norm(X-Xhat)/norm(X) | AP/phase4_output/phase4_pca_hosvd.py: evaluate_split | pca_hosvd_comparison.csv | Figure 16 | Historical numbers reused; not fully recomputed |
+| P6 | Rank and reconstruction error | error squared <= sum of mode tail energies | AP/phase4_output/phase4_pca_hosvd.py: tail_energies | hosvd_truncation_bound.csv | Figures 16-17 | Historical evidence; full tensor rerun outside this extension |
+| P7 | Original versus compressed SVM | compare same-split classifier scores | No verified original 3168-feature SVM experiment located | N/A | N/A | NOT VERIFIED: original-feature baseline absent |
+
+The approved combinations SVD+SVM, HoSVD+SVM, SVD+Kernel SVM, and SVM+Markov are evidenced by Phase 4 compression, Phase 5 linear/RBF/RFF outputs and Phase 6 fusion. An absent original-feature SVM experiment has not been invented or retrained. Obtaining the original rubric and deciding whether that additional baseline is required remain academic readiness tasks.

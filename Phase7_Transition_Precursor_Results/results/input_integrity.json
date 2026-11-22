@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "splits": [
+    {
+      "split": "train",
+      "shape": [
+        24108,
+        24,
+        12,
+        11
+      ],
+      "valid_current": 23976,
+      "missing_current": 132,
+      "changes": 2741
+    },
+    {
+      "split": "validation",
+      "shape": [
+        4239,
+        24,
+        12,
+        11
+      ],
+      "valid_current": 4197,
+      "missing_current": 42,
+      "changes": 488
+    },
+    {
+      "split": "test",
+      "shape": [
+        5720,
+        24,
+        12,
+        11
+      ],
+      "valid_current": 5685,
+      "missing_current": 35,
+      "changes": 526
+    }
+  ],
+  "station_order": [
+    "Aotizhongxin",
+    "Changping",
+    "Dingling",
+    "Dongsi",
+    "Guanyuan",
+    "Gucheng",
+    "Huairou",
+    "Nongzhanguan",
+    "Shunyi",
+    "Tiantan",
+    "Wanliu",
+    "Wanshouxigong"
+  ],
+  "channel_order": [
+    "PM2.5",
+    "PM10",
+    "SO2",
+    "NO2",
+    "CO",
+    "O3",
+    "TEMP",
+    "PRES",
+    "DEWP",
+    "RAIN",
+    "WSPM"
+  ]
+}

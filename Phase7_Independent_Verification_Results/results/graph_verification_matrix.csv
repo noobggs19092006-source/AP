@@ -1,0 +1,21 @@
+category,figure,status,detail
+1,figures/01_accuracy_and_macro_f1.png,PASS,Independent metrics from raw prediction CSVs
+2,figures/02_change_recall_across_models.png,PASS,Independent metrics from raw prediction CSVs
+3,figures/03_correct_destination_on_actual_transitions.png,PASS,Independent metrics from raw prediction CSVs
+4,figures/04_stability_versus_transition_recall.png,PASS,Independent metrics from raw prediction CSVs
+5,figures/05_transition_precision_recall_and_f1.png,PASS,Independent metrics from raw prediction CSVs
+6,figures/06_selected_phase_7_versus_phase_6.png,PASS,Independent metric differences and independently reconciled bootstrap intervals
+7,figures/07_threshold_proximity_and_missed_transitions.png,PASS,Observation-level feature grouping and summary recalculation
+8,figures/08_target_station_rates_before_transitions.png,PASS,Observation-level feature grouping and summary recalculation
+9,figures/09_other_station_rates_before_transitions.png,PASS,Observation-level feature grouping and summary recalculation
+10,figures/10_controlled_e0_to_e7_ablations.png,PASS,Independent metrics from raw prediction CSVs
+11,figures/11_validation_fusion_weight_sensitivity.png,PASS,Locked validation candidate table; model selection separately audited
+12,figures/12_validation_decision_threshold_sensitivity.png,PASS,Locked validation candidate table; model selection separately audited
+13,figures/13_three_state_confusion_matrices.png,PASS,Independent metrics from raw prediction CSVs
+14,figures/14_probability_reliability.png,PASS,Reliability bins independently rebuilt
+15,figures/15_additional_model_computation_and_storage.png,PASS,Artifact sizes and recorded new-model timing; single-run timing not independently benchmarked
+16,figures/16_pca_and_hosvd_reconstruction.png,PASS,Historical source equality and energy/error identity; original decompositions not retrained
+17,figures/17_compression_dimension_and_classification.png,PASS,Historical validation table equality; original grid not retrained
+18,figures/18_exact_rbf_versus_revised_rff.png,PASS,Cross-phase hard metrics independently recomputed from source predictions
+19,figures/19_transitions_into_high_pollution.png,PASS,Independent metrics from raw prediction CSVs
+20,figures/20_research_progression_on_matching_test_rows.png,PASS,Cross-phase hard metrics independently recomputed from source predictions

@@ -1,0 +1,61 @@
+{
+  "nodes": {
+    "a": [
+      2,
+      6.5,
+      "Markov persistence misses changes"
+    ],
+    "b": [
+      7,
+      6.5,
+      "Phase 6 SVM + Markov fusion"
+    ],
+    "c": [
+      3,
+      4,
+      "Interpretable precursor risk"
+    ],
+    "d": [
+      9,
+      4,
+      "Controlled E0-E7 experiments"
+    ],
+    "e": [
+      3,
+      1.5,
+      "Validation lock + independent audit"
+    ],
+    "f": [
+      9,
+      1.5,
+      "Recall gains and stability losses"
+    ]
+  },
+  "edges": [
+    [
+      "a",
+      "b",
+      ""
+    ],
+    [
+      "b",
+      "c",
+      ""
+    ],
+    [
+      "c",
+      "d",
+      ""
+    ],
+    [
+      "d",
+      "e",
+      ""
+    ],
+    [
+      "e",
+      "f",
+      ""
+    ]
+  ]
+}

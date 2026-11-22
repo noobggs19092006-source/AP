@@ -1,0 +1,71 @@
+{
+  "nodes": {
+    "a": [
+      6,
+      7,
+      "Observed current state available?"
+    ],
+    "b": [
+      2,
+      5,
+      "No: feature-only SVM"
+    ],
+    "c": [
+      9,
+      5,
+      "Yes: q fusion + F3 destination"
+    ],
+    "d": [
+      6,
+      3,
+      "Argmax probabilities"
+    ],
+    "e": [
+      10,
+      3,
+      "E6: compare q with theta"
+    ],
+    "f": [
+      6,
+      1,
+      "Next-hour state + probabilities"
+    ]
+  },
+  "edges": [
+    [
+      "a",
+      "b",
+      "No"
+    ],
+    [
+      "a",
+      "c",
+      "Yes"
+    ],
+    [
+      "c",
+      "d",
+      "E3/E4/E5/E7"
+    ],
+    [
+      "c",
+      "e",
+      "E6"
+    ],
+    [
+      "b",
+      "f",
+      ""
+    ],
+    [
+      "d",
+      "f",
+      ""
+    ],
+    [
+      "e",
+      "f",
+      ""
+    ]
+  ]
+}

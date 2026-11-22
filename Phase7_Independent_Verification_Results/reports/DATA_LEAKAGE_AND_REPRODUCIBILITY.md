@@ -1,0 +1,5 @@
+# Data leakage and reproducibility
+
+Original training normalization arrays are reused. Current and target states are checked against raw unfilled observations. New classifier/scaler fitting excludes missing-current rows and uses training only. Candidate selection is independently reconstructed from validation tables; no test score enters the ranking function. E6 hard thresholds are distinct from reported probabilities. Model and prediction hashes from a second complete execution are recorded in the implementation reproducibility_results.csv. Runtime fields are not expected to be bitwise identical.
+
+The test set had been used by earlier phases and the legacy precursor attempt. The present validation lock prevents new test-based tuning, but cannot turn historical data into a fresh prospective holdout. The archived source for the separate nested-calibration experiment fits class calibrators on in-sample SVM training scores; its documentation of fully out-of-sample calibration must not be accepted without further investigation. It is not reused by this method.

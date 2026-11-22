@@ -1,0 +1,4 @@
+check,split,max_error,status
+saved_SVM_probabilities,validation,2.3314683517128287e-15,PASS
+saved_SVM_probabilities,test,1.5543122344752192e-15,PASS
+F3_ScopeA_probabilities,test,3.611111409895784e-12,PASS

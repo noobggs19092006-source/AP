@@ -1,0 +1,9 @@
+# Literature gap and claim boundary
+
+The two supplied research PDFs are the starting point: Bekkar et al. (2021) uses temporal and adjacent-station information for PM2.5 concentration forecasting; Zakaria et al. (2019) develops a Markov air-pollution-index forecast for Miri. Their tasks, categories and populations differ from the present next-hour Beijing state-change task. Neither paper supplies a directly comparable accuracy number for this experiment.
+
+The project investigates a narrower empirical question: whether simple threshold and rate-of-change variables improve a fixed Markov-SVM change/destination decomposition on the existing chronological split. This is an evaluated combination of established methods, not a claim to invent threshold distance, logistic regression, Markov forecasting, PCA, HoSVD or random Fourier features. A fifteen-paper targeted bibliography is not a systematic novelty search. No claim of worldwide first use is supported.
+
+The main defensible contribution is the controlled E0-E7 comparison, validation-locked choices, explicit distinction between detecting any change and predicting its destination, and independent verification of gains and losses. Class weighting yields increased transition recall but worse probability calibration and stable-state accuracy. These are central findings, not inconvenient results to omit.
+
+The reference matrix records actual access depth. Abstract-only checks verify metadata and broad methodology, not every full-text theorem or limitation. Limitations in the matrix describe applicability to this project and are not quotations from the papers. The Kunsch primary source was blocked and remains flagged for manual bibliographic/full-text verification. The UCI dataset page was also checked: https://archive.ics.uci.edu/dataset/501/beijing+multi+site+air+quality+data . The dataset citation is additional to the fifteen research papers.

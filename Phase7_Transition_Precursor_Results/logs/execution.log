@@ -1,0 +1,6 @@
+Frozen and checked 378 prior files.
+Verified physical histories, hourly timestamps, missing states and split counts.
+Original saved SVM and F3 probability reproduction passed.
+Locked validation-selected experiment: E4, temporal_C1.0_balanced_a0.75.
+Running 1,000 paired calendar-day bootstrap resamples.
+Core execution complete; publication outputs and independent audit are separate steps.

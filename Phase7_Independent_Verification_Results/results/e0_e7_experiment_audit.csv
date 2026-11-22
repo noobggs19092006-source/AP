@@ -1,0 +1,9 @@
+experiment,features,classifier,alpha,theta,validation_rows,test_rows,status
+E0,baseline,original saved artifacts,N/A,argmax,4239,5720,PASS
+E1,baseline,original saved artifacts,N/A,argmax,4239,5720,PASS
+E2,baseline,original saved artifacts,N/A,argmax,4239,5720,PASS
+E3,threshold,threshold_C1.0_balanced,0.75,argmax,4239,5720,PASS
+E4,temporal,temporal_C1.0_balanced,0.75,argmax,4239,5720,PASS
+E5,all,all_C10.0_balanced,0.75,argmax,4239,5720,PASS
+E6,all,all_C10.0_balanced,0.75,0.6,4239,5720,PASS
+E7,all,all_C10.0_balanced,1.0,argmax,4239,5720,PASS
